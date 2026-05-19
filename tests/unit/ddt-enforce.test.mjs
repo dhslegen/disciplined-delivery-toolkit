@@ -27,3 +27,12 @@ test('非完成声明事件 → allow（不误伤）', () => {
   const { out } = run({ hook_event_name: 'Stop', ddt_test_head: fx('git-head-no-evidence.txt') });
   assert.equal(out.decision, 'allow');
 });
+test('IL-6：进交付且有未 resolved pending → block', () => {
+  const { out } = run({ hook_event_name: 'Stop', ddt_intent: 'enter-deliver', ddt_test_decisions: fx('decisions-open.jsonl') });
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /IL-6/);
+});
+test('IL-6：pending 已 resolved → allow', () => {
+  const { out } = run({ hook_event_name: 'Stop', ddt_intent: 'enter-deliver', ddt_test_decisions: fx('decisions-closed.jsonl') });
+  assert.equal(out.decision, 'allow');
+});
