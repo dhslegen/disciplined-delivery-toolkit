@@ -1,0 +1,6 @@
+feat: 实现导出
+
+stage: build
+slice: us-3
+task: t1
+evidence-ref: .ddt/runs/2026-05-19-export.json
