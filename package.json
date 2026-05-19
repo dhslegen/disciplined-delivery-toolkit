@@ -1,0 +1,25 @@
+{
+  "name": "ddt",
+  "version": "1.0.0-alpha.1",
+  "description": "DDT — Disciplined Delivery Toolkit. superpowers 纪律基底 ⊕ toB 交付治理。",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "test": "node --test 'tests/**/*.test.mjs'",
+    "test:unit": "node --test 'tests/unit/*.test.mjs'",
+    "test:integration": "node --test 'tests/integration/*.test.mjs'"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "keywords": [
+    "claude-code",
+    "delivery",
+    "discipline",
+    "governance"
+  ],
+  "license": "MIT",
+  "author": "赵文昊 <dhslegle@gmail.com>"
+}
