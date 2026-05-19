@@ -1,1 +1,14 @@
-{"hooks":{}}
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "SessionStart": [
+      { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-charter-inject.mjs\"" } ], "description": "DDT 宪法注入", "id": "ddt:charter-inject" }
+    ],
+    "PreToolUse": [
+      { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-enforce.mjs\"" } ], "description": "DDT 强制层 PreToolUse", "id": "ddt:enforce-pre" }
+    ],
+    "Stop": [
+      { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-enforce.mjs\"" } ], "description": "DDT 强制层 Stop（IL-1/IL-6）", "id": "ddt:enforce-stop" }
+    ]
+  }
+}
