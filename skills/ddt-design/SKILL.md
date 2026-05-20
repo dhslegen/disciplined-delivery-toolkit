@@ -28,7 +28,7 @@ Reviewer 输出按 `docs/conventions/reviewer-output.md` 写到 `.ddt/reviews/<t
 
 OpenAPI 合法性 + 字段命名一致 + 必填字段标注 + 错误码与状态码对齐——经 `bin/ddt-contract-lint.mjs` 检查 exit=0 才进入下游。
 
-> **已知激活依赖（spec 洞4 同型诚实标注）**：`bin/ddt-contract-lint.mjs` 由 Plan 4 实现并接入 `/ddt` 命令。在 Plan 4 落地前，本硬门**降级为人工检查 + ddt-requesting-review 当面要求 lint 通过证据**——属"未受强制层校验"状态，进 ddt-impl-spec 前必须显式声明。
+> **激活状态（Plan 4 已落地）**：`bin/ddt-contract-lint.mjs` 已实现，命令调用：`node bin/ddt-contract-lint.mjs openapi/<file>.yaml` exit=0 才算通过。建议在 `/ddt` 路由进 ddt-impl-spec 前自动跑一次 lint 并附结果到 Spec Reviewer 的 cited_evidence 数组。
 
 ### 3. SSoT 铁律链上游（PRD > 契约 > 代码）
 
