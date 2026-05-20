@@ -4,7 +4,7 @@
 // 测试注入 ddt_test_head 免依赖真实 git；生产路径用 git log -1。
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { hasEvidenceRef, hasUnresolvedPending, readDecisions } from '../../bin/lib/ddt-facts.mjs';
+import { hasEvidenceRef, hasUnresolvedPending, readDecisions, hasResolvedSpecApproval } from '../../bin/lib/ddt-facts.mjs';
 
 function readStdin() {
   try { return JSON.parse(readFileSync(0, 'utf8') || '{}'); } catch { return {}; }
@@ -26,6 +26,11 @@ function decide(ev) {
   }
   if (ev.ddt_intent === 'enter-deliver' && hasUnresolvedPending(readDecisions(decisionsText(ev)))) {
     return block('IL-6 违规：存在未 resolved 的 pending 闸门/漂移，禁止进入交付站出包。先 resolve 全部 pending 或显式 accept-drift 署理由。');
+  }
+  if ((ev.ddt_intent === 'enter-plan' || ev.ddt_intent === 'enter-impl') && typeof ev.ddt_slice === 'string') {
+    if (!hasResolvedSpecApproval(readDecisions(decisionsText(ev)), ev.ddt_slice)) {
+      return block(`IL-3 违规：切片 ${ev.ddt_slice} 无 approved spec 决策（gate=spec & status=resolved & user_action=approve），禁止进 ${ev.ddt_intent === 'enter-plan' ? 'plan' : 'implement'}。先走 spec 闸门批准。`);
+    }
   }
   return allow();
 }

@@ -36,3 +36,17 @@ test('IL-6：pending 已 resolved → allow', () => {
   const { out } = run({ hook_event_name: 'Stop', ddt_intent: 'enter-deliver', ddt_test_decisions: fx('decisions-closed.jsonl') });
   assert.equal(out.decision, 'allow');
 });
+test('IL-3：进 plan 步但切片无 approved spec → block', () => {
+  const { out } = run({ hook_event_name: 'PreToolUse', ddt_intent: 'enter-plan', ddt_slice: 'us-3', ddt_test_decisions: fx('decisions-no-spec.jsonl') });
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /IL-3/);
+});
+test('IL-3：进 plan 步切片已 approved → allow', () => {
+  const { out } = run({ hook_event_name: 'PreToolUse', ddt_intent: 'enter-plan', ddt_slice: 'us-3', ddt_test_decisions: fx('decisions-spec-approved.jsonl') });
+  assert.equal(out.decision, 'allow');
+});
+test('IL-3：enter-impl 同理需 approved spec', () => {
+  const { out } = run({ hook_event_name: 'PreToolUse', ddt_intent: 'enter-impl', ddt_slice: 'us-3', ddt_test_decisions: fx('decisions-no-spec.jsonl') });
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /IL-3/);
+});
