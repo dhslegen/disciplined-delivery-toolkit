@@ -48,7 +48,7 @@ function decide(ev) {
       }
     }
   }
-  if (ev.hook_event_name === 'PostToolUse' && ['Edit','Write','MultiEdit','NotebookEdit'].includes(ev.tool_name)) {
+  if (ev.hook_event_name === 'PreToolUse' && ['Edit','Write','MultiEdit','NotebookEdit'].includes(ev.tool_name)) {
     const fp = ev.tool_input && typeof ev.tool_input.file_path === 'string' ? ev.tool_input.file_path : '';
     if (/^\.ddt\/reviews\/.+\.json$/.test(fp)) {
       const raw = ev.tool_input && typeof ev.tool_input.content === 'string' ? ev.tool_input.content : '';
