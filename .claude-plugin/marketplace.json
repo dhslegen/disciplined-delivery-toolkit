@@ -1,23 +1,23 @@
 {
-  "name": "ddt",
+  "name": "disciplined-delivery-toolkit",
   "owner": {
     "name": "赵文昊",
     "email": "dhslegle@gmail.com"
   },
   "metadata": {
-    "description": "DDT — Disciplined Delivery Toolkit：纪律基底⊕toB交付治理的 Claude 插件"
+    "description": "DDT — Disciplined Delivery Toolkit：纪律基底 ⊕ toB 交付治理的 Claude Code 插件"
   },
   "plugins": [
     {
-      "name": "ddt",
+      "name": "disciplined-delivery-toolkit",
       "source": "./",
-      "description": "superpowers 纪律基底 ⊕ toB 交付治理。5 站固定链 + 2 薄命令 + subagent 三角 + Iron Law 文件事实强制 + 唯一真相源问责 + AI 效能 ROI。",
+      "description": "superpowers 纪律基底 ⊕ toB 交付治理。5 站固定链 + 2 薄命令 + subagent 三角 + Iron Law 文件事实强制 + 唯一真相源问责 + AI 效能 ROI。安装后命令为 /ddt 与 /ddt-status。",
       "version": "1.0.0-alpha.1",
       "author": {
         "name": "赵文昊",
         "email": "dhslegle@gmail.com"
       },
-      "repository": "https://github.com/dhslegen/ddt",
+      "repository": "https://github.com/dhslegen/disciplined-delivery-toolkit",
       "license": "MIT",
       "keywords": [
         "skills",

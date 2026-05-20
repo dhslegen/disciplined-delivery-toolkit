@@ -1,5 +1,5 @@
 {
-  "name": "ddt",
+  "name": "disciplined-delivery-toolkit",
   "version": "1.0.0-alpha.1",
   "description": "DDT — Disciplined Delivery Toolkit。superpowers 纪律基底 ⊕ toB 交付治理：5 站固定链（需求→契约→实现→验证→交付）+ 2 薄命令 + subagent 三角 + Iron Law 文件事实强制 + 唯一真相源问责 + AI 效能 ROI。脊柱即 superpowers brainstorm→plan→implement 弧线 + 治理外壳。",
   "author": {
