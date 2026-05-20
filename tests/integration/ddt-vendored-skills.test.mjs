@@ -18,9 +18,13 @@ test('9 vendored skill 平铺且 Claude 可发现（SKILL.md + name 匹配目录
     assert.match(s, /DDT 强制层声明/, d + ' 缺降级声明');
   }
 });
-test('宪法含 7 条 Iron Law', () => {
+test('宪法 ## Iron Laws 区块含 7 条 IL 定义', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-charter/SKILL.md'), 'utf8');
-  for (const il of ['IL-1','IL-2','IL-3','IL-4','IL-5','IL-6','IL-7']) assert.match(s, new RegExp(il));
+  const m = s.match(/## Iron Laws[^\n]*\n([\s\S]*?)(?=\n## |\n*$)/);
+  assert.ok(m, '宪法缺 ## Iron Laws 区块');
+  for (const il of ['IL-1','IL-2','IL-3','IL-4','IL-5','IL-6','IL-7']) {
+    assert.match(m[1], new RegExp(il), `Iron Laws 区块缺 ${il} 定义`);
+  }
 });
 test('skill 未嵌套 _vendored（决策#7）', () => {
   assert.ok(!existsSync(path.join(root, 'skills/_vendored')));
