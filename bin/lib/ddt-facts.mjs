@@ -34,3 +34,10 @@ export function hasUnresolvedPending(decisions) {
 export function pathTouchesProtected(changedPaths, protectedPrefixes) {
   return changedPaths.some(p => protectedPrefixes.some(pre => String(p).startsWith(pre)));
 }
+/** 切片是否已有 spec 闸门"resolved + approve"决策（IL-3）。 */
+export function hasResolvedSpecApproval(decisions, slice) {
+  return decisions.some(d =>
+    d && d.gate === 'spec' && d.slice === slice
+      && d.status === 'resolved' && d.user_action === 'approve'
+  );
+}
