@@ -36,10 +36,13 @@ function decide(ev) {
       return block(`IL-3 违规：切片 ${ev.ddt_slice} 无 approved spec 决策（gate=spec & status=resolved & user_action=approve），禁止进 ${ev.ddt_intent === 'enter-plan' ? 'plan' : 'implement'}。先走 spec 闸门批准。`);
     }
   }
-  if (ev.ddt_intent === 'build-edit' && (ev.tool_name === 'Edit' || ev.tool_name === 'Write')) {
-    const tp = ev.tool_input && typeof ev.tool_input.file_path === 'string' ? [ev.tool_input.file_path] : [];
-    const PROTECTED = ['openapi/', 'PRD.md'];
-    if (pathTouchesProtected(tp, PROTECTED)) {
+  if (ev.ddt_intent === 'build-edit' && ['Edit','Write','MultiEdit','NotebookEdit'].includes(ev.tool_name)) {
+    let fp = ev.tool_input && typeof ev.tool_input.file_path === 'string' ? ev.tool_input.file_path : '';
+    if (fp.startsWith('./')) fp = fp.slice(2); // 剥 ./ 前缀
+    const fpLower = fp.toLowerCase();
+    const PROTECTED = ['openapi/', 'prd.md']; // 用小写匹配（兼容 macOS case-insensitive 文件系统）
+    if (fp && PROTECTED.some(pre => fpLower.startsWith(pre))) {
+      const tp = [fp];
       if (!hasEscalationFor(changelogText(ev), tp)) {
         return block(`IL-4 违规：build 上下文试图修改受保护路径 ${tp.join(',')}（属 PRD/契约 SSoT），且 changelog.jsonl 无对应 escalation 记录。下层不得私改上层 SSoT——先写 escalation 走变更门。`);
       }

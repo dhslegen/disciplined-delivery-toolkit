@@ -84,3 +84,43 @@ test('IL-4：build 上下文 Write PRD.md 且无 escalation → block', () => {
   assert.equal(out.decision, 'block');
   assert.match(out.reason, /IL-4/);
 });
+test('IL-4 加固：MultiEdit/NotebookEdit 同等保护', () => {
+  for (const tool of ['MultiEdit', 'NotebookEdit']) {
+    const { out } = run({
+      hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
+      tool_name: tool, tool_input: { file_path: 'openapi/user.yaml' },
+      ddt_test_changelog: fx('changelog-no-escalation.jsonl')
+    });
+    assert.equal(out.decision, 'block', `${tool} 应被 block`);
+    assert.match(out.reason, /IL-4/);
+  }
+});
+test('IL-4 加固：大小写变体（PRD.MD/OPENAPI/）应 block', () => {
+  for (const p of ['PRD.MD', 'OPENAPI/user.yaml']) {
+    const { out } = run({
+      hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
+      tool_name: 'Edit', tool_input: { file_path: p },
+      ddt_test_changelog: fx('changelog-no-escalation.jsonl')
+    });
+    assert.equal(out.decision, 'block', `${p} 应被 block`);
+    assert.match(out.reason, /IL-4/);
+  }
+});
+test('IL-4 加固：./openapi/ 前缀变体应 block', () => {
+  const { out } = run({
+    hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
+    tool_name: 'Edit', tool_input: { file_path: './openapi/user.yaml' },
+    ddt_test_changelog: fx('changelog-no-escalation.jsonl')
+  });
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /IL-4/);
+});
+test('IL-4 不误伤：subdir/openapi/x（子目录下 openapi）应 allow', () => {
+  // subdir/openapi/x.yaml 不是 SSoT 根目录的 openapi/，是子目录下另一个名为 openapi 的目录——正确应 allow
+  const { out } = run({
+    hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
+    tool_name: 'Edit', tool_input: { file_path: 'subdir/openapi/x.yaml' },
+    ddt_test_changelog: ''
+  });
+  assert.equal(out.decision, 'allow');
+});
