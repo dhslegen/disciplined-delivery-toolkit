@@ -50,3 +50,37 @@ test('IL-3：enter-impl 同理需 approved spec', () => {
   assert.equal(out.decision, 'block');
   assert.match(out.reason, /IL-3/);
 });
+test('IL-4：build 上下文 Edit openapi/** 且 changelog 无 escalation → block', () => {
+  const { out } = run({
+    hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
+    tool_name: 'Edit', tool_input: { file_path: 'openapi/user.yaml' },
+    ddt_test_changelog: fx('changelog-no-escalation.jsonl')
+  });
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /IL-4/);
+});
+test('IL-4：build 上下文 Edit openapi/** 且 changelog 有 escalation → allow', () => {
+  const { out } = run({
+    hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
+    tool_name: 'Edit', tool_input: { file_path: 'openapi/user.yaml' },
+    ddt_test_changelog: fx('changelog-with-escalation.jsonl')
+  });
+  assert.equal(out.decision, 'allow');
+});
+test('IL-4：非受保护路径 → allow', () => {
+  const { out } = run({
+    hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
+    tool_name: 'Write', tool_input: { file_path: 'src/foo.ts' },
+    ddt_test_changelog: fx('changelog-no-escalation.jsonl')
+  });
+  assert.equal(out.decision, 'allow');
+});
+test('IL-4：build 上下文 Write PRD.md 且无 escalation → block', () => {
+  const { out } = run({
+    hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
+    tool_name: 'Write', tool_input: { file_path: 'PRD.md' },
+    ddt_test_changelog: fx('changelog-no-escalation.jsonl')
+  });
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /IL-4/);
+});
