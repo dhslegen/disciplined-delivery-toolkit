@@ -1,0 +1,1 @@
+{ "task_id": "T1", "reviewer_role": "spec", "verdict": "PASS", "cited_evidence": ["tests/unit/foo.test.mjs:12 pass=6"], "ts": "2026-05-20T00:00:00Z" }
