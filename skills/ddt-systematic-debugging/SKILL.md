@@ -298,4 +298,12 @@ From debugging sessions:
 
 ---
 
+> **DDT 本土化层（IL-2 commit 约定）**：bug 修复 commit message body 须含以下 trailer 之一：
+> - `root-cause-ref: <调查记录路径或 issue 链接>` —— 指向独立的根因分析文档
+> - `root-cause: <一句话归因>` —— 简单 bug 内联归因
+>
+> 缺则 ddt-requesting-review 会在 review 时打 IL-2 警告，视为未完成根因调查。该约定为 skill-level 纪律（DDT 当前无 IL-2 hook，spec §8.3 判据表诚实不含 IL-2——见 Plan 2 设计说明）。
+
+---
+
 > **DDT 强制层声明**：若 DDT 强制层 hook 未注册/未运行，本 skill 纪律降级为建议级（spec 洞4）。完成/通过声明须显式标注「未受强制层校验」。

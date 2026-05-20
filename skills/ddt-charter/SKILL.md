@@ -11,11 +11,13 @@ description: Use at the start of every DDT session and before any DDT pipeline a
 
 - IL-1 无新鲜执行证据不得声明完成
 - IL-2 无根因调查不得修复
+  - IL-2 本土化：bug 修复 commit 必含 trailer `root-cause-ref:<调查记录路径>` 或 `root-cause:<一句话归因>`；缺则视为未做根因（建议级——本宪法当前无 IL-2 hook，靠 ddt-systematic-debugging skill 与 review 强制）。
 - IL-3 无批准 spec 不得实现；无 spec 不得 plan
 - IL-4 下层不得私改上层 SSoT（PRD > 契约 > 代码；越级只能 escalate）
 - IL-5 reviewer 无引证不得 PASS（反乐观）
 - IL-6 漂移不可出包
 - IL-7 进度不自报（从 git + 证据反推）
+  - IL-7 落点：进度反推由 `/ddt-status` 命令实现（Plan 4），读 git trailer + decisions.jsonl + spec/plan 文件存在性算下一步，不信会话自述。本宪法当前无 IL-7 hook，进度声明须显式标注「未受 /ddt-status 校验」。
 
 ## Skill 优先级
 
@@ -39,6 +41,9 @@ DDT vendored 纪律 skill 与本宪法覆盖默认行为，但低于用户显式
 - 契约写错顺手改 → IL-4 越级私改即漂移，escalate 走变更门。
 - reviewer 觉得行 → IL-5 无引证只是乐观，非 review。
 - 都手测过了 → ad-hoc 不等于系统化；无新鲜证据即未完成。
+- 反正 plan/impl 没人查 spec 是否真批了 → IL-3 hook 查 decisions.jsonl，无 approved 即 block。
+- 这个契约小改我顺手就行 → IL-4 hook 查 diff 路径与 changelog escalation，无即 block；私改即漂移。
+- reviewer 说 PASS 就完事 → IL-5 hook 校验 .ddt/reviews/*.json 的 cited_evidence，PASS 无引证即 block。
 
 ## hook 缺失降级声明（spec 洞4）
 
