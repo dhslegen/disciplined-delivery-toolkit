@@ -36,7 +36,7 @@ description: Use at the 交付 (delivery) station of DDT's 5-station spine, afte
 
 ### 4. AI 效能 ROI 报告（spec §11）
 
-**待激活**：报告生成由 Plan 5 度量层实现（被动埋点 hook 采集人工省时/token/闸门通过率/返工率/缺陷逃逸率/降低保障级标记等指标）。Plan 5 前本 skill **仅占位文档化报告结构**：
+**激活状态（Plan 5 已落地）**：报告生成由 `bin/ddt-report.mjs` 实现，读 `.ddt/metrics/*.jsonl`（被动埋点 hook 采集）+ `.ddt/decisions.jsonl`（人工决策）→ 渲染 `docs/efficiency-report.md`。命令调用：`node bin/ddt-report.mjs`（exit 0 写报告，不读 agent 自报）。报告结构：
 
 - 报告路径：`docs/efficiency-report.md`
 - 报告章节：项目周期 / 人工省时 / 质量指标 / 与基线对比 / 降低保障级交付清单（IL waiver 汇总）
