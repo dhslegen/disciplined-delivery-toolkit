@@ -51,6 +51,13 @@
 - **变更两条对称路径**（即此机制本身，无独立 skill）：① 改/删需求 → 改 PRD + changelog 追一行 → 下一闸门 Spec Reviewer 只核对受影响切片 → 三选项：重生/手改/记录漂移并署理由；② 新增需求 → PRD 追一节 + changelog → 范围决策门：纳入本批/排下批(deferred)/拒绝(rejected+理由)。新需求只从需求站注入，provenance 从源头可溯。
 - **反技术债兜底**：进交付站前的证据门汇总扫描未调和漂移与"纳入本批却未实现"的 story，硬拒出包。
 
+**第四类——transient 工作态文件（非 SSoT，每次覆盖）**：v1.0 实施中诚实承认两个 transient 工作态文件，**不入 SSoT 三件真相**，每次相关命令覆盖：
+
+- `.ddt/state/current.json`（Plan 4 引入）：`/ddt` 命令写入当前意图（`ddt_intent`/`ddt_slice`），供强制层 hook 在 stdin 缺字段时 fallback 读——命令→hook 字段桥。
+- `.ddt/metrics/<date>.jsonl`（Plan 5 引入）：度量埋点 hook 被动追加；每日一文件。聚合源，非审计源（审计仍依 decisions.jsonl + git）。
+
+二者**不入 git**（`.gitignore` 含 `/.ddt/`），属运行时工作态。审计/问责仍只看三件 SSoT + git 历史；transient 文件仅服务运行时机制，不参与可追溯链。
+
 ## 4. 五站固定链（= superpowers 弧线 + 治理外壳）
 
 链是宪法内固定不变量，五站不可增删、不落配置文件。每站后一道人工闸门：
