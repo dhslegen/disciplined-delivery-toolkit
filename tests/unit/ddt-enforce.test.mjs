@@ -124,3 +124,36 @@ test('IL-4 不误伤：subdir/openapi/x（子目录下 openapi）应 allow', () 
   });
   assert.equal(out.decision, 'allow');
 });
+test('IL-5：PostToolUse 写 reviews/*.json 但 PASS 无 cited_evidence → block', () => {
+  const { out } = run({
+    hook_event_name: 'PostToolUse',
+    tool_name: 'Write',
+    tool_input: { file_path: '.ddt/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":[],"ts":"2026-05-20T00:00:00Z"}' }
+  });
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /IL-5/);
+});
+test('IL-5：PostToolUse 写 reviews/*.json PASS 含 cited_evidence → allow', () => {
+  const { out } = run({
+    hook_event_name: 'PostToolUse',
+    tool_name: 'Write',
+    tool_input: { file_path: '.ddt/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":["foo.test.mjs:1 pass=1"],"ts":"2026-05-20T00:00:00Z"}' }
+  });
+  assert.equal(out.decision, 'allow');
+});
+test('IL-5：FAIL 无须 cited_evidence → allow', () => {
+  const { out } = run({
+    hook_event_name: 'PostToolUse',
+    tool_name: 'Write',
+    tool_input: { file_path: '.ddt/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"FAIL","issues":[{"severity":"important","where":"x:1","note":"y"}],"ts":"2026-05-20T00:00:00Z"}' }
+  });
+  assert.equal(out.decision, 'allow');
+});
+test('IL-5：非 reviews 路径不触发', () => {
+  const { out } = run({
+    hook_event_name: 'PostToolUse',
+    tool_name: 'Write',
+    tool_input: { file_path: 'src/x.ts', content: 'hello' }
+  });
+  assert.equal(out.decision, 'allow');
+});
