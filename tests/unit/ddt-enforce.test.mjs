@@ -169,3 +169,34 @@ test('IL-5 加固：MultiEdit/NotebookEdit 写 reviews PASS 无 cited 同样 blo
     assert.match(out.reason, /IL-5/);
   }
 });
+test('Plan 4 fallback：stdin 缺 ddt_intent，从 .ddt/state/current.json 读', () => {
+  const { out } = run({
+    hook_event_name: 'PreToolUse',
+    tool_name: 'Edit',
+    tool_input: { file_path: 'openapi/user.yaml' },
+    ddt_test_changelog: fx('changelog-no-escalation.jsonl'),
+    ddt_test_state: fx('state-build-edit.json')
+  });
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /IL-4/);
+});
+test('Plan 4 fallback：state 注入 enter-plan + slice，IL-3 生效', () => {
+  const { out } = run({
+    hook_event_name: 'PreToolUse',
+    ddt_test_decisions: fx('decisions-no-spec.jsonl'),
+    ddt_test_state: fx('state-enter-plan.json')
+  });
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /IL-3/);
+});
+test('Plan 4 fallback：stdin 显式 ddt_intent 优先于 state（兼容性）', () => {
+  // stdin 给 claim-complete 但 state 给 enter-plan → stdin 胜出，触发 IL-1 而非 IL-3
+  const { out } = run({
+    hook_event_name: 'Stop',
+    ddt_intent: 'claim-complete',
+    ddt_test_head: fx('git-head-no-evidence.txt'),
+    ddt_test_state: fx('state-enter-plan.json')
+  });
+  assert.equal(out.decision, 'block');
+  assert.match(out.reason, /IL-1/);
+});

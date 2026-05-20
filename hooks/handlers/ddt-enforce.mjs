@@ -9,6 +9,25 @@ import { hasEvidenceRef, hasUnresolvedPending, readDecisions, hasResolvedSpecApp
 function readStdin() {
   try { return JSON.parse(readFileSync(0, 'utf8') || '{}'); } catch { return {}; }
 }
+function readStateFile(ev) {
+  if (typeof ev.ddt_test_state === 'string') {
+    try { return JSON.parse(ev.ddt_test_state); } catch { return null; }
+  }
+  try {
+    const raw = readFileSync('.ddt/state/current.json', 'utf8');
+    return JSON.parse(raw);
+  } catch { return null; }
+}
+function mergeStateFallback(ev) {
+  // stdin 字段优先，state 文件兜底
+  if (typeof ev.ddt_intent === 'string' && ev.ddt_intent.length > 0) return ev;
+  const st = readStateFile(ev);
+  if (!st || typeof st !== 'object') return ev;
+  const merged = { ...ev };
+  if (typeof st.ddt_intent === 'string') merged.ddt_intent = st.ddt_intent;
+  if (typeof st.ddt_slice === 'string') merged.ddt_slice = st.ddt_slice;
+  return merged;
+}
 function headMessage(ev) {
   if (typeof ev.ddt_test_head === 'string') return ev.ddt_test_head;
   try { return execFileSync('git', ['log', '-1', '--pretty=%B'], { encoding: 'utf8' }); } catch { return ''; }
@@ -62,5 +81,6 @@ function decide(ev) {
 }
 
 const ev = readStdin();
-process.stdout.write(JSON.stringify(decide(ev)));
+const evMerged = mergeStateFallback(ev);
+process.stdout.write(JSON.stringify(decide(evMerged)));
 process.exit(0);
