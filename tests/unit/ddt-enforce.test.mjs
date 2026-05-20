@@ -157,3 +157,15 @@ test('IL-5：非 reviews 路径不触发', () => {
   });
   assert.equal(out.decision, 'allow');
 });
+
+test('IL-5 加固：MultiEdit/NotebookEdit 写 reviews PASS 无 cited 同样 block', () => {
+  for (const tool of ['MultiEdit', 'NotebookEdit']) {
+    const { out } = run({
+      hook_event_name: 'PostToolUse',
+      tool_name: tool,
+      tool_input: { file_path: '.ddt/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":[],"ts":"2026-05-20T00:00:00Z"}' }
+    });
+    assert.equal(out.decision, 'block', `${tool} 应被 block`);
+    assert.match(out.reason, /IL-5/);
+  }
+});
