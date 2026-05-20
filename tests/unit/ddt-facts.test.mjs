@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseTrailers, hasEvidenceRef, readDecisions, hasUnresolvedPending, pathTouchesProtected, hasResolvedSpecApproval } from '../../bin/lib/ddt-facts.mjs';
+import { parseTrailers, hasEvidenceRef, readDecisions, hasUnresolvedPending, pathTouchesProtected, hasResolvedSpecApproval, hasEscalationFor } from '../../bin/lib/ddt-facts.mjs';
 
 test('parseTrailers 提取 trailer 键值', () => {
   const t = parseTrailers('feat: x\n\nbody\n\nstage: build\nslice: us-3\nevidence-ref: run/1.json');
@@ -38,4 +38,19 @@ test('hasResolvedSpecApproval：拒绝/挂起/异切片均为假', () => {
   assert.equal(hasResolvedSpecApproval(reject, 'us-3'), false);
   assert.equal(hasResolvedSpecApproval(pending, 'us-3'), false);
   assert.equal(hasResolvedSpecApproval(otherSlice, 'us-3'), false);
+});
+test('hasEscalationFor：changelog 含 escalation 且覆盖路径为真', () => {
+  const cl = '{"kind":"escalation","paths":["openapi/user.yaml"],"reason":"add field","ts":"t1"}';
+  assert.equal(hasEscalationFor(cl, ['openapi/user.yaml']), true);
+});
+test('hasEscalationFor：changelog 无 escalation 或路径不匹配为假', () => {
+  assert.equal(hasEscalationFor('', ['openapi/user.yaml']), false);
+  const wrongKind = '{"kind":"amend","paths":["openapi/user.yaml"],"ts":"t1"}';
+  assert.equal(hasEscalationFor(wrongKind, ['openapi/user.yaml']), false);
+  const wrongPath = '{"kind":"escalation","paths":["openapi/other.yaml"],"ts":"t1"}';
+  assert.equal(hasEscalationFor(wrongPath, ['openapi/user.yaml']), false);
+});
+test('hasEscalationFor：路径集合任一被覆盖即为真', () => {
+  const cl = '{"kind":"escalation","paths":["openapi/a.yaml"],"ts":"t1"}\n{"kind":"escalation","paths":["openapi/b.yaml"],"ts":"t2"}';
+  assert.equal(hasEscalationFor(cl, ['openapi/b.yaml']), true);
 });

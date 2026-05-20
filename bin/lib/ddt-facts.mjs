@@ -41,3 +41,15 @@ export function hasResolvedSpecApproval(decisions, slice) {
       && d.status === 'resolved' && d.user_action === 'approve'
   );
 }
+/** changelog 是否含覆盖给定 paths 的 escalation 记录（IL-4）。
+ *  接受原始 jsonl 文本或已解析行数组。 */
+export function hasEscalationFor(changelogJsonlOrRows, paths) {
+  const rows = Array.isArray(changelogJsonlOrRows)
+    ? changelogJsonlOrRows
+    : readDecisions(changelogJsonlOrRows); // 同 jsonl 解析逻辑
+  const want = new Set(paths.map(String));
+  return rows.some(r =>
+    r && r.kind === 'escalation' && Array.isArray(r.paths) &&
+    r.paths.some(p => want.has(String(p)))
+  );
+}
