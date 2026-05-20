@@ -200,3 +200,20 @@ test('Plan 4 fallback：stdin 显式 ddt_intent 优先于 state（兼容性）',
   assert.equal(out.decision, 'block');
   assert.match(out.reason, /IL-1/);
 });
+test('Plan 4 fallback 对称性：stdin 已有 ddt_slice，state ddt_slice 不得覆盖', () => {
+  // 构造：stdin 给 ddt_intent='' 触发 fallback 分支，但带 ddt_slice='us-1'；
+  // state 给 ddt_intent='enter-plan' 与 ddt_slice='us-5'；
+  // decisions 含 us-1 的 approved spec，无 us-5 的 spec。
+  // 期望：merged 应保留 stdin 的 us-1 slice，IL-3 查 us-1 → 有 approved → allow。
+  // 现 bug：state 的 us-5 覆盖 stdin 的 us-1，IL-3 查 us-5 → 无 approved → block。
+  const stateText = JSON.stringify({ ddt_intent: 'enter-plan', ddt_slice: 'us-5' });
+  const decisionsText = '{"gate":"spec","slice":"us-1","status":"resolved","user_action":"approve","ref":"t1"}';
+  const { out } = run({
+    hook_event_name: 'PreToolUse',
+    ddt_intent: '',
+    ddt_slice: 'us-1',
+    ddt_test_decisions: decisionsText,
+    ddt_test_state: stateText
+  });
+  assert.equal(out.decision, 'allow', 'stdin ddt_slice 应优先于 state');
+});

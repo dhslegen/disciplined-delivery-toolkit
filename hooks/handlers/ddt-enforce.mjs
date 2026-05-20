@@ -25,7 +25,7 @@ function mergeStateFallback(ev) {
   if (!st || typeof st !== 'object') return ev;
   const merged = { ...ev };
   if (typeof st.ddt_intent === 'string') merged.ddt_intent = st.ddt_intent;
-  if (typeof st.ddt_slice === 'string') merged.ddt_slice = st.ddt_slice;
+  if (typeof st.ddt_slice === 'string' && typeof ev.ddt_slice !== 'string') merged.ddt_slice = st.ddt_slice;
   return merged;
 }
 function headMessage(ev) {
