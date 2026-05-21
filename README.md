@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Node](https://img.shields.io/badge/Node-%E2%89%A522-43853d.svg)](./package.json)
 [![Status](https://img.shields.io/badge/Status-v1.0--alpha-blue.svg)](./docs/specs/2026-05-18-ddt-v1-redesign-design.md)
-[![Tests](https://img.shields.io/badge/Tests-104%2F104%20passing-brightgreen.svg)](./tests)
+[![Tests](https://img.shields.io/badge/Tests-159%2F159%20passing-brightgreen.svg)](./tests)
 
 ---
 

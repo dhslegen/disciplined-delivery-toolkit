@@ -10,3 +10,4 @@ node_modules/
 
 # 运行产物（ddt-report 生成），按设计是 transient working file，不入 git
 docs/efficiency-report.md
+/.idea/
