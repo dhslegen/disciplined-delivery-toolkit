@@ -4,7 +4,7 @@
 // 测试注入 ddt_test_head 免依赖真实 git；生产路径用 git log -1。
 import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { hasEvidenceRef, hasUnresolvedPending, readDecisions, hasResolvedSpecApproval, hasEscalationFor, pathTouchesProtected, isValidReviewOutput } from '../../bin/lib/ddt-facts.mjs';
+import { hasEvidenceRef, hasUnresolvedPending, readDecisions, hasResolvedSpecApproval, hasEscalationFor, isValidReviewOutput } from '../../bin/lib/ddt-facts.mjs';
 
 function readStdin() {
   try { return JSON.parse(readFileSync(0, 'utf8') || '{}'); } catch { return {}; }

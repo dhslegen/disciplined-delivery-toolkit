@@ -31,6 +31,9 @@ export function hasUnresolvedPending(decisions) {
   );
   return decisions.some(d => d && d.status === 'pending' && !resolved.has(String(d.ts)));
 }
+/** changedPaths 是否触及任一 protected 前缀。保留为通用 helper（与 ddt-enforce.mjs 的
+ *  IL-4 内联实现并存——ddt-enforce.mjs 内联做了额外的小写化与 ./ 前缀剥离，因此暂未直接
+ *  调用此函数；保留作为对外可测的纯 helper，供未来切换为统一实现使用）。 */
 export function pathTouchesProtected(changedPaths, protectedPrefixes) {
   return changedPaths.some(p => protectedPrefixes.some(pre => String(p).startsWith(pre)));
 }

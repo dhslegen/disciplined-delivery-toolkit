@@ -45,7 +45,7 @@ DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，把 **[obra
 | 契约稳定性 | 易漂移 | 弱 | **OpenAPI 唯一来源 + 写保护（IL-4）** |
 | 效能复盘 | 无 | 无 | **被动埋点 + ROI 报告（/ddt 交付）** |
 
-**DDT ≠ superpowers + 一堆 agents**。v1.0 推倒重来后，DDT 不再是"团队 agent 编排"，而是**纪律 + 治理的最薄外壳**：只有 2 个命令，所有"做事"都委托给 17 个 skill（其中 9 个直接 vendoring superpowers），所有"强制"都委托给 hook。
+**DDT ≠ superpowers + 一堆 agents**。v1.0 推倒重来后，DDT 不再是"团队 agent 编排"，而是**纪律 + 治理的最薄外壳**：只有 2 个命令，所有"做事"都委托给 15 个 skill（其中 9 个直接 vendoring superpowers），所有"强制"都委托给 hook。
 
 ---
 
@@ -180,7 +180,7 @@ DDT 会**自动**：
 - **`/ddt [一句话意图]`** —— 总驱动闸门。读 charter，分类意图，写 `.ddt/state/current.json`，路由到对应站的 discipline skill。
 - **`/ddt-status`** —— 只读重算，调用 `bin/ddt-status.mjs` 输出当前事实快照。
 
-### Skill 清单（17 个，3 组）
+### Skill 清单（15 个，2 组）
 
 **治理外壳（DDT 原生，6 个）**：
 
@@ -205,10 +205,6 @@ DDT 会**自动**：
 
 > Vendoring 而非依赖：用户只装 DDT 一个 plugin 就能用全套，不需要先装 superpowers。每个 vendored skill 顶部都加了"DDT 强制层声明"段落，说明 hook 缺席时如何降级。原文照搬，授权保留（见 [LICENSE](./LICENSE) Third-Party Notices）。
 
-**入口（开发者直接调用，1 个）**：
-
-- `ddt-status-recompute` —— 内部供 `/ddt-status` 命令 dispatch（薄壳）
-
 ### Hooks（5 个）
 
 | Hook ID | 触发时机 | 作用 |
@@ -229,11 +225,11 @@ disciplined-delivery-toolkit/
 │   ├── marketplace.json     ← marketplace 注册
 │   └── plugin.json          ← plugin 元数据
 ├── commands/                ← /ddt, /ddt-status
-├── skills/                  ← 17 个 SKILL.md（6 原生 + 9 vendoring + 1 入口）
+├── skills/                  ← 15 个 SKILL.md（6 原生 + 9 vendoring）
 ├── hooks/
 │   ├── hooks.json           ← 注册 5 个 hook
 │   └── handlers/            ← *.mjs handler 实现
-├── bin/                     ← 7 个承重 CLI 工具
+├── bin/                     ← 8 个承重 CLI 工具
 │   ├── ddt-status.mjs       ← /ddt-status 数据源
 │   ├── ddt-decisions-append.mjs
 │   ├── ddt-changelog-append.mjs

@@ -17,7 +17,16 @@ function runWith(hooksJson) {
 }
 
 test('hook 已注册 → exit 0', () => {
-  const r = runWith(JSON.stringify({ hooks: { SessionStart: [{ hooks: [{}], id: 'ddt:charter-inject' }], PreToolUse: [{ id: 'ddt:enforce-pre' }], Stop: [{ id: 'ddt:enforce-stop' }] } }));
+  // preflight 检查全部 5 个 hook id（与 hooks/hooks.json 注册一致）
+  const r = runWith(JSON.stringify({
+    hooks: {
+      SessionStart: [{ id: 'ddt:charter-inject' }],
+      PreToolUse: [{ id: 'ddt:enforce-pre' }],
+      Stop: [{ id: 'ddt:enforce-stop' }],
+      PostToolUse: [{ id: 'ddt:metrics-post' }],
+      SessionEnd: [{ id: 'ddt:metrics-end' }]
+    }
+  }));
   assert.equal(r.status, 0);
 });
 test('hook 未注册 → exit 3 且打印修复指引', () => {
