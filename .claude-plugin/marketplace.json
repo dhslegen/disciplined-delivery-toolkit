@@ -11,8 +11,7 @@
     {
       "name": "disciplined-delivery-toolkit",
       "source": "./",
-      "description": "superpowers 纪律基底 ⊕ toB 交付治理。5 站固定链 + 2 薄命令 + subagent 三角 + Iron Law 文件事实强制 + 唯一真相源问责 + AI 效能 ROI。安装后命令为 /ddt 与 /ddt-status。",
-      "version": "1.0.0-alpha.1",
+      "description": "superpowers 纪律基底 ⊕ toB 交付治理。5 站固定链 + 2 薄命令 + subagent 三角 + Iron Law 文件事实强制 + 唯一真相源问责 + AI 效能 ROI。安装后命令为 /ddt 与 /ddt-status。alpha 阶段不设语义版本，commit SHA 即版本。",
       "author": {
         "name": "赵文昊",
         "email": "dhslegle@gmail.com"

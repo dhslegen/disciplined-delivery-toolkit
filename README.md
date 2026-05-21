@@ -66,6 +66,34 @@ DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，把 **[obra
 - `/ddt <需求一句话或意图>` —— 总驱动闸门（路由到 5 站）
 - `/ddt-status` —— 只读重算当前项目状态（IL-7 推理承载体）
 
+### 如何确认拿到最新版本
+
+**alpha 阶段不使用语义版本**，`.claude-plugin/plugin.json` 不设 `version` 字段——Claude Code [官方策略](https://code.claude.com/docs/en/plugins-reference#version-management)：未设 version 时用 git commit SHA 作为版本，**每个 commit 都是新版**，`/plugin marketplace update` 一定能拿到最新。
+
+确认当前装的是哪个 commit：
+
+```
+/plugin                    # 进 plugin 管理界面
+# 选 Installed → disciplined-delivery-toolkit
+# Version 行显示的就是 commit SHA（短 hash）
+```
+
+对照 GitHub 当前 main 的 HEAD：
+
+```bash
+gh api repos/dhslegen/disciplined-delivery-toolkit/commits/main --jq .sha[0:7]
+# 或浏览器打开 https://github.com/dhslegen/disciplined-delivery-toolkit/commits/main
+```
+
+两者一致 = 你装的就是 main 最新。不一致 = 需要：
+
+```
+/plugin marketplace update disciplined-delivery-toolkit
+/reload-plugins
+```
+
+> ⚠️ **dogfood 期间高频更新**：每次 hook / bin / skill 修复都会立刻 push 到 main。如果你看到 hook 报错或 IL 失效，**先 update + reload** 再排查。等到 v1.0 stable 发布时会切回语义版本（`1.0.0`、`1.0.1` …），届时只有 bump 才意味着真新版。
+
 ---
 
 ## 5 分钟上手
