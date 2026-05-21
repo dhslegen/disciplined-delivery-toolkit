@@ -6,6 +6,18 @@ description: DDT v1.0 万能驱动闸门。无文本：重算 repo 状态推进�
 
 你的任务是处理用户的 `/ddt [自由文本]` 调用，按下面流程执行：
 
+## 0. 元命令短路识别（先做，不进意图分类）
+
+如果用户的自由文本是以下"元命令"之一（包括同义词、中英文混用），**直接路由到对应 bin，不进 charter 意图分类**：
+
+| 用户文本含 | 路由到 |
+|------------|--------|
+| `自检` / `doctor` / `preflight` / `check` / `health` / `体检` / `selfcheck` | `bin/ddt-doctor.mjs`（参 ddt-status.md 路径策略，优先 PATH，fallback `node "${CLAUDE_PLUGIN_ROOT}/bin/ddt-doctor.mjs"`） |
+| `状态` / `status` / `where am I` / `在哪` | 提示用户改敲 `/ddt-status` 命令（独立命令更准确） |
+| `report` / `效能` / `ROI` / `度量` | `bin/ddt-report.mjs` |
+
+**关键约束**：元命令路由后，**完全照搬 bin 的 stdout 给用户**，不要自由发挥、不要自己扫文件、不要自己判定 hook 注册状态。如果 bin 找不到，明确告诉用户："plugin bin 不可用，请检查安装 / `/plugin marketplace update`"——**禁止降级到 LLM 自己模拟事实**，这会破坏 IL-7。
+
 ## 1. 读 ddt-charter
 
 先 invoke 名为 `ddt-charter` 的 skill 读宪法（如未注入 SessionStart 路径）。宪法定义 Iron Laws / 5 站脊柱 / 意图分类规则 / SSoT 铁律链。

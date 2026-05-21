@@ -45,6 +45,24 @@ DDT vendored 纪律 skill 与本宪法覆盖默认行为，但低于用户显式
 - 这个契约小改我顺手就行 → IL-4 hook 查 diff 路径与 changelog escalation，无即 block；私改即漂移。
 - reviewer 说 PASS 就完事 → IL-5 hook 校验 .ddt/reviews/*.json 的 cited_evidence，PASS 无引证即 block。
 
+## hook 工作状态判定（v1.1 dogfood 补丁）
+
+判定 hook 是否在工作的**唯一权威**手段：
+
+1. **你能读到本 charter 本身 = SessionStart hook (ddt:charter-inject) 在工作** —— 这是自证。如果 SessionStart hook 没工作，你根本读不到这段话。
+2. **跑 `bin/ddt-doctor.mjs`** —— 它列出 plugin 内 `hooks/hooks.json` 真实注册的 hook ID 与 plugin 自身健康。用 PATH 调 `ddt-doctor.mjs` 或 `node "${CLAUDE_PLUGIN_ROOT}/bin/ddt-doctor.mjs"`。
+3. **观察 `.ddt/metrics/<date>.jsonl` 是否在增长** —— PostToolUse / SessionEnd hook 在工作的硬证据。
+4. **触发已知会被 IL 拦的动作**（如 build 上下文 Edit `openapi/`），看是否收到 `permissionDecisionReason: IL-4 ...` —— PreToolUse hook 在工作的硬证据。
+
+**绝对禁止**的误判路径（已造成过 v1.1 dogfood 误报降级）：
+
+- ❌ **看用户的 `.claude/settings.local.json` 是否有 `hooks` 段** —— plugin hooks 注册在 plugin 自己的 `hooks/hooks.json`（不在用户 settings），看错位置 = 必然误报"全部未注册"。
+- ❌ **看 Claude Code session 的 "Is a git repository: false" 字段就推断 hook 失效** —— 这是 cwd 状态，与 plugin hook 注册无关。
+- ❌ **看不到 hook 输出就当 hook 没跑** —— 大多数 hook 的输出是 `suppressOutput: true` 静默注入/拦截，UI 上看不到不代表没跑。
+
 ## hook 缺失降级声明（spec 洞4）
 
-若强制层 hook 未注册或未运行，以上 Iron Laws 自动降级为建议级（行为塑造层仍在，结构强制消失）。此时任何完成/通过声明必须显式标注「未受强制层校验」。绝不在 hook 缺失时静默以演示级冒充生产级。
+**只有**经过上一节"判定"步骤实证某 hook 缺失或挂掉时，对应 Iron Law 才降级为建议级（行为塑造层仍在，结构强制消失）。此时任何完成/通过声明必须显式标注「未受 IL-X hook 校验」，并具体到失效的那一条 IL，**不可笼统说"全部降级"**。
+
+绝不在 hook 缺失时静默以演示级冒充生产级。
+绝不在 hook **工作但被误判失效**时合理化绕过——这会让本能拦下的违规畅通无阻。
