@@ -85,6 +85,17 @@ let hasUnionMerge = false;
 try { hasUnionMerge = readFileSync(gaPath, 'utf8').includes('merge=union'); } catch { /* 文件不存在 */ }
 console.log(`  ${hasUnionMerge ? '✓' : '·'} .gitattributes union merge  ${hasUnionMerge ? '（jsonl 并发追加自动合并）' : '（缺失：建议从 plugin 复制模板。两人并发 append decisions/changelog 会撞 git conflict）'}`);
 console.log('');
+console.log('  [v0.x 残留检测（v1.1 dogfood 第 12 条：双插件污染）]');
+const hasV0Residual = existsSync(path.join(cwd, '.ddt/progress.json'));
+if (hasV0Residual) {
+  console.log('  ⚠️  发现 .ddt/progress.json — schema_version 1 的 v0.x 残留');
+  console.log('     罪魁：digital-delivery-team v0.x 插件仍启用，其 hook 在偷偷写 progress.json');
+  console.log('     修复：在 Claude Code 里 /plugin uninstall digital-delivery-team（或 disable）');
+  console.log('     v0.x 仍启用会持续污染 cwd，建议立即卸载');
+} else {
+  console.log('  ✓ 无 v0.x 残留文件');
+}
+console.log('');
 
 console.log('### hook 实际工作的证据');
 // metrics 文件存在 = PostToolUse / SessionEnd hook 至少跑过一次

@@ -61,6 +61,8 @@ DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，把 **[obra
 /reload-plugins
 ```
 
+> ⚠️ **如果你之前装过 `digital-delivery-team`（v0.x DDT，schema_version 1）必须先卸载**：v0.x 的 hook 仍会在 cwd 偷偷写 `.ddt/progress.json` 污染所有项目。`/ddt 自检` 会检测此残留并提示。卸载方式：`/plugin uninstall digital-delivery-team`。
+
 安装后会出现两条命令：
 
 - `/ddt <需求一句话或意图>` —— 总驱动闸门（路由到 5 站）
