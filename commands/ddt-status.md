@@ -22,6 +22,7 @@ ddt-status.mjs 2>/dev/null \
 - `pending_decisions`：未 resolved 的 pending 决策记录
 - `slice_specs`：`docs/specs/` 下存在的 spec 文件
 - `slice_plans`：`docs/plans/` 下存在的 plan 文件
+- `in_progress_slices`：从 `git for-each-ref` 反推的 `slice/<id>` branch 列表（v1.1 多人协作），每条含 `{slice, branch, is_remote, last_commit_relative, author}`
 
 **如果都失败**（找不到 plugin bin），明确告诉用户："DDT plugin 未正确安装或未启用。检查 `/plugin list` 是否含 `disciplined-delivery-toolkit`"，**不要降级到自己读 repo 模拟事实**——那会让 IL-7（事实不可篡改）失去意义。
 
@@ -36,16 +37,27 @@ ddt-status.mjs 2>/dev/null \
 按以下结构输出：
 
 ```
-DDT v1.0 状态（从 repo 事实反推）
+DDT v1.1 状态（从 repo 事实反推）
 =================================
 最近活动：<stage>/<slice>/<task>（commit <SHA> at <date>）
 待决闸门（<n> 条）：
   - <gate> 由 <owner_role> 裁决，criteria: <decision_criteria>
 切片 spec：<n> 份（<列表>）
 切片 plan：<n> 份（<列表>）
+
+切片进行中（v1.1 多人协作 — 从 git branch 反推）：
+  - slice/us-3   by alice @ 2 hours ago    （remote=true，团队可见）
+  - slice/us-5   by bob   @ 15 minutes ago （remote=true）
+  - slice/us-7   by you   @ 5 minutes ago  （local only，建议 push 让团队 claim 可见）
+
 下一步建议：<根据脊柱推理>
-效能快照（待 Plan 5 激活完整 ROI）：本 plan 仅显示 "metrics layer pending"
+效能快照：本仓 metrics 累积情况
 ```
+
+**多人协作提示**：如果 `in_progress_slices` 非空，提醒用户：
+- 不要去做已被他人 claim 的切片（除非协调）
+- 自己的 local-only slice/* branch 建议 push 让团队看见
+- 已完成的切片应该 merge 到 main 后删除 branch
 
 ## 4. 不推进、不改、不打断
 

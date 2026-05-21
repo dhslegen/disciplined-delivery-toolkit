@@ -1,0 +1,14 @@
+# DDT v1.1 多人协作支持：append-only SSoT 文件用 git union merge driver
+# 解决两人并发 append decisions/changelog/metrics 时的合并冲突——
+# git 自动按行合并双方追加内容，无需手动 resolve。
+#
+# 该配置在 DDT plugin 自己的仓库内也启用（自我消费 + 示范）。
+# 在你的用户项目仓库里复制此文件到根目录，即可获得相同保护。
+
+docs/ssot/decisions.jsonl  merge=union
+docs/ssot/changelog.jsonl  merge=union
+.ddt/metrics/*.jsonl       merge=union
+
+# 注：union merge 只对真正 append-only 行格式（jsonl）安全。
+# markdown/yaml/json 等结构化文档不能用 union——会产生 section 重复 / 结构错乱。
+# 这些文件冲突时仍走标准 git merge（人工 resolve）。

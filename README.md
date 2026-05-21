@@ -276,6 +276,33 @@ rm .ddt/tech-stack.json
 # 下次 /ddt 会重新询问
 ```
 
+### 多人协作（v1.1 Tier 1）
+
+DDT 用 **git native 能力** + 2 个轻约定支持团队多人协作，**不自创新机制**：
+
+**1. `.gitattributes` union merge driver**：解决两人并发 append `decisions.jsonl`/`changelog.jsonl` 时的 git conflict。**复制 plugin 仓库根的 `.gitattributes` 到你项目根**即可：
+
+```bash
+# 在你的项目根
+curl -O https://raw.githubusercontent.com/dhslegen/disciplined-delivery-toolkit/main/.gitattributes
+# 或手动创建，内容见 plugin 仓库根的 .gitattributes
+```
+
+`/ddt 自检` 会检测项目根有没有 union merge 配置，缺失时提示你加。
+
+**2. 切片 branch 命名约定 `slice/<slice-id>`**：每个切片在独立 git branch 上开发：
+
+```bash
+git checkout -b slice/us-3       # 起切片
+git push -u origin slice/us-3    # push 让团队看见 = claim
+# ... 开发 ...
+# merge 回 main 后删 branch = release
+```
+
+`/ddt-status` 会自动 `git for-each-ref` 列出所有 `slice/*` branch，**输出"谁在做什么切片"给团队**——不需要新 SSoT 文件，git branch 本身就是 ground truth。
+
+> ⚠️ **多人协作的局限**：v1.1 只做了基础协作支持（避免 jsonl 冲突 + 切片可见性）。**未做**：跨 plugin 版本协商、共享 review 状态、错误恢复协调。这些在 v1.x stable 阶段补足。
+
 ### 自定义 Iron Law
 
 `hooks/handlers/ddt-enforce.mjs` 是单文件 ~300 行。`bin/lib/ddt-facts.mjs` 是纯函数事实抽取。fork 后修改即可加自定义铁律。

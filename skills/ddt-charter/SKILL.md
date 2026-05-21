@@ -70,6 +70,19 @@ DDT vendored 纪律 skill 与本宪法覆盖默认行为，但低于用户显式
 - 这个契约小改我顺手就行 → IL-4 hook 查 diff 路径与 changelog escalation，无即 block；私改即漂移。
 - reviewer 说 PASS 就完事 → IL-5 hook 校验 docs/reviews/*.json 的 cited_evidence，PASS 无引证即 block。
 
+## 切片 branch 命名约定（v1.1 多人协作 Tier 1）
+
+每个切片在独立 git branch 上开发，命名为 **`slice/<slice-id>`**（如 `slice/us-3`、`slice/auth-jwt`）。
+
+- **起手**：`git checkout -b slice/us-3` 然后立刻 `git push -u origin slice/us-3` —— push 让团队成员通过 `/ddt-status` 看见这个切片已被你 claim。
+- **进行中**：所有该切片的 commit 都在 `slice/<id>` branch 上。`/ddt-status` 跑 `git for-each-ref` 反推所有 `slice/*` branch 输出"在做谁"。
+- **收尾**：merge 到 main 后删除 branch（`git branch -d slice/us-3` + `git push origin --delete slice/us-3`）—— branch 消失 = release。
+- **可见性**：`/ddt-status` 输出 `in_progress_slices` 字段，列出所有当前 slice/* branch 的 author/last commit。
+
+**这不是强制约定**——但用了它 `/ddt-status` 会自动给团队看到 in-progress 切片，无需新 SSoT 文件。git branch 是 ground truth，避免重新发明轮子。
+
+**append-only 文件并发追加**：`docs/ssot/decisions.jsonl`、`docs/ssot/changelog.jsonl`、`.ddt/metrics/*.jsonl` 已通过 `.gitattributes merge=union` 自动合并双方追加内容，不产生 git conflict。**确保项目根有 `.gitattributes` 文件含 union merge 配置**（从 DDT plugin 仓库复制模板）。
+
 ## hook 工作状态判定（v1.1 dogfood 补丁）
 
 判定 hook 是否在工作的**唯一权威**手段：

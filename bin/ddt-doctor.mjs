@@ -79,6 +79,12 @@ console.log('  [transient 工作态 — 不入 git，每次覆盖]');
 console.log(`  ${existsSync(path.join(cwd, '.ddt/state/current.json')) ? '✓' : '✗'} .ddt/state/current.json     （command→hook 字段桥）`);
 console.log(`  ${existsSync(path.join(cwd, '.ddt/metrics')) ? '✓' : '✗'} .ddt/metrics/               （hook 被动埋点）`);
 console.log('');
+console.log('  [多人协作支持（v1.1 Tier 1）]');
+const gaPath = path.join(cwd, '.gitattributes');
+let hasUnionMerge = false;
+try { hasUnionMerge = readFileSync(gaPath, 'utf8').includes('merge=union'); } catch { /* 文件不存在 */ }
+console.log(`  ${hasUnionMerge ? '✓' : '·'} .gitattributes union merge  ${hasUnionMerge ? '（jsonl 并发追加自动合并）' : '（缺失：建议从 plugin 复制模板。两人并发 append decisions/changelog 会撞 git conflict）'}`);
+console.log('');
 
 console.log('### hook 实际工作的证据');
 // metrics 文件存在 = PostToolUse / SessionEnd hook 至少跑过一次
