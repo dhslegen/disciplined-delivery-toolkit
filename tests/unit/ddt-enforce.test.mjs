@@ -77,7 +77,7 @@ test('IL-3：enter-impl 同理需 approved spec', () => {
 test('IL-4：build 上下文 Edit openapi/** 且 changelog 无 escalation → block', () => {
   const r = run({
     hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
-    tool_name: 'Edit', tool_input: { file_path: 'openapi/user.yaml' },
+    tool_name: 'Edit', tool_input: { file_path: 'docs/ssot/openapi/user.yaml' },
     ddt_test_changelog: fx('changelog-no-escalation.jsonl')
   });
   assert.ok(r.isBlock(), 'should block');
@@ -86,7 +86,7 @@ test('IL-4：build 上下文 Edit openapi/** 且 changelog 无 escalation → bl
 test('IL-4：build 上下文 Edit openapi/** 且 changelog 有 escalation → allow', () => {
   const r = run({
     hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
-    tool_name: 'Edit', tool_input: { file_path: 'openapi/user.yaml' },
+    tool_name: 'Edit', tool_input: { file_path: 'docs/ssot/openapi/user.yaml' },
     ddt_test_changelog: fx('changelog-with-escalation.jsonl')
   });
   assert.ok(r.isAllow(), 'should allow');
@@ -102,7 +102,7 @@ test('IL-4：非受保护路径 → allow', () => {
 test('IL-4：build 上下文 Write PRD.md 且无 escalation → block', () => {
   const r = run({
     hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
-    tool_name: 'Write', tool_input: { file_path: 'PRD.md' },
+    tool_name: 'Write', tool_input: { file_path: 'docs/ssot/prd.md' },
     ddt_test_changelog: fx('changelog-no-escalation.jsonl')
   });
   assert.ok(r.isBlock(), 'should block');
@@ -112,15 +112,15 @@ test('IL-4 加固：MultiEdit/NotebookEdit 同等保护', () => {
   for (const tool of ['MultiEdit', 'NotebookEdit']) {
     const r = run({
       hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
-      tool_name: tool, tool_input: { file_path: 'openapi/user.yaml' },
+      tool_name: tool, tool_input: { file_path: 'docs/ssot/openapi/user.yaml' }, // v1.1 SSoT 路径
       ddt_test_changelog: fx('changelog-no-escalation.jsonl')
     });
     assert.ok(r.isBlock(), `${tool} 应被 block`);
     assert.match(r.reason(), /IL-4/);
   }
 });
-test('IL-4 加固：大小写变体（PRD.MD/OPENAPI/）应 block', () => {
-  for (const p of ['PRD.MD', 'OPENAPI/user.yaml']) {
+test('IL-4 加固：大小写变体（DOCS/SSOT/PRD.MD/DOCS/SSOT/OPENAPI/）应 block', () => {
+  for (const p of ['DOCS/SSOT/PRD.MD', 'DOCS/SSOT/OPENAPI/user.yaml']) {
     const r = run({
       hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
       tool_name: 'Edit', tool_input: { file_path: p },
@@ -130,20 +130,20 @@ test('IL-4 加固：大小写变体（PRD.MD/OPENAPI/）应 block', () => {
     assert.match(r.reason(), /IL-4/);
   }
 });
-test('IL-4 加固：./openapi/ 前缀变体应 block', () => {
+test('IL-4 加固：./docs/ssot/openapi/ 前缀变体应 block', () => {
   const r = run({
     hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
-    tool_name: 'Edit', tool_input: { file_path: './openapi/user.yaml' },
+    tool_name: 'Edit', tool_input: { file_path: './docs/ssot/openapi/user.yaml' },
     ddt_test_changelog: fx('changelog-no-escalation.jsonl')
   });
   assert.ok(r.isBlock(), 'should block');
   assert.match(r.reason(), /IL-4/);
 });
-test('IL-4 不误伤：subdir/openapi/x（子目录下 openapi）应 allow', () => {
-  // subdir/openapi/x.yaml 不是 SSoT 根目录的 openapi/，是子目录下另一个名为 openapi 的目录——正确应 allow
+test('IL-4 不误伤：subdir/docs/ssot/openapi/x（子目录下镜像路径）应 allow', () => {
+  // subdir/docs/ssot/openapi/x.yaml 不是项目根的 docs/ssot/openapi/，是子目录下镜像目录——正确应 allow
   const r = run({
     hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
-    tool_name: 'Edit', tool_input: { file_path: 'subdir/openapi/x.yaml' },
+    tool_name: 'Edit', tool_input: { file_path: 'subdir/docs/ssot/openapi/x.yaml' },
     ddt_test_changelog: ''
   });
   assert.ok(r.isAllow(), 'should allow');
@@ -152,7 +152,7 @@ test('IL-5：PostToolUse 写 reviews/*.json 但 PASS 无 cited_evidence → bloc
   const r = run({
     hook_event_name: 'PreToolUse',
     tool_name: 'Write',
-    tool_input: { file_path: '.ddt/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":[],"ts":"2026-05-20T00:00:00Z"}' }
+    tool_input: { file_path: 'docs/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":[],"ts":"2026-05-20T00:00:00Z"}' }
   });
   assert.ok(r.isBlock(), 'should block');
   assert.match(r.reason(), /IL-5/);
@@ -161,7 +161,7 @@ test('IL-5：PostToolUse 写 reviews/*.json PASS 含 cited_evidence → allow', 
   const r = run({
     hook_event_name: 'PreToolUse',
     tool_name: 'Write',
-    tool_input: { file_path: '.ddt/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":["foo.test.mjs:1 pass=1"],"ts":"2026-05-20T00:00:00Z"}' }
+    tool_input: { file_path: 'docs/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":["foo.test.mjs:1 pass=1"],"ts":"2026-05-20T00:00:00Z"}' }
   });
   assert.ok(r.isAllow(), 'should allow');
 });
@@ -169,7 +169,7 @@ test('IL-5：FAIL 无须 cited_evidence → allow', () => {
   const r = run({
     hook_event_name: 'PreToolUse',
     tool_name: 'Write',
-    tool_input: { file_path: '.ddt/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"FAIL","issues":[{"severity":"important","where":"x:1","note":"y"}],"ts":"2026-05-20T00:00:00Z"}' }
+    tool_input: { file_path: 'docs/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"FAIL","issues":[{"severity":"important","where":"x:1","note":"y"}],"ts":"2026-05-20T00:00:00Z"}' }
   });
   assert.ok(r.isAllow(), 'should allow');
 });
@@ -187,7 +187,7 @@ test('IL-5 加固：MultiEdit/NotebookEdit 写 reviews PASS 无 cited 同样 blo
     const r = run({
       hook_event_name: 'PreToolUse',
       tool_name: tool,
-      tool_input: { file_path: '.ddt/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":[],"ts":"2026-05-20T00:00:00Z"}' }
+      tool_input: { file_path: 'docs/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":[],"ts":"2026-05-20T00:00:00Z"}' }
     });
     assert.ok(r.isBlock(), `${tool} 应被 block`);
     assert.match(r.reason(), /IL-5/);
@@ -197,7 +197,7 @@ test('Plan 4 fallback：stdin 缺 ddt_intent，从 .ddt/state/current.json 读',
   const r = run({
     hook_event_name: 'PreToolUse',
     tool_name: 'Edit',
-    tool_input: { file_path: 'openapi/user.yaml' },
+    tool_input: { file_path: 'docs/ssot/openapi/user.yaml' },
     ddt_test_changelog: fx('changelog-no-escalation.jsonl'),
     ddt_test_state: fx('state-build-edit.json')
   });

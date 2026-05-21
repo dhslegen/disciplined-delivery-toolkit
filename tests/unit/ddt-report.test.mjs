@@ -11,8 +11,9 @@ const script = path.join(root, 'bin/ddt-report.mjs');
 
 function newRepo() {
   const dir = mkdtempSync(path.join(os.tmpdir(), 'ddt-rp-'));
+  // SSoT 路径（v1.1）：decisions 在 docs/ssot/；metrics 仍在 .ddt/（transient）
   mkdirSync(path.join(dir, '.ddt/metrics'), { recursive: true });
-  mkdirSync(path.join(dir, 'docs'), { recursive: true });
+  mkdirSync(path.join(dir, 'docs/ssot'), { recursive: true });
   return dir;
 }
 
@@ -43,7 +44,7 @@ test('ddt-report：聚合 metrics 渲染指标段', () => {
 
 test('ddt-report：含降低保障级 waiver 清单段', () => {
   const dir = newRepo();
-  writeFileSync(path.join(dir, '.ddt/decisions.jsonl'),
+  writeFileSync(path.join(dir, 'docs/ssot/decisions.jsonl'),
     '{"status":"resolved","user_action":"accept-drift","note":"断网受限基建","ts":"2026-05-20T01:00:00Z"}\n');
   const r = spawnSync('node', [script], { cwd: dir, encoding: 'utf8' });
   const md = readFileSync(path.join(dir, 'docs/efficiency-report.md'), 'utf8');

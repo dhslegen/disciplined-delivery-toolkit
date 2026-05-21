@@ -56,7 +56,9 @@
 - `.ddt/state/current.json`（Plan 4 引入）：`/ddt` 命令写入当前意图（`ddt_intent`/`ddt_slice`），供强制层 hook 在 stdin 缺字段时 fallback 读——命令→hook 字段桥。
 - `.ddt/metrics/<date>.jsonl`（Plan 5 引入）：度量埋点 hook 被动追加；每日一文件。聚合源，非审计源（审计仍依 decisions.jsonl + git）。
 
-二者**不入 git**（`.gitignore` 含 `/.ddt/`），属运行时工作态。审计/问责仍只看三件 SSoT + git 历史；transient 文件仅服务运行时机制，不参与可追溯链。
+二者**不入 git**（`.gitignore` 含 `/.ddt/state/` + `/.ddt/metrics/` 精确两条），属运行时工作态。审计/问责仍只看三件 SSoT + git 历史；transient 文件仅服务运行时机制，不参与可追溯链。
+
+**v1.1 重要修正**：v1.0 曾把 decisions.jsonl / changelog.jsonl 也住 `.ddt/`（与 SSoT 设计自相矛盾——`.ddt/` 是 transient 但 SSoT 又必须入 git）。v1.1 已将所有 SSoT 三件（PRD + decisions + changelog）+ 契约（openapi）迁出到 `docs/ssot/`，使**目录命名 = 语义边界**——LLM 看路径名即知是 SSoT 还是 transient，无歧义。详见 §9 目录布局。
 
 ## 4. 五站固定链（= superpowers 弧线 + 治理外壳）
 
@@ -189,8 +191,19 @@ ddt/                                     # 独立 plugin（id=ddt），与 v0.x 
 ├── hooks/   hooks.json（SessionStart 注宪法 + Pre/Post/Stop §8 判据 + preflight + 度量埋点） handlers/
 ├── bin/     仅承重件（确定性可单测）：resolve-tech-stack / 契约 lint / 度量聚合 /
 │            status 事实提取(非决策器) / decisions·changelog 追加器 / hook-preflight   + lib/
-└── docs/    specs/(本 spec + 切片 spec)  plans/(切片 bite-sized plan)  research/
+└── docs/
+    ├── ssot/                            # v1.1 ★ 框架推荐 SSoT 真相（4 件）
+    │   ├── prd.md                       # 需求站产物（PRD 单文件，多版本由 git history）
+    │   ├── decisions.jsonl              # 决策账本（append-only）
+    │   ├── changelog.jsonl              # 变更账本（append-only）
+    │   └── openapi/                     # 契约（SSoT 铁律链）
+    ├── specs/                           # 切片 spec（衍生设计制品）
+    ├── plans/                           # 切片 plan（衍生）
+    ├── reviews/                         # reviewer 输出（IL-5 校验对象，衍生）
+    └── research/                        # 调研材料（非 SSoT）
 ```
+
+**用户项目侧目录布局（v1.1 标准）**：相同 `docs/ssot/` + `docs/{specs,plans,reviews}` + `.ddt/{state,metrics}` 结构。LLM 凭路径名一眼判定语义边界，不靠 charter 文字 instruction。
 
 **照搬清单**（原文拷贝，无 license/provenance 仪式，按需本土化为独立可 diff 改动）：
 - **Tier-1 v1.0 承重核心**：`ddt-brainstorming`（=需求站）`ddt-writing-plans`（=实现 plan 步）`ddt-subagent-driven`（=实现 impl 步）`ddt-executing-plans` `ddt-tdd` `ddt-systematic-debugging`（=bug 场景）`ddt-verification` `ddt-requesting-review` `ddt-receiving-review`

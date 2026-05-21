@@ -106,7 +106,7 @@ gh api repos/dhslegen/disciplined-delivery-toolkit/commits/main --jq .sha[0:7]
 
 DDT 会**自动**：
 
-1. **第 1 站 — 需求**：调用 `ddt-brainstorming` 头脑风暴 → 输出 `docs/specs/<日期>-<主题>-design.md`，等你审批；
+1. **第 1 站 — 需求**：调用 `ddt-brainstorming` 头脑风暴 → 输出 `docs/ssot/prd.md`（v1.1 SSoT 路径），等你审批；
 2. **第 2 站 — 契约**：调用 `ddt-design` 落 OpenAPI / data model 到 `openapi/` 与 `schemas/`，hook 锁住写保护；
 3. **第 3 站 — 实现**：调用 `ddt-writing-plans` 拆 WBS → `ddt-subagent-driven` 派发 **Implementer + Spec Reviewer + Quality Reviewer** 三角逐任务执行，TDD 强制；
 4. **第 4 站 — 验证**：所有任务完成后 `ddt-verification` 跑 Final Reviewer + 全量测试；
@@ -162,8 +162,8 @@ DDT 会**自动**：
 
 | 档位 | 文件 | 谁能写 | 用途 |
 |------|------|-------|------|
-| 一档（永久） | `docs/specs/*.md`, `docs/plans/*.md`, `openapi/`, `schemas/` | 人工 + 经审批的 AI | 跨人跨时间的契约真相 |
-| 二档（append-only 流水） | `.ddt/decisions.jsonl`, `.ddt/changelog.jsonl` | `bin/ddt-decisions-append.mjs` / `bin/ddt-changelog-append.mjs` | 决策 + 变更审计追溯 |
+| 一档（永久，framework-recommended SSoT） | **`docs/ssot/prd.md`**（PRD）, **`docs/ssot/openapi/`**（契约）, **`docs/ssot/decisions.jsonl`**, **`docs/ssot/changelog.jsonl`** | 人工 + 经审批的 AI / 专用 bin appender | 跨人跨时间的真相（v1.1：所有 framework SSoT 集中在 `docs/ssot/`，目录命名即语义边界） |
+| 一档（衍生设计制品） | `docs/specs/<date>-<slug>-design.md`, `docs/plans/<date>-<slug>-plan.md`, `docs/reviews/<task>-<role>.json` | ddt-impl-spec / ddt-writing-plans / reviewer subagent | 切片 spec、plan、review 输出 |
 | 三档（工作态） | `.ddt/state/current.json`, `.ddt/metrics/<date>.jsonl` | command/hook 自动写 | 当前位置 + 被动度量埋点 |
 | 衍生（不入库） | `docs/efficiency-report.md` | `bin/ddt-report.mjs` 重算生成 | ROI 视图（运行产物） |
 

@@ -10,7 +10,7 @@ test('宪法 Rationalization 表含 IL-3/IL-4/IL-5 反驳条目', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-charter/SKILL.md'), 'utf8');
   assert.match(s, /IL-3 hook 查 decisions\.jsonl/);
   assert.match(s, /IL-4 hook 查 diff 路径与 changelog escalation/);
-  assert.match(s, /IL-5 hook 校验 \.ddt\/reviews\/\*\.json/);
+  assert.match(s, /IL-5 hook 校验 docs\/reviews\/\*\.json/);
 });
 
 test('宪法 IL-2 段含 commit trailer root-cause-ref 约定', () => {

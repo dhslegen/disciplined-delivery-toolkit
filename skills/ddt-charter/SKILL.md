@@ -31,9 +31,32 @@ DDT vendored 纪律 skill 与本宪法覆盖默认行为，但低于用户显式
 
 归类为：起项目 / 改需求 / 新需求 / bug / 重构 / 局部重跑。bug 走 ddt-systematic-debugging；其余进同一 spec→plan→implement 循环，证据量按风险右尺寸化，触及 认证/授权/资金/数据迁移/契约/用户数据删除/部署配置 任一恒最高硬度。
 
-## SSoT 铁律链
+## SSoT 铁律链 + 路径硬清单（v1.1）
 
 真相仅三件：PRD、decisions.jsonl、changelog.jsonl。git 历史即进度账本。下层发现上层错只能 escalate，绝不私改。
+
+**SSoT 路径地图**（**唯一权威位置**，LLM 禁止自由发挥到别处）：
+
+| 类型 | 路径 | 性质 | 写入方式 |
+|------|------|------|---------|
+| PRD（需求站产物） | `docs/ssot/prd.md` | SSoT 三件之一 | ddt-brainstorming 首次写；amend 走 changelog escalation |
+| 决策账本 | `docs/ssot/decisions.jsonl` | SSoT 三件之一 | 仅经 `bin/ddt-decisions-append.mjs` append |
+| 变更账本 | `docs/ssot/changelog.jsonl` | SSoT 三件之一 | 仅经 `bin/ddt-changelog-append.mjs` append |
+| 契约 | `docs/ssot/openapi/*.yaml` | SSoT 铁律链次层 | ddt-design 写；变更走 changelog escalation |
+| 切片 spec（衍生） | `docs/specs/<date>-<slug>-design.md` | SSoT 派生 | ddt-impl-spec 写 |
+| 切片 plan（衍生） | `docs/plans/<date>-<slug>-plan.md` | SSoT 派生 | ddt-writing-plans 写 |
+| reviewer 输出（衍生） | `docs/reviews/<task>-<role>.json` | SSoT 派生 | reviewer subagent 写（IL-5 校验对象） |
+| 命令→hook 字段桥 | `.ddt/state/current.json` | **transient**（不入 git） | `/ddt` 命令覆盖写 |
+| 度量埋点 | `.ddt/metrics/<date>.jsonl` | **transient**（不入 git） | PostToolUse/SessionEnd hook append |
+
+**LLM 严禁创造的路径**（已知错误，dogfood 已踩过坑）：
+- ❌ `.ddt/prd/v1.0.md`（PRD 被写到 transient 区，落进 .gitignore 等于不存在）
+- ❌ `.ddt/decisions.jsonl`（v1.0 旧路径，v1.1 已迁出）
+- ❌ `.ddt/reviews/*.json`（v1.0 旧路径，v1.1 已迁出）
+- ❌ `docs/superpowers/specs/`、`docs/superpowers/plans/`（vendoring 原路径，已本土化）
+- ❌ 项目根 `openapi/`、`prd.md`（v1.0 IL-4 旧硬编码，v1.1 已迁入 docs/ssot/）
+
+**如果你不确定该写哪**：跑 `ddt-doctor.mjs` 看 [B] 段输出的 SSoT 路径清单——doctor 是真相，charter 是规则。
 
 ## Rationalization 反驳表
 
@@ -43,7 +66,7 @@ DDT vendored 纪律 skill 与本宪法覆盖默认行为，但低于用户显式
 - 都手测过了 → ad-hoc 不等于系统化；无新鲜证据即未完成。
 - 反正 plan/impl 没人查 spec 是否真批了 → IL-3 hook 查 decisions.jsonl，无 approved 即 block。
 - 这个契约小改我顺手就行 → IL-4 hook 查 diff 路径与 changelog escalation，无即 block；私改即漂移。
-- reviewer 说 PASS 就完事 → IL-5 hook 校验 .ddt/reviews/*.json 的 cited_evidence，PASS 无引证即 block。
+- reviewer 说 PASS 就完事 → IL-5 hook 校验 docs/reviews/*.json 的 cited_evidence，PASS 无引证即 block。
 
 ## hook 工作状态判定（v1.1 dogfood 补丁）
 
@@ -52,7 +75,7 @@ DDT vendored 纪律 skill 与本宪法覆盖默认行为，但低于用户显式
 1. **你能读到本 charter 本身 = SessionStart hook (ddt:charter-inject) 在工作** —— 这是自证。如果 SessionStart hook 没工作，你根本读不到这段话。
 2. **跑 `bin/ddt-doctor.mjs`** —— 它列出 plugin 内 `hooks/hooks.json` 真实注册的 hook ID 与 plugin 自身健康。用 PATH 调 `ddt-doctor.mjs` 或 `node "${CLAUDE_PLUGIN_ROOT}/bin/ddt-doctor.mjs"`。
 3. **观察 `.ddt/metrics/<date>.jsonl` 是否在增长** —— PostToolUse / SessionEnd hook 在工作的硬证据。
-4. **触发已知会被 IL 拦的动作**（如 build 上下文 Edit `openapi/`），看是否收到 `permissionDecisionReason: IL-4 ...` —— PreToolUse hook 在工作的硬证据。
+4. **触发已知会被 IL 拦的动作**（如 build 上下文 Edit `docs/ssot/openapi/`），看是否收到 `permissionDecisionReason: IL-4 ...` —— PreToolUse hook 在工作的硬证据。
 
 **绝对禁止**的误判路径（已造成过 v1.1 dogfood 误报降级）：
 

@@ -63,10 +63,18 @@ test('ddt-doctor 在非 plugin root 跑：项目状态段 [B] 应反映 cwd 实�
   try {
     const r = spawnSync('node', [script], { cwd: tmp, encoding: 'utf8' });
     assert.equal(r.status, 0);
-    // 空目录下应明确报告 .git/ .ddt/ 等都 ✗
+    // 空目录下应明确报告 .git/ + SSoT 4 件 + 衍生制品 + transient 都 ✗
     assert.match(r.stdout, /✗ \.git\//);
-    assert.match(r.stdout, /✗ \.ddt\//);
-    assert.match(r.stdout, /✗ \.ddt\/decisions\.jsonl/);
+    // SSoT 路径（v1.1）：framework-recommended 4 件
+    assert.match(r.stdout, /✗ docs\/ssot\/prd\.md/);
+    assert.match(r.stdout, /✗ docs\/ssot\/decisions\.jsonl/);
+    assert.match(r.stdout, /✗ docs\/ssot\/changelog\.jsonl/);
+    assert.match(r.stdout, /✗ docs\/ssot\/openapi/);
+    // 衍生
+    assert.match(r.stdout, /✗ docs\/specs/);
+    assert.match(r.stdout, /✗ docs\/plans/);
+    // transient
+    assert.match(r.stdout, /✗ \.ddt\/state\/current\.json/);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }

@@ -19,7 +19,7 @@ function listFiles(dir) {
 }
 
 let decisionsText = '';
-try { decisionsText = readFileSync('.ddt/decisions.jsonl', 'utf8'); } catch { /* 空仓 */ }
+try { decisionsText = readFileSync('docs/ssot/decisions.jsonl', 'utf8'); } catch { /* 空仓 */ }
 
 const out = {
   pending_decisions: pendingDecisions(decisionsText),

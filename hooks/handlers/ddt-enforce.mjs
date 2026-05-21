@@ -34,11 +34,12 @@ function headMessage(ev) {
 }
 function decisionsText(ev) {
   if (typeof ev.ddt_test_decisions === 'string') return ev.ddt_test_decisions;
-  try { return readFileSync('.ddt/decisions.jsonl', 'utf8'); } catch { return ''; }
+  // SSoT 路径决策（v1.1）：framework-recommended SSoT 住 docs/ssot/；.ddt/ 仅 transient
+  try { return readFileSync('docs/ssot/decisions.jsonl', 'utf8'); } catch { return ''; }
 }
 function changelogText(ev) {
   if (typeof ev.ddt_test_changelog === 'string') return ev.ddt_test_changelog;
-  try { return readFileSync('.ddt/changelog.jsonl', 'utf8'); } catch { return ''; }
+  try { return readFileSync('docs/ssot/changelog.jsonl', 'utf8'); } catch { return ''; }
 }
 // 内部决定结构（便于 decide() 单元可读 + 测试），不是 Claude Code wire format。
 // wire format 由 formatOutput(ev, decided) 按 hook_event_name 适配输出。
@@ -96,17 +97,24 @@ export function decide(ev) {
     let fp = ev.tool_input && typeof ev.tool_input.file_path === 'string' ? ev.tool_input.file_path : '';
     if (fp.startsWith('./')) fp = fp.slice(2); // 剥 ./ 前缀
     const fpLower = fp.toLowerCase();
-    const PROTECTED = ['openapi/', 'prd.md']; // 用小写匹配（兼容 macOS case-insensitive 文件系统）
+    // SSoT 路径硬清单（v1.1）：与 charter §SSoT 路径地图一一对应
+    //   docs/ssot/prd.md       —— PRD（SSoT 三件之一）
+    //   docs/ssot/openapi/     —— 契约（SSoT 铁律链）
+    //   docs/specs/            —— 切片 spec（衍生设计，仍属 SSoT 铁律链下层不私改）
+    //   docs/plans/            —— 切片 plan（同上）
+    // decisions.jsonl / changelog.jsonl 走 append-only 专用 bin，不直接 Edit/Write，不在此清单
+    const PROTECTED = ['docs/ssot/prd.md', 'docs/ssot/openapi/', 'docs/specs/', 'docs/plans/'];
     if (fp && PROTECTED.some(pre => fpLower.startsWith(pre))) {
       const tp = [fp];
       if (!hasEscalationFor(changelogText(ev), tp)) {
-        return block(`IL-4 违规：build 上下文试图修改受保护路径 ${tp.join(',')}（属 PRD/契约 SSoT），且 changelog.jsonl 无对应 escalation 记录。下层不得私改上层 SSoT——先写 escalation 走变更门。`);
+        return block(`IL-4 违规：build 上下文试图修改受保护路径 ${tp.join(',')}（属 PRD/契约/spec/plan SSoT），且 docs/ssot/changelog.jsonl 无对应 escalation 记录。下层不得私改上层 SSoT——先写 escalation 走变更门。`);
       }
     }
   }
   if (ev.hook_event_name === 'PreToolUse' && ['Edit','Write','MultiEdit','NotebookEdit'].includes(ev.tool_name)) {
     const fp = ev.tool_input && typeof ev.tool_input.file_path === 'string' ? ev.tool_input.file_path : '';
-    if (/^\.ddt\/reviews\/.+\.json$/.test(fp)) {
+    // IL-5 reviewer 输出路径（v1.1）：reviewer 是 SSoT 衍生制品，住 docs/reviews/（git 跟踪），不在 .ddt/ transient
+    if (/^docs\/reviews\/.+\.json$/.test(fp)) {
       const raw = ev.tool_input && typeof ev.tool_input.content === 'string' ? ev.tool_input.content : '';
       let parsed = null;
       try { parsed = JSON.parse(raw); } catch { return block(`IL-5 违规：reviewer 输出 ${fp} 非合法 JSON。`); }

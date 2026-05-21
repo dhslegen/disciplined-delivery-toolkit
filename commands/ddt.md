@@ -18,6 +18,8 @@ description: DDT v1.0 万能驱动闸门。无文本：重算 repo 状态推进�
 
 **关键约束**：元命令路由后，**完全照搬 bin 的 stdout 给用户**，不要自由发挥、不要自己扫文件、不要自己判定 hook 注册状态。如果 bin 找不到，明确告诉用户："plugin bin 不可用，请检查安装 / `/plugin marketplace update`"——**禁止降级到 LLM 自己模拟事实**，这会破坏 IL-7。
 
+**SSoT 路径地图引用**：所有写 SSoT/衍生制品的动作必须按 charter §SSoT 路径硬清单。LLM 禁止自由发挥到 .ddt/prd/ / .ddt/decisions.jsonl / docs/superpowers/ 等已知错误路径。不确定时跑 `ddt-doctor.mjs` 看 [B] 段权威清单。
+
 ## 1. 读 ddt-charter
 
 先 invoke 名为 `ddt-charter` 的 skill 读宪法（如未注入 SessionStart 路径）。宪法定义 Iron Laws / 5 站脊柱 / 意图分类规则 / SSoT 铁律链。

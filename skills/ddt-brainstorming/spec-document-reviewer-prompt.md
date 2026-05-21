@@ -4,7 +4,7 @@ Use this template when dispatching a spec document reviewer subagent.
 
 **Purpose:** Verify the spec is complete, consistent, and ready for implementation planning.
 
-**Dispatch after:** Spec document is written to docs/superpowers/specs/
+**Dispatch after:** PRD is written to `docs/ssot/prd.md`（DDT v1.1 SSoT 路径）
 
 ```
 Task tool (general-purpose):

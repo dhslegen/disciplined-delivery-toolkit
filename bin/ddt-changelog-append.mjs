@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// 追加一条 JSON 到 .ddt/changelog.jsonl。stdin 读对象，自动补 ts。
+// 追加一条 JSON 到 docs/ssot/changelog.jsonl。stdin 读对象，自动补 ts。
+// SSoT 路径决策（v1.1）：framework-recommended SSoT 真相住 docs/ssot/，与 .ddt/ transient 分离。
 import { readFileSync, appendFileSync, mkdirSync } from 'node:fs';
 
 let raw = '';
@@ -12,6 +13,6 @@ if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
 }
 if (!obj.ts) obj.ts = new Date().toISOString();
 
-mkdirSync('.ddt', { recursive: true });
-appendFileSync('.ddt/changelog.jsonl', JSON.stringify(obj) + '\n', 'utf8');
+mkdirSync('docs/ssot', { recursive: true });
+appendFileSync('docs/ssot/changelog.jsonl', JSON.stringify(obj) + '\n', 'utf8');
 process.exit(0);

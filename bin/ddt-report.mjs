@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// ddt-deliver 的 ROI 报告生成器。读 .ddt/metrics + .ddt/decisions.jsonl → docs/efficiency-report.md
+// ddt-deliver 的 ROI 报告生成器。读 .ddt/metrics + docs/ssot/decisions.jsonl → docs/efficiency-report.md
+// SSoT 路径决策（v1.1）：framework-recommended SSoT 住 docs/ssot/；.ddt/ 仅 transient（state + metrics）。
 import { readFileSync, existsSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
 import { parseEvents, aggregate } from './lib/ddt-metrics-lib.mjs';
 
@@ -12,7 +13,7 @@ function readAllMetrics() {
 
 function readDecisions() {
   try {
-    return readFileSync('.ddt/decisions.jsonl', 'utf8')
+    return readFileSync('docs/ssot/decisions.jsonl', 'utf8')
       .split('\n').map(l => l.trim()).filter(Boolean)
       .map(l => { try { return JSON.parse(l); } catch { return null; } })
       .filter(Boolean);
@@ -45,7 +46,7 @@ const noDataNote = events.length === 0 && decisions.length === 0
 const md = `# AI 效能 ROI 报告
 
 > 生成时间：${new Date().toISOString()}
-> 数据源：\`.ddt/metrics/*.jsonl\`（hook 被动采集）+ \`.ddt/decisions.jsonl\`（人工决策）
+> 数据源：\`.ddt/metrics/*.jsonl\`（hook 被动采集 transient）+ \`docs/ssot/decisions.jsonl\`（人工决策 SSoT）
 ${noDataNote}
 
 ## 项目周期

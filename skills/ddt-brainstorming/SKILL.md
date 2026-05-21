@@ -26,7 +26,7 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
+6. **Write PRD** — save to **`docs/ssot/prd.md`**（DDT v1.1 本土化：需求站产物是 PRD 单文件，多版本由 git history 追溯；不是 superpowers 原版的多文件 design-doc 风格。如 PRD 已存在，按 charter 走 changelog escalation 修订）and commit
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
 9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
@@ -108,8 +108,8 @@ digraph brainstorming {
 
 **Documentation:**
 
-- Write the validated design (spec) to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`
-  - (User preferences for spec location override this default)
+- Write the validated PRD to **`docs/ssot/prd.md`**（DDT v1.1 framework-recommended SSoT path；不要自由发挥到 .ddt/prd/ 之类——.ddt/ 是 transient，按 charter SSoT 路径地图，prd 唯一权威位置在 docs/ssot/prd.md）
+  - 如 PRD 已存在且本次是 amend，先在 docs/ssot/changelog.jsonl 追一条 escalation，再修订 prd.md（不直接覆盖）
 - Use elements-of-style:writing-clearly-and-concisely skill if available
 - Commit the design document to git
 

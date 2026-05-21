@@ -1,7 +1,11 @@
 .DS_Store
 .claude/
 node_modules/
-/.ddt/
+
+# .ddt/ 仅含两个 transient 子目录（state + metrics）——这两个不入 git
+# decisions.jsonl / changelog.jsonl 已迁出到 docs/ssot/（必须入 git）
+/.ddt/state/
+/.ddt/metrics/
 
 # 运行产物（ddt-report 生成），按设计是 transient working file，不入 git
 docs/efficiency-report.md
