@@ -33,24 +33,26 @@ DDT vendored 纪律 skill 与本宪法覆盖默认行为，但低于用户显式
 
 ## SSoT 铁律链 + 路径硬清单（v1.1）
 
-真相仅三件：PRD、decisions.jsonl、changelog.jsonl。git 历史即进度账本。下层发现上层错只能 escalate，绝不私改。
+真相核心：**设计 spec 集合**（多文件平等组成）、decisions.jsonl、changelog.jsonl，外加契约（openapi/）。git 历史即进度账本。下层发现上层错只能 escalate，绝不私改。
+
+> **关于 v1.1 的命名修正**：早期 v1.0 spec 把"需求站产物"叫 PRD，并强造单文件概念——与 vendored ddt-brainstorming 的多文件 design-doc 范式名实不符。v1.1 撤回 PRD 仪式，**回归 spec 范式**：每次 brainstorm 产新 spec 文件，多 spec 平等共建设计真相。
 
 **SSoT 路径地图**（**唯一权威位置**，LLM 禁止自由发挥到别处）：
 
 | 类型 | 路径 | 性质 | 写入方式 |
 |------|------|------|---------|
-| PRD（需求站产物） | `docs/ssot/prd.md` | SSoT 三件之一 | ddt-brainstorming 首次写；amend 走 changelog escalation |
-| 决策账本 | `docs/ssot/decisions.jsonl` | SSoT 三件之一 | 仅经 `bin/ddt-decisions-append.mjs` append |
-| 变更账本 | `docs/ssot/changelog.jsonl` | SSoT 三件之一 | 仅经 `bin/ddt-changelog-append.mjs` append |
+| 设计 spec 集合（含项目级首篇 + 切片级 spec，平等） | `docs/specs/<date>-<slug>-design.md` | SSoT 真相 | ddt-brainstorming（项目级/topic 级）或 ddt-impl-spec（切片级）写 |
+| 决策账本 | `docs/ssot/decisions.jsonl` | SSoT 真相 | 仅经 `bin/ddt-decisions-append.mjs` append |
+| 变更账本 | `docs/ssot/changelog.jsonl` | SSoT 真相 | 仅经 `bin/ddt-changelog-append.mjs` append |
 | 契约 | `docs/ssot/openapi/*.yaml` | SSoT 铁律链次层 | ddt-design 写；变更走 changelog escalation |
-| 切片 spec（衍生） | `docs/specs/<date>-<slug>-design.md` | SSoT 派生 | ddt-impl-spec 写 |
 | 切片 plan（衍生） | `docs/plans/<date>-<slug>-plan.md` | SSoT 派生 | ddt-writing-plans 写 |
 | reviewer 输出（衍生） | `docs/reviews/<task>-<role>.json` | SSoT 派生 | reviewer subagent 写（IL-5 校验对象） |
 | 命令→hook 字段桥 | `.ddt/state/current.json` | **transient**（不入 git） | `/ddt` 命令覆盖写 |
 | 度量埋点 | `.ddt/metrics/<date>.jsonl` | **transient**（不入 git） | PostToolUse/SessionEnd hook append |
 
 **LLM 严禁创造的路径**（已知错误，dogfood 已踩过坑）：
-- ❌ `.ddt/prd/v1.0.md`（PRD 被写到 transient 区，落进 .gitignore 等于不存在）
+- ❌ `.ddt/prd/v1.0.md`（v1.0 dogfood 历史错误：spec 被写到 transient 区，落进 .gitignore 等于不存在）
+- ❌ `docs/ssot/prd.md`（v1.1 短暂错误：强造 PRD 单文件概念，与 brainstorming 多文件 design-doc 范式名实不符；已撤回）
 - ❌ `.ddt/decisions.jsonl`（v1.0 旧路径，v1.1 已迁出）
 - ❌ `.ddt/reviews/*.json`（v1.0 旧路径，v1.1 已迁出）
 - ❌ `docs/superpowers/specs/`、`docs/superpowers/plans/`（vendoring 原路径，已本土化）

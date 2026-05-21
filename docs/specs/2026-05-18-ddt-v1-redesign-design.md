@@ -58,7 +58,10 @@
 
 二者**不入 git**（`.gitignore` 含 `/.ddt/state/` + `/.ddt/metrics/` 精确两条），属运行时工作态。审计/问责仍只看三件 SSoT + git 历史；transient 文件仅服务运行时机制，不参与可追溯链。
 
-**v1.1 重要修正**：v1.0 曾把 decisions.jsonl / changelog.jsonl 也住 `.ddt/`（与 SSoT 设计自相矛盾——`.ddt/` 是 transient 但 SSoT 又必须入 git）。v1.1 已将所有 SSoT 三件（PRD + decisions + changelog）+ 契约（openapi）迁出到 `docs/ssot/`，使**目录命名 = 语义边界**——LLM 看路径名即知是 SSoT 还是 transient，无歧义。详见 §9 目录布局。
+**v1.1 重要修正**：
+
+1. **SSoT 物理位置**：v1.0 曾把 decisions.jsonl / changelog.jsonl 住 `.ddt/`（与 SSoT 设计自相矛盾——`.ddt/` 是 transient 但 SSoT 又必须入 git）。v1.1 已将 decisions / changelog / 契约（openapi）迁到 `docs/ssot/`；设计 spec 集合住 `docs/specs/`（多文件平等）；**目录命名 = 语义边界**——LLM 看路径名即知是 SSoT 还是 transient，无歧义。
+2. **PRD 仪式撤回**：v1.0 spec 把"需求站产物"叫 PRD 并强造单文件概念——与 vendored ddt-brainstorming 的多文件 design-doc 范式名实不符。v1.1 撤回 PRD 仪式，**回归 spec 范式**：需求站产物就是设计 spec 之一，多 spec 平等共建设计真相；SSoT 三件改为"设计 spec 集合 + decisions + changelog"。详见 §9 目录布局。
 
 ## 4. 五站固定链（= superpowers 弧线 + 治理外壳）
 
@@ -192,16 +195,18 @@ ddt/                                     # 独立 plugin（id=ddt），与 v0.x 
 ├── bin/     仅承重件（确定性可单测）：resolve-tech-stack / 契约 lint / 度量聚合 /
 │            status 事实提取(非决策器) / decisions·changelog 追加器 / hook-preflight   + lib/
 └── docs/
-    ├── ssot/                            # v1.1 ★ 框架推荐 SSoT 真相（4 件）
-    │   ├── prd.md                       # 需求站产物（PRD 单文件，多版本由 git history）
+    ├── specs/                           # v1.1 ★ 设计 spec 集合（SSoT 真相，brainstorming/impl-spec 产物，多文件平等）
+    │   └── <date>-<topic>-design.md     # 项目级首篇 + 后续切片 spec，地位平等无主次
+    ├── ssot/                            # v1.1 ★ 流水账与契约
     │   ├── decisions.jsonl              # 决策账本（append-only）
     │   ├── changelog.jsonl              # 变更账本（append-only）
-    │   └── openapi/                     # 契约（SSoT 铁律链）
-    ├── specs/                           # 切片 spec（衍生设计制品）
+    │   └── openapi/                     # 契约（SSoT 铁律链次层）
     ├── plans/                           # 切片 plan（衍生）
     ├── reviews/                         # reviewer 输出（IL-5 校验对象，衍生）
     └── research/                        # 调研材料（非 SSoT）
 ```
+
+**v1.1 命名设计原则**：撤回 PRD 仪式，回归 spec 范式。SSoT 真相 = **设计 spec 集合（docs/specs/） + decisions（docs/ssot/） + changelog（docs/ssot/） + 契约（docs/ssot/openapi/）**。多 spec 文件平等无主次——任何 brainstorm/impl-spec 产物都是设计真相的一部分。这与 vendored ddt-brainstorming 的多文件 design-doc 范式自洽，避免 v1.0 spec "PRD 单文件" 强造概念造成的名实不符。
 
 **用户项目侧目录布局（v1.1 标准）**：相同 `docs/ssot/` + `docs/{specs,plans,reviews}` + `.ddt/{state,metrics}` 结构。LLM 凭路径名一眼判定语义边界，不靠 charter 文字 instruction。
 

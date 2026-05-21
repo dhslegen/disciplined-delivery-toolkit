@@ -99,10 +99,11 @@ test('IL-4：非受保护路径 → allow', () => {
   });
   assert.ok(r.isAllow(), 'should allow');
 });
-test('IL-4：build 上下文 Write PRD.md 且无 escalation → block', () => {
+test('IL-4：build 上下文 Write docs/specs/ 设计 spec 且无 escalation → block', () => {
+  // v1.1：PRD 仪式撤回，回归 spec 范式；测试改用 docs/specs/<file>.md（设计 spec 集合受 IL-4 保护）
   const r = run({
     hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
-    tool_name: 'Write', tool_input: { file_path: 'docs/ssot/prd.md' },
+    tool_name: 'Write', tool_input: { file_path: 'docs/specs/2026-05-21-foo-design.md' },
     ddt_test_changelog: fx('changelog-no-escalation.jsonl')
   });
   assert.ok(r.isBlock(), 'should block');
@@ -119,8 +120,8 @@ test('IL-4 加固：MultiEdit/NotebookEdit 同等保护', () => {
     assert.match(r.reason(), /IL-4/);
   }
 });
-test('IL-4 加固：大小写变体（DOCS/SSOT/PRD.MD/DOCS/SSOT/OPENAPI/）应 block', () => {
-  for (const p of ['DOCS/SSOT/PRD.MD', 'DOCS/SSOT/OPENAPI/user.yaml']) {
+test('IL-4 加固：大小写变体（DOCS/SPECS/、DOCS/SSOT/OPENAPI/）应 block', () => {
+  for (const p of ['DOCS/SPECS/foo-design.md', 'DOCS/SSOT/OPENAPI/user.yaml']) {
     const r = run({
       hook_event_name: 'PreToolUse', ddt_intent: 'build-edit',
       tool_name: 'Edit', tool_input: { file_path: p },

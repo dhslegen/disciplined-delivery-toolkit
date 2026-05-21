@@ -65,13 +65,15 @@ test('ddt-doctor 在非 plugin root 跑：项目状态段 [B] 应反映 cwd 实�
     assert.equal(r.status, 0);
     // 空目录下应明确报告 .git/ + SSoT 4 件 + 衍生制品 + transient 都 ✗
     assert.match(r.stdout, /✗ \.git\//);
-    // SSoT 路径（v1.1）：framework-recommended 4 件
-    assert.match(r.stdout, /✗ docs\/ssot\/prd\.md/);
+    // SSoT 路径（v1.1，撤回 PRD 仪式后）：framework-recommended core
+    //   - docs/specs/（设计 spec 集合）
+    //   - docs/ssot/{decisions,changelog}.jsonl
+    //   - docs/ssot/openapi/
+    assert.match(r.stdout, /✗ docs\/specs/);
     assert.match(r.stdout, /✗ docs\/ssot\/decisions\.jsonl/);
     assert.match(r.stdout, /✗ docs\/ssot\/changelog\.jsonl/);
     assert.match(r.stdout, /✗ docs\/ssot\/openapi/);
     // 衍生
-    assert.match(r.stdout, /✗ docs\/specs/);
     assert.match(r.stdout, /✗ docs\/plans/);
     // transient
     assert.match(r.stdout, /✗ \.ddt\/state\/current\.json/);

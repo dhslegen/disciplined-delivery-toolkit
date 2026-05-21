@@ -98,16 +98,16 @@ export function decide(ev) {
     if (fp.startsWith('./')) fp = fp.slice(2); // 剥 ./ 前缀
     const fpLower = fp.toLowerCase();
     // SSoT 路径硬清单（v1.1）：与 charter §SSoT 路径地图一一对应
-    //   docs/ssot/prd.md       —— PRD（SSoT 三件之一）
-    //   docs/ssot/openapi/     —— 契约（SSoT 铁律链）
-    //   docs/specs/            —— 切片 spec（衍生设计，仍属 SSoT 铁律链下层不私改）
-    //   docs/plans/            —— 切片 plan（同上）
+    //   docs/specs/            —— 设计 spec 集合（SSoT 真相，含项目级首篇 + 切片级，平等）
+    //   docs/ssot/openapi/     —— 契约（SSoT 铁律链次层）
+    //   docs/plans/            —— 切片 plan（衍生，仍属 SSoT 铁律链下层不私改）
     // decisions.jsonl / changelog.jsonl 走 append-only 专用 bin，不直接 Edit/Write，不在此清单
-    const PROTECTED = ['docs/ssot/prd.md', 'docs/ssot/openapi/', 'docs/specs/', 'docs/plans/'];
+    // 注：v1.1 早期曾保护 docs/ssot/prd.md（PRD 仪式），已撤回——回归 spec 范式，PRD 概念取消
+    const PROTECTED = ['docs/specs/', 'docs/ssot/openapi/', 'docs/plans/'];
     if (fp && PROTECTED.some(pre => fpLower.startsWith(pre))) {
       const tp = [fp];
       if (!hasEscalationFor(changelogText(ev), tp)) {
-        return block(`IL-4 违规：build 上下文试图修改受保护路径 ${tp.join(',')}（属 PRD/契约/spec/plan SSoT），且 docs/ssot/changelog.jsonl 无对应 escalation 记录。下层不得私改上层 SSoT——先写 escalation 走变更门。`);
+        return block(`IL-4 违规：build 上下文试图修改受保护路径 ${tp.join(',')}（属设计 spec/契约/plan SSoT），且 docs/ssot/changelog.jsonl 无对应 escalation 记录。下层不得私改上层 SSoT——先写 escalation 走变更门。`);
       }
     }
   }
