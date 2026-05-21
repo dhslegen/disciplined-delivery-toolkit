@@ -24,7 +24,7 @@
 |---|------|--------|
 | 1 | 改造激进度 | 推倒重来到 v1.0，旧实现仅作迁移参考 |
 | 2 | 原语模型 | Skill 第一等公民；command 退化为薄闸门；废固定 9 agent，改用 subagent 三角 |
-| 3 | 真相源 | 仅三件纯文本：`PRD` + `decisions.jsonl` + `changelog.jsonl`；git 历史即进度账本；边界处重算，不存可重算的派生真相 |
+| 3 | 真相源 | 仅三件纯文本：设计 spec 集合（`docs/specs/*-design.md`） + `decisions.jsonl` + `changelog.jsonl`；git 历史即进度账本；边界处重算，不存可重算的派生真相 |
 | 4 | 验证硬度 | Iron Law 全程硬；SessionStart 注入《DDT 宪法》；hook 校验文件事实强制纪律 |
 | 5 | 流程形态 | **5 站固定链**（需求→契约→实现→验证→交付）；需求站≡本土化 vendored brainstorming；+ tech-stack 确定性剪枝 |
 | 6 | 协作模型 | Repo 为中心；闸门=`decisions.jsonl` 持久待决记录；可换人异步解；无共享服务器 |
@@ -34,7 +34,7 @@
 
 ```
 ① 宪法层  SessionStart hook 无条件注入《DDT 宪法》：Iron Laws + Skill 优先级 + 5 站链图 + 意图分类规则 + SSoT 铁律链
-② 脊柱层  PRD + decisions.jsonl + changelog.jsonl（真相仅此三件）；5 站链是宪法内不变量，不落配置文件
+② 脊柱层  设计 spec 集合 + decisions.jsonl + changelog.jsonl（真相仅此三件）；5 站链是宪法内不变量，不落配置文件
 ③ 能力层  skills/（每站一 skill + 纪律 skill 平铺同级，know-how 全在此）+ commands/（2 个薄闸门）
 ④ 强制层  PreToolUse/PostToolUse/Stop hooks，判**文件事实**（git trailer / decisions.jsonl / diff 路径），不信会话自述（判据见 §8）
 ⑤ 度量层  hook 被动采集（agent 禁自夸）→ AI 效能 ROI 报告
@@ -46,9 +46,9 @@
 
 **为什么不是依赖图**：传统流水线执行器是无理解力机器，须靠 hash 图判过期；DDT 执行器是 LLM，天生能读 PRD+代码直接判一致。content_hash/脏位/状态机是在 LLM 上重造 build system，删。**执行器换 LLM ⇒ 状态追踪坍缩成"边界处重判"。**
 
-- **真相三件**：PRD（需求+Given/When/Then）；`decisions.jsonl`（决策+异步闸门 pending/resolved，append-only）；`changelog.jsonl`（变更意图+LLM 一句"影响到 X"，append-only）。git commit 带 trailer `stage/slice/task/evidence-ref`。
-- **SSoT 铁律链**：`PRD > 契约 > 代码`。下层发现上层错**绝不私改**，只能 escalate 弹回上游走变更门（强制层 hook 守护）。
-- **变更两条对称路径**（即此机制本身，无独立 skill）：① 改/删需求 → 改 PRD + changelog 追一行 → 下一闸门 Spec Reviewer 只核对受影响切片 → 三选项：重生/手改/记录漂移并署理由；② 新增需求 → PRD 追一节 + changelog → 范围决策门：纳入本批/排下批(deferred)/拒绝(rejected+理由)。新需求只从需求站注入，provenance 从源头可溯。
+- **真相三件**：设计 spec 集合（需求 + 设计 + Given/When/Then，住 `docs/specs/`，多文件平等）；`decisions.jsonl`（决策+异步闸门 pending/resolved，append-only）；`changelog.jsonl`（变更意图+LLM 一句"影响到 X"，append-only）。git commit 带 trailer `stage/slice/task/evidence-ref`。
+- **SSoT 铁律链**：`设计 spec > 契约 > 代码`。下层发现上层错**绝不私改**，只能 escalate 弹回上游走变更门（强制层 hook 守护）。
+- **变更两条对称路径**（即此机制本身，无独立 skill）：① 改/删需求 → 改设计 spec + changelog 追一行 → 下一闸门 Spec Reviewer 只核对受影响切片 → 三选项：重生/手改/记录漂移并署理由；② 新增需求 → 设计 spec 追一节或新 spec + changelog → 范围决策门：纳入本批/排下批(deferred)/拒绝(rejected+理由)。新需求只从需求站注入，provenance 从源头可溯。
 - **反技术债兜底**：进交付站前的证据门汇总扫描未调和漂移与"纳入本批却未实现"的 story，硬拒出包。
 
 **第四类——transient 工作态文件（非 SSoT，每次覆盖）**：v1.0 实施中诚实承认两个 transient 工作态文件，**不入 SSoT 三件真相**，每次相关命令覆盖：
@@ -58,10 +58,6 @@
 
 二者**不入 git**（`.gitignore` 含 `/.ddt/state/` + `/.ddt/metrics/` 精确两条），属运行时工作态。审计/问责仍只看三件 SSoT + git 历史；transient 文件仅服务运行时机制，不参与可追溯链。
 
-**v1.1 重要修正**：
-
-1. **SSoT 物理位置**：v1.0 曾把 decisions.jsonl / changelog.jsonl 住 `.ddt/`（与 SSoT 设计自相矛盾——`.ddt/` 是 transient 但 SSoT 又必须入 git）。v1.1 已将 decisions / changelog / 契约（openapi）迁到 `docs/ssot/`；设计 spec 集合住 `docs/specs/`（多文件平等）；**目录命名 = 语义边界**——LLM 看路径名即知是 SSoT 还是 transient，无歧义。
-2. **PRD 仪式撤回**：v1.0 spec 把"需求站产物"叫 PRD 并强造单文件概念——与 vendored ddt-brainstorming 的多文件 design-doc 范式名实不符。v1.1 撤回 PRD 仪式，**回归 spec 范式**：需求站产物就是设计 spec 之一，多 spec 平等共建设计真相；SSoT 三件改为"设计 spec 集合 + decisions + changelog"。详见 §9 目录布局。
 
 ## 4. 五站固定链（= superpowers 弧线 + 治理外壳）
 
@@ -69,24 +65,24 @@
 
 | 站 | 纪律来源 | 本质 | 产物 |
 |----|---------|------|------|
-| **需求** | 本土化 vendored `ddt-brainstorming`（深度随输入清晰度伸缩，洞校准） | 模糊多源输入 → 专业 PRD（HARD-GATE 自带"没批准不前进"） | project-brief + PRD（每条 user story 可寻址）+ **工作量基线**（历史工时种子的轻量估算，喂 ROI 对比，**非完整 WBS/PM 排程**，洞3） |
-| **契约** | DDT 原生 `ddt-design` + **强制 Spec Reviewer 对 PRD 核对 + 契约 lint 硬门**（洞2） | PRD → 系统级 SSoT（最高杠杆节点，纪律不低于实现站） | 架构 + OpenAPI 契约 + 数据模型 |
+| **需求** | 本土化 vendored `ddt-brainstorming`（深度随输入清晰度伸缩，洞校准） | 模糊多源输入 → 专业设计 spec（HARD-GATE 自带"没批准不前进"） | project-brief + 设计 spec（每条 user story 可寻址，多 spec 平等）+ **工作量基线**（历史工时种子的轻量估算，喂 ROI 对比，**非完整 WBS/PM 排程**，洞3） |
+| **契约** | DDT 原生 `ddt-design` + **强制 Spec Reviewer 对设计 spec 核对 + 契约 lint 硬门**（洞2） | 设计 spec → 系统级 SSoT（最高杠杆节点，纪律不低于实现站） | 架构 + OpenAPI 契约 + 数据模型 |
 | **实现** | vendored writing-plans + subagent-driven（见 §5） | 逐切片 spec→plan→implement | 切片代码 + 切片 spec/plan + checkpoint commit |
 | **验证** | vendored tdd + verification | 真实栈+migrate+smoke+测试+双审，一道生产级证据硬门 | 测试/覆盖率/评审证据 |
 | **交付** | DDT 原生 `ddt-deliver` | 收尾 | README/部署/演示 + AI 效能 ROI 报告 |
 
-**契约站纪律（洞2）**：契约是 `PRD>契约>代码` 的 SSoT，契约错则所有切片忠实实现错的契约且 Spec Reviewer 对错契约还判过——最高杠杆节点不可是最薄站。故进契约闸门前**强制**：① 契约过 Spec Reviewer 对 PRD 逐条核对（同 §5 一致性核对者）；② 契约 lint 硬门（exit≠0 阻断）；③ 外部 API 文档作外部不变量，Spec Reviewer 加核"我方契约 vs 外部 API 一致"，不符 escalate。
+**契约站纪律（洞2）**：契约是 `设计 spec > 契约 > 代码` 的 SSoT 中段，契约错则所有切片忠实实现错的契约且 Spec Reviewer 对错契约还判过——最高杠杆节点不可是最薄站。故进契约闸门前**强制**：① 契约过 Spec Reviewer 对设计 spec 逐条核对（同 §5 一致性核对者）；② 契约 lint 硬门（exit≠0 阻断）；③ 外部 API 文档作外部不变量，Spec Reviewer 加核"我方契约 vs 外部 API 一致"，不符 escalate。
 
 **需求站冷启动纪律**（brainstorming 本土化配置，非新机制）——`/ddt <任意混杂输入>` 第一步"探索上下文"按 DDT 输入 taxonomy 分类，且 brainstorming 深度按输入清晰度伸缩（清晰→快路确认即过；模糊→全苏格拉底一次一问）：
 
 ```
-需求源（功能清单 / 纪要里的需求）  → PRD 草案，每条须 cite 源 或 标 ASSUMPTION-待确认
+需求源（功能清单 / 纪要里的需求）  → 设计 spec 草案，每条须 cite 源 或 标 ASSUMPTION-待确认
 约束源（外部 API 文档）            → 标【契约站外部不变量】随产物前传（落点见上）
 基线源（历史工时记录）            → 标【工作量基线/ROI 基线源】随产物前传；无则 ROI 显式标"无历史基线不可比"
 噪声 / 多源冲突                    → brainstorming 一次一问澄清时暴露给人裁决，不静默合并
 ```
 
-> **无源不入 PRD**：brainstorming 的"不臆造 + HARD-GATE + explore-context"天然堵死"输入不全就幻觉补全"——toB 最致命失败的结构性堵口，收编为 brainstorming 本土化子句，不另造 IL。
+> **无源不入 spec**：brainstorming 的"不臆造 + HARD-GATE + explore-context"天然堵死"输入不全就幻觉补全"——toB 最致命失败的结构性堵口，收编为 brainstorming 本土化子句，不另造 IL。
 
 **剪枝唯一依据 `.ddt/tech-stack.json`**（`resolve-tech-stack` 单点写、全程只读、agent 禁改）：`frontend.type=none`→实现无前端切片；`server-side`→前端切片 SSR；`backend.type=none`→无后端切片、验证无 db/migrate；`ai_design`→仅前端切片是否走外部设计回路的输入开关（§10）。剪枝后仍同一条五站链，被剪切片标 `pruned` 记理由。
 
@@ -126,7 +122,7 @@ impl   本土化 vendored ddt-subagent-driven（洞1：impl 步≡该 skill 本�
 第一性原理在时间维度的平移：**不存可重算的进度真相，repo 即真相，边界处重算。**
 
 - subagent 永不继承会话上下文（喂 task 全文）→ 会话边界对其透明 → 没有任何单会话需装下整个项目。Controller 只持当前切片 plan+当前 task，工作集与项目规模无关。
-- **无状态恢复**：`/ddt` 不恢复记忆，从 git trailer + 存在的 spec/plan 文件 + decisions.jsonl + PRD 重算下一步。崩在任何处=重推，永不凭记忆，根治幻觉进度。
+- **无状态恢复**：`/ddt` 不恢复记忆，从 git trailer + 存在的 spec/plan 文件 + decisions.jsonl 重算下一步。崩在任何处=重推，永不凭记忆，根治幻觉进度。
 - **重算职责切分**：bin 只做确定性事实提取（解析 trailer/列 pending/列文件），返回原始事实无推断；判断是 LLM 在 skill 内做。bin 是事实镜头不是决策器。
 - **零交接协作**：repo 即真相 → 任何人/任何 AI `cd` 进 repo 敲 `/ddt` 即无缝续上，无接力 prompt、无交接文档。异步闸门=`decisions.jsonl` 一条 `{status:pending,gate,owner_role,decision_criteria,ts}`，他人 `/ddt-status` 可见，按 criteria 异步裁决追 `{status:resolved,ref,user_action,note,ts}`；强制层：存在未 resolved pending → 阻断该门下游。
 - **宏观把控在切片批次门**（非 task 级，防认知过载）：系统按关键路径列切片，人选本批推哪几个、其余 defer。人管批次，机器管 task 有序。
@@ -161,7 +157,7 @@ IL-4 下层不得私改上层 SSoT（越级只能 escalate）
 |----|------|------|
 | IL-1 | Stop/PreToolUse | 声明完成时 git 须有匹配 evidence-ref 的 commit trailer 指向真实产物，无→阻断 |
 | IL-3 | PreToolUse | 进 plan/impl 前 decisions.jsonl 须有该切片 spec-approved，无→阻断 |
-| IL-4 | PreToolUse | build 上下文 diff 触及 `openapi/**` 或 PRD 且 changelog 无 escalation→判违规阻断 |
+| IL-4 | PreToolUse | build 上下文 diff 触及 `docs/specs/` / `docs/ssot/openapi/` / `docs/plans/` 且 changelog 无 escalation→判违规阻断 |
 | IL-5 | PostToolUse | reviewer 输出无 cited-evidence 结构→PASS 无效退回 |
 | IL-6 | Stop（交付前）| 扫描未 resolved drift/pending→硬拒 deliver |
 | IL-7 | 全程 | 进度声明只采信 git trailer 反推值，与自述冲突以前者为准 |
@@ -206,7 +202,7 @@ ddt/                                     # 独立 plugin（id=ddt），与 v0.x 
     └── research/                        # 调研材料（非 SSoT）
 ```
 
-**v1.1 命名设计原则**：撤回 PRD 仪式，回归 spec 范式。SSoT 真相 = **设计 spec 集合（docs/specs/） + decisions（docs/ssot/） + changelog（docs/ssot/） + 契约（docs/ssot/openapi/）**。多 spec 文件平等无主次——任何 brainstorm/impl-spec 产物都是设计真相的一部分。这与 vendored ddt-brainstorming 的多文件 design-doc 范式自洽，避免 v1.0 spec "PRD 单文件" 强造概念造成的名实不符。
+**目录布局原则**：SSoT 真相 = **设计 spec 集合（docs/specs/） + decisions（docs/ssot/） + changelog（docs/ssot/） + 契约（docs/ssot/openapi/）**。多 spec 文件平等无主次——任何 brainstorm/impl-spec 产物都是设计真相的一部分。这与 vendored ddt-brainstorming 的多文件 design-doc 范式自洽。
 
 **用户项目侧目录布局（v1.1 标准）**：相同 `docs/ssot/` + `docs/{specs,plans,reviews}` + `.ddt/{state,metrics}` 结构。LLM 凭路径名一眼判定语义边界，不靠 charter 文字 instruction。
 
@@ -221,7 +217,7 @@ ddt/                                     # 独立 plugin（id=ddt），与 v0.x 
 
 **第一性原理**：审美/UX 收敛是感知-交互问题，非文本推理问题。在线 AI 设计工具不是补 LLM 弱点的拐杖，是这类子问题的正确模态——但不该是流水线站。升维为通用模式：**当切片收敛目标由人感知判定（非文本推理），其 spec 步可交外部交互工具收敛**。UI 是首要实例，非专属机制。
 
-四步纪律（`ddt-design-source`，被实现站 spec 步按需组合）：① **Export 交接包**——从 SSoT 确定性投影 prompt（PRD 切片意图+契约约束+tokens/品牌+不可违反不变量）+附件，v0/figma/claude-design 等价无"通道"机器；② **外部回路**——人实时渲染微调到满意，DDT 不替代；③ **Ingest**——结果作一等 spec 输入摄取，provenance 记"由 X 工具/Y 人/Z 时"，changelog 留痕；④ **Reconcile**——仍过 Spec Reviewer 对 PRD+契约核对，**美但违约仍是漂移**（加了契约没有的字段→IL-4 escalate）。外部回路收敛美学，SSoT 链治理正确性，各归其主。未启用时实现站用 `ddt-frontend-craft` 直出。
+四步纪律（`ddt-design-source`，被实现站 spec 步按需组合）：① **Export 交接包**——从 SSoT 确定性投影 prompt（设计 spec 切片意图+契约约束+tokens/品牌+不可违反不变量）+附件，v0/figma/claude-design 等价无"通道"机器；② **外部回路**——人实时渲染微调到满意，DDT 不替代；③ **Ingest**——结果作一等 spec 输入摄取，provenance 记"由 X 工具/Y 人/Z 时"，changelog 留痕；④ **Reconcile**——仍过 Spec Reviewer 对设计 spec + 契约核对，**美但违约仍是漂移**（加了契约没有的字段→IL-4 escalate）。外部回路收敛美学，SSoT 链治理正确性，各归其主。未启用时实现站用 `ddt-frontend-craft` 直出。
 
 ## 11. AI 效能 ROI 报告（交付站，第一等公民）
 
@@ -241,12 +237,12 @@ ddt/                                     # 独立 plugin（id=ddt），与 v0.x 
 | #2 命令/skill 界限 | §7 命令 2 个，know-how 全在 skill |
 | #3 强行凑 agent | §5/§9 废固定 agent，三角 prompt template |
 | #4 落地粗无验证 | §5 三角 + §8 IL-1/IL-5 + §4 契约站纪律 + 验证站真实栈硬门 |
-| #5 演示级 | §4 验证站强制真实栈(+诚实降级) + §8 Iron Laws + §3 漂移不可出包 + §4 无源不入 PRD |
+| #5 演示级 | §4 验证站强制真实栈(+诚实降级) + §8 Iron Laws + §3 漂移不可出包 + §4 无源不入 spec |
 | 反悔/越改越乱/技术债 | §3 极简治理 + 变更对称路径 + 兜底 |
 | 终极#5 需求变更 / #7 二次拉起 | §3 变更路径 / §7 `/ddt <意图>` 切片定位 |
 | 终极#8 可追溯 / #9 唯一真相源 | §3 三件纯文本+git / SSoT 铁律链 |
 | 终极#11 人工深度决策 | §7 闸门挣打断权 + 需求站 brainstorming HARD-GATE |
-| 冷启动（混杂模糊输入） | §4 需求站≡brainstorming + 输入 taxonomy + 无源不入 PRD |
+| 冷启动（混杂模糊输入） | §4 需求站≡brainstorming + 输入 taxonomy + 无源不入 spec |
 
 ## 13. 诚实风险与边界
 

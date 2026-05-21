@@ -12,7 +12,7 @@ const script = path.join(root, 'bin/ddt-doctor.mjs');
 test('ddt-doctor：仓内运行 exit 0 + 输出 doctor 标题', () => {
   const r = spawnSync('node', [script], { cwd: root, encoding: 'utf8' });
   assert.equal(r.status, 0);
-  assert.match(r.stdout, /DDT v1\.0 doctor/);
+  assert.match(r.stdout, /DDT doctor/);
   assert.match(r.stdout, /hooks\.json/);
   assert.match(r.stdout, /bin\//);
 });

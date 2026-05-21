@@ -18,7 +18,7 @@ DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，把 **[obra
 
 ```
 需求 ────► 契约 ────► 实现 ────► 验证 ────► 交付
-（PRD）   （OpenAPI    （spec→plan   （评审+测试   （ROI 报告+
+（设计 spec）（OpenAPI    （spec→plan   （评审+测试   （ROI 报告+
           /Schema）    →implement）  门控）        效能复盘）
 ```
 
@@ -94,7 +94,7 @@ gh api repos/dhslegen/disciplined-delivery-toolkit/commits/main --jq .sha[0:7]
 /reload-plugins
 ```
 
-> ⚠️ **dogfood 期间高频更新**：每次 hook / bin / skill 修复都会立刻 push 到 main。如果你看到 hook 报错或 IL 失效，**先 update + reload** 再排查。等到 v1.0 stable 发布时会切回语义版本（`1.0.0`、`1.0.1` …），届时只有 bump 才意味着真新版。
+> alpha 阶段高频更新。如发现 hook 报错或 IL 失效，先 `/plugin marketplace update` + `/reload-plugins` 再排查。stable 发布时切回语义版本（`1.0.0`、`1.0.1`...），届时 bump 才意味着新版。
 
 ---
 
@@ -108,7 +108,7 @@ gh api repos/dhslegen/disciplined-delivery-toolkit/commits/main --jq .sha[0:7]
 
 DDT 会**自动**：
 
-1. **第 1 站 — 需求**：调用 `ddt-brainstorming` 头脑风暴 → 输出 `docs/specs/<date>-<topic>-design.md`（v1.1 spec 范式：多文件平等组成"设计 spec 集合"，不强造 PRD 单文件），等你审批；
+1. **第 1 站 — 需求**：调用 `ddt-brainstorming` 头脑风暴 → 输出 `docs/specs/YYYY-MM-DD-<topic>-design.md`（设计 spec 集合，多文件平等），等你审批；
 2. **第 2 站 — 契约**：调用 `ddt-design` 落 OpenAPI / data model 到 `openapi/` 与 `schemas/`，hook 锁住写保护；
 3. **第 3 站 — 实现**：调用 `ddt-writing-plans` 拆 WBS → `ddt-subagent-driven` 派发 **Implementer + Spec Reviewer + Quality Reviewer** 三角逐任务执行，TDD 强制；
 4. **第 4 站 — 验证**：所有任务完成后 `ddt-verification` 跑 Final Reviewer + 全量测试；
@@ -132,7 +132,7 @@ DDT 会**自动**：
 ┌──────────┐   ┌──────────┐   ┌──────────────────────────────┐   ┌──────────┐   ┌──────────┐
 │   需求    │   │   契约    │   │           实现                │   │   验证    │   │   交付    │
 │          │──►│          │──►│  spec→plan→implement 弧线     │──►│          │──►│          │
-│ PRD/SSoT │   │ OpenAPI  │   │  (subagent 三角 + TDD)         │   │ 评审+测试 │   │ ROI+归档 │
+│ 设计 spec │  │ OpenAPI  │   │  (subagent 三角 + TDD)         │   │ 评审+测试 │   │ ROI+归档 │
 └──────────┘   └──────────┘   └──────────────────────────────┘   └──────────┘   └──────────┘
    ddt-brain    ddt-design     ddt-impl-spec → ddt-writing-plans   ddt-verifica  ddt-deliver
    storming                    → ddt-subagent-driven → ddt-tdd      tion
@@ -148,7 +148,7 @@ DDT 会**自动**：
 
 | ID | 规则 | 强制方式 | 文件来源 |
 |----|------|---------|---------|
-| IL-1 | 任何 commit 必须有 PRD/spec 引证 trailer | PreToolUse hook 校验 `Spec-Ref:` trailer | git log |
+| IL-1 | 任何 commit 必须有设计 spec 引证 trailer | PreToolUse hook 校验 `Spec-Ref:` trailer | git log |
 | IL-2 | 决策必须双向闭环（pending → resolved） | charter skill + `/ddt-status` 持续暴露 | `decisions.jsonl` |
 | IL-3 | 待决策未解决时禁止进入下一站 | PreToolUse hook 阻断 | `decisions.jsonl` + `state/current.json` |
 | IL-4 | OpenAPI / schema 路径写保护 | PreToolUse hook 阻断 `Write/Edit/MultiEdit/NotebookEdit` | 路径前缀 |
@@ -164,9 +164,9 @@ DDT 会**自动**：
 
 | 档位 | 文件 | 谁能写 | 用途 |
 |------|------|-------|------|
-| 一档（永久，framework-recommended SSoT） | **`docs/specs/<date>-<topic>-design.md`**（设计 spec 集合，brainstorming/impl-spec 产物，多文件平等）, **`docs/ssot/openapi/`**（契约）, **`docs/ssot/decisions.jsonl`**, **`docs/ssot/changelog.jsonl`** | ddt-brainstorming/ddt-impl-spec / ddt-design / 专用 bin appender | 跨人跨时间的真相（v1.1：SSoT 真相分布在 `docs/specs/` + `docs/ssot/`，目录命名即语义边界） |
-| 一档（衍生制品） | `docs/plans/<date>-<slug>-plan.md`, `docs/reviews/<task>-<role>.json` | ddt-writing-plans / reviewer subagent | 切片 plan、reviewer 输出 |
-| 三档（工作态） | `.ddt/state/current.json`, `.ddt/metrics/<date>.jsonl` | command/hook 自动写 | 当前位置 + 被动度量埋点 |
+| 一档（永久，framework-recommended SSoT） | **`docs/specs/YYYY-MM-DD-<topic>-design.md`**（设计 spec 集合）, **`docs/ssot/openapi/`**（契约）, **`docs/ssot/decisions.jsonl`**, **`docs/ssot/changelog.jsonl`** | ddt-brainstorming/ddt-impl-spec / ddt-design / 专用 bin appender | 跨人跨时间的真相，目录命名即语义边界 |
+| 一档（衍生制品） | `docs/plans/YYYY-MM-DD-<slug>-plan.md`, `docs/reviews/<task-id>-<reviewer-role>.json`, `docs/architecture/YYYY-MM-DD-<topic>.md` | ddt-writing-plans / reviewer subagent / ddt-design | 切片 plan、reviewer 输出、架构决策 |
+| 三档（工作态） | `.ddt/state/current.json`, `.ddt/metrics/YYYY-MM-DD.jsonl` | command/hook 自动写 | 当前位置 + 被动度量埋点 |
 | 衍生（不入库） | `docs/efficiency-report.md` | `bin/ddt-report.mjs` 重算生成 | ROI 视图（运行产物） |
 
 **核心约束**：衍生信息**永远从一档+二档重算**，不持久化。这避免"派生数据腐烂"问题——LLM 重新打开项目时不会被过期摘要误导。
@@ -217,7 +217,7 @@ DDT 会**自动**：
 | `ddt:enforce-pre` | PreToolUse `*` | 执行 IL-3 / IL-4 / IL-5 / IL-1 兜底 |
 | `ddt:enforce-stop` | Stop | 执行 IL-1（commit trailer） / IL-6（changelog 提醒） |
 | `ddt:metrics-post` | PostToolUse `*` | 被动埋点（工具调用计数、耗时、文件改动） |
-| `ddt:metrics-end` | SessionEnd | 落 `.ddt/metrics/<date>.jsonl` |
+| `ddt:metrics-end` | SessionEnd | 落 `.ddt/metrics/YYYY-MM-DD.jsonl` |
 
 ---
 
@@ -278,7 +278,7 @@ rm .ddt/tech-stack.json
 # 下次 /ddt 会重新询问
 ```
 
-### 多人协作（v1.1 Tier 1）
+### 多人协作
 
 DDT 用 **git native 能力** + 2 个轻约定支持团队多人协作，**不自创新机制**：
 
@@ -303,7 +303,7 @@ git push -u origin slice/us-3    # push 让团队看见 = claim
 
 `/ddt-status` 会自动 `git for-each-ref` 列出所有 `slice/*` branch，**输出"谁在做什么切片"给团队**——不需要新 SSoT 文件，git branch 本身就是 ground truth。
 
-> ⚠️ **多人协作的局限**：v1.1 只做了基础协作支持（避免 jsonl 冲突 + 切片可见性）。**未做**：跨 plugin 版本协商、共享 review 状态、错误恢复协调。这些在 v1.x stable 阶段补足。
+> ⚠️ **多人协作的局限**：当前只做了基础协作支持（避免 jsonl 冲突 + 切片可见性）。**未做**：跨 plugin 版本协商、共享 review 状态、错误恢复协调。stable 阶段补足。
 
 ### 自定义 Iron Law
 

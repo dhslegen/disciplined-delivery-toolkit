@@ -20,11 +20,11 @@ test('5 个 DDT 原生站 skill 平铺且 frontmatter 合法（name 匹配目录
   }
 });
 
-test('ddt-design 含强制 Spec Reviewer + 契约 lint 硬门 + Plan 4 激活归属', () => {
+test('ddt-design 含强制 Spec Reviewer + 契约 lint 硬门', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-design/SKILL.md'), 'utf8');
   assert.match(s, /Spec Reviewer/);
   assert.match(s, /契约 lint/);
-  assert.match(s, /Plan 4/);
+  assert.match(s, /ddt-contract-lint\.mjs/);
 });
 
 test('ddt-impl-spec 含 refine 子句 + IL-3 HARD-GATE 引用', () => {
@@ -34,12 +34,11 @@ test('ddt-impl-spec 含 refine 子句 + IL-3 HARD-GATE 引用', () => {
   assert.match(s, /IL-3/);
 });
 
-test('ddt-design-source 含外部收敛回路四步 + 形似神异判据', () => {
+test('ddt-design-source 含外部收敛回路四步纪律', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-design-source/SKILL.md'), 'utf8');
   for (const step of ['Export', '外部回路', 'Ingest', 'Reconcile']) {
     assert.match(s, new RegExp(step), 'design-source 缺四步之 ' + step);
   }
-  assert.match(s, /神异|不可消模态/);
 });
 
 test('ddt-frontend-craft 含四项纪律（契约绑定/状态完备/无障碍/反 AI 通用感）', () => {

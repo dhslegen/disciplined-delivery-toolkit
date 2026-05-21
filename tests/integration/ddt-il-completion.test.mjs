@@ -18,10 +18,10 @@ test('宪法 IL-2 段含 commit trailer root-cause-ref 约定', () => {
   assert.match(s, /root-cause-ref/);
 });
 
-test('宪法 IL-7 段标注由 /ddt-status (Plan 4) 反推', () => {
+test('宪法 IL-7 段标注由 /ddt-status 反推', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-charter/SKILL.md'), 'utf8');
   assert.match(s, /\/ddt-status/);
-  assert.match(s, /Plan 4/);
+  assert.match(s, /IL-7/);
 });
 
 test('ddt-systematic-debugging 含 IL-2 本土化层 trailer 约定', () => {
@@ -32,8 +32,14 @@ test('ddt-systematic-debugging 含 IL-2 本土化层 trailer 约定', () => {
   assert.match(s, /DDT 强制层声明/);
 });
 
-test('reviewer 输出约定文档与 JSON Schema 就位', () => {
-  assert.ok(existsSync(path.join(root, 'docs/conventions/reviewer-output.md')));
+test('reviewer 输出规范内嵌于 charter（无外部 conventions/ 引用）', () => {
+  // v1.2：docs/conventions/reviewer-output.md 已删，内容内嵌到 charter §IL-5 Reviewer 输出规范
+  // 用户项目里 LLM 能直接通过 charter 读到规范，无失效引用
+  const charter = readFileSync(path.join(root, 'skills/ddt-charter/SKILL.md'), 'utf8');
+  assert.match(charter, /IL-5 Reviewer 输出规范/, 'charter 必须含 IL-5 Reviewer 输出规范段');
+  assert.match(charter, /docs\/reviews\/<task-id>-<reviewer-role>\.json/, 'charter 必须含 reviewer 输出路径');
+  assert.match(charter, /cited_evidence/, 'charter 必须含 cited_evidence 字段约束');
+  // JSON Schema 仍保留供运行时校验工具用
   assert.ok(existsSync(path.join(root, 'bin/schema/review-output.schema.json')));
   const sch = JSON.parse(readFileSync(path.join(root, 'bin/schema/review-output.schema.json'), 'utf8'));
   assert.equal(sch.title, 'DDT Reviewer Output');

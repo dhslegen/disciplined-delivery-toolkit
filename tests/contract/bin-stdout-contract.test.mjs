@@ -47,7 +47,7 @@ test('契约 bin/ddt-doctor.mjs · exit 0 + stdout 非空', () => {
 
 test('契约 bin/ddt-doctor.mjs · 三段标题结构稳定', () => {
   const r = spawnSync('node', [bin('ddt-doctor.mjs')], { cwd: freshDir(), encoding: 'utf8' });
-  assert.match(r.stdout, /DDT v1\.0 doctor/);
+  assert.match(r.stdout, /DDT doctor/);
   assert.match(r.stdout, /\[A\] plugin 自身健康/);
   assert.match(r.stdout, /\[B\] 当前项目 DDT 状态/);
   assert.match(r.stdout, /\[C\] LLM 必读/);

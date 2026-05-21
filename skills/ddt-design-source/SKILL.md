@@ -40,17 +40,6 @@ description: Use during a frontend slice's spec step when the convergence target
 
 **两种判断各归其主**：外部回路收敛"美学/UX"；SSoT 链治理"正确性/一致性"。
 
-## 与 relay-prompt（已删）的判据分野
-
-DDT v1.0 删除了人工 relay-prompt（spec 决策：跨会话/跨 AI 续作由 repo 即真相 + 边界重算自动支持）。本 skill 的 Export 交接包形似 relay-prompt 但**神异**：
-
-| | relay-prompt（已删） | design 交接包（本 skill） |
-|---|---|---|
-| 服务于 | "会话会失忆"——可修架构缺陷 | "感知收敛非文本推理"——不可消模态真理 |
-| 本质 | 拐杖 → 删 | 正确工具配正确问题 → 一等支持 |
-
-判据：服务**可修缺陷**=拐杖；服务**不可消模态真理**=一等。
-
 ## 何时启用 vs 跳过
 
 由 tech-stack.json `ai_design` 开关与切片 spec 判断：
@@ -62,7 +51,7 @@ DDT v1.0 删除了人工 relay-prompt（spec 决策：跨会话/跨 AI 续作由
 
 - 上游：`ddt-impl-spec`（前端切片 spec 步按需组合本 skill）、`ddt-design`（契约约束源）
 - Reviewer：`ddt-subagent-driven`（Reconcile 步用 Spec Reviewer）
-- Reviewer 输出约定：`docs/conventions/reviewer-output.md`
+- Reviewer 输出约定：见 charter §IL-5 Reviewer 输出规范（内嵌于 charter，无外部文件依赖）
 - 备选：`ddt-frontend-craft`（外部回路不启用时直出）
 
 ---

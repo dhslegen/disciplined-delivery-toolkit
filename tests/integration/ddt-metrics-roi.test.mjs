@@ -37,7 +37,7 @@ test('spec §3.2 含第四类 transient 工作态文件区分', () => {
 test('ddt-doctor 输出可解析的健康报告（5 关键 hook）', () => {
   const r = spawnSync('node', [path.join(root, 'bin/ddt-doctor.mjs')], { cwd: root, encoding: 'utf8' });
   assert.equal(r.status, 0);
-  assert.match(r.stdout, /DDT v1\.0 doctor/);
+  assert.match(r.stdout, /DDT doctor/);
   for (const id of ['ddt:charter-inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end']) {
     assert.match(r.stdout, new RegExp(id));
   }

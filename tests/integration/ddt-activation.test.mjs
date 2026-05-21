@@ -37,8 +37,9 @@ test('/ddt-status 命令含 IL-7 反推语义', () => {
   assert.match(s, /仅读不写|不推进、不改|绝不/);
 });
 
-test('ddt-design 契约 lint 硬门已激活（不再含"待激活"）', () => {
+test('ddt-design 契约 lint 引用 bin/ddt-contract-lint.mjs（已激活）', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-design/SKILL.md'), 'utf8');
-  assert.match(s, /激活状态.*Plan 4 已落地|已实现/);
-  assert.doesNotMatch(s, /已知激活依赖.*Plan 4 实现并接入/);
+  assert.match(s, /ddt-contract-lint\.mjs/);
+  assert.match(s, /exit=0/);
+  assert.doesNotMatch(s, /待激活/);
 });

@@ -4,7 +4,7 @@ Use this template when dispatching a spec document reviewer subagent.
 
 **Purpose:** Verify the spec is complete, consistent, and ready for implementation planning.
 
-**Dispatch after:** Spec document is written to `docs/specs/<date>-<topic>-design.md`（DDT v1.1：保留 superpowers 多文件 design-doc 范式）
+**Dispatch after:** Spec document is written to `docs/specs/YYYY-MM-DD-<topic>-design.md`
 
 ```
 Task tool (general-purpose):

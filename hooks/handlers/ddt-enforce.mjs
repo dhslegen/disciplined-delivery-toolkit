@@ -97,12 +97,11 @@ export function decide(ev) {
     let fp = ev.tool_input && typeof ev.tool_input.file_path === 'string' ? ev.tool_input.file_path : '';
     if (fp.startsWith('./')) fp = fp.slice(2); // 剥 ./ 前缀
     const fpLower = fp.toLowerCase();
-    // SSoT 路径硬清单（v1.1）：与 charter §SSoT 路径地图一一对应
-    //   docs/specs/            —— 设计 spec 集合（SSoT 真相，含项目级首篇 + 切片级，平等）
+    // SSoT 路径硬清单：与 charter §SSoT 路径地图一一对应
+    //   docs/specs/            —— 设计 spec 集合（SSoT 真相，多文件平等）
     //   docs/ssot/openapi/     —— 契约（SSoT 铁律链次层）
-    //   docs/plans/            —— 切片 plan（衍生，仍属 SSoT 铁律链下层不私改）
+    //   docs/plans/            —— 切片 plan（SSoT 派生，下层不私改）
     // decisions.jsonl / changelog.jsonl 走 append-only 专用 bin，不直接 Edit/Write，不在此清单
-    // 注：v1.1 早期曾保护 docs/ssot/prd.md（PRD 仪式），已撤回——回归 spec 范式，PRD 概念取消
     const PROTECTED = ['docs/specs/', 'docs/ssot/openapi/', 'docs/plans/'];
     if (fp && PROTECTED.some(pre => fpLower.startsWith(pre))) {
       const tp = [fp];

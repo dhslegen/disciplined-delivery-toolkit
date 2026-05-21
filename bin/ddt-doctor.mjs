@@ -15,7 +15,7 @@ const KEY_SKILLS = ['ddt-charter', 'ddt-brainstorming', 'ddt-design', 'ddt-impl-
 const pluginRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const cwd = process.cwd();
 
-console.log('DDT v1.0 doctor — 健康检查');
+console.log('DDT doctor — 健康检查');
 console.log('=================================');
 console.log(`plugin root : ${pluginRoot}`);
 console.log(`current cwd : ${cwd}`);
@@ -79,13 +79,13 @@ console.log('  [transient 工作态 — 不入 git，每次覆盖]');
 console.log(`  ${existsSync(path.join(cwd, '.ddt/state/current.json')) ? '✓' : '✗'} .ddt/state/current.json     （command→hook 字段桥）`);
 console.log(`  ${existsSync(path.join(cwd, '.ddt/metrics')) ? '✓' : '✗'} .ddt/metrics/               （hook 被动埋点）`);
 console.log('');
-console.log('  [多人协作支持（v1.1 Tier 1）]');
+console.log('  [多人协作支持]');
 const gaPath = path.join(cwd, '.gitattributes');
 let hasUnionMerge = false;
 try { hasUnionMerge = readFileSync(gaPath, 'utf8').includes('merge=union'); } catch { /* 文件不存在 */ }
 console.log(`  ${hasUnionMerge ? '✓' : '·'} .gitattributes union merge  ${hasUnionMerge ? '（jsonl 并发追加自动合并）' : '（缺失：建议从 plugin 复制模板。两人并发 append decisions/changelog 会撞 git conflict）'}`);
 console.log('');
-console.log('  [v0.x 残留检测（v1.1 dogfood 第 12 条：双插件污染）]');
+console.log('  [v0.x 残留检测（多插件污染防护）]');
 const hasV0Residual = existsSync(path.join(cwd, '.ddt/progress.json'));
 if (hasV0Residual) {
   console.log('  ⚠️  发现 .ddt/progress.json — schema_version 1 的 v0.x 残留');

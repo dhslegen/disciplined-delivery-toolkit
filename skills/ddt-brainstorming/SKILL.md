@@ -26,7 +26,7 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc (spec)** — save to `docs/specs/<date>-<topic>-design.md`（DDT v1.1：保留 superpowers 多文件 design-doc 范式；每次 brainstorm 产新 spec 文件，不强造 PRD 单文件概念。多 spec 平等组成"设计 spec 集合"，集合是 SSoT 三件之一）and commit
+6. **Write design doc (spec)** — save to `docs/specs/YYYY-MM-DD-<topic>-design.md` and commit. 多次 brainstorm 产多份 spec 文件，平等组成"设计 spec 集合"。
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
 9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
@@ -108,8 +108,10 @@ digraph brainstorming {
 
 **Documentation:**
 
-- Write the validated design doc (spec) to `docs/specs/<date>-<topic>-design.md`（DDT v1.1：path 是 framework-recommended；不要自由发挥到 .ddt/prd/ 或 docs/ssot/prd.md——前者落进 transient，后者是 v1.1 短暂 over-claim 的 PRD 概念，已撤回）
-  - 多次 brainstorm 产多份 spec 文件，平等组成"设计 spec 集合"。amend 某份既有 spec 时，先在 docs/ssot/changelog.jsonl 追一条 escalation，再修订该 spec（不直接覆盖）
+- Write the validated design doc (spec) to `docs/specs/YYYY-MM-DD-<topic>-design.md`
+  - 多次 brainstorm 产多份 spec 文件，平等组成"设计 spec 集合"
+  - amend 某份既有 spec 时，先在 docs/ssot/changelog.jsonl 追一条 escalation，再修订该 spec（不直接覆盖）
+  - 详见 charter §SSoT 路径硬清单
 - Use elements-of-style:writing-clearly-and-concisely skill if available
 - Commit the design document to git
 
