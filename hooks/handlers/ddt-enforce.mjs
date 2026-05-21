@@ -40,10 +40,47 @@ function changelogText(ev) {
   if (typeof ev.ddt_test_changelog === 'string') return ev.ddt_test_changelog;
   try { return readFileSync('.ddt/changelog.jsonl', 'utf8'); } catch { return ''; }
 }
+// 内部决定结构（便于 decide() 单元可读 + 测试），不是 Claude Code wire format。
+// wire format 由 formatOutput(ev, decided) 按 hook_event_name 适配输出。
 function allow() { return { decision: 'allow' }; }
 function block(reason) { return { decision: 'block', reason }; }
 
-function decide(ev) {
+// 把内部 decided 转 Claude Code 协议合法输出。
+// 协议（2026 起）：
+//   - PreToolUse：用 hookSpecificOutput.permissionDecision = "allow"|"deny"|"ask"|"defer"，
+//     reason 走 hookSpecificOutput.permissionDecisionReason。顶层 decision 字段无效。
+//   - Stop / PostToolUse / UserPromptSubmit / SubagentStop：顶层 decision 字段唯一合法值 "block"，
+//     省略表示 allow。reason 走顶层 reason。
+//   - 其他事件（SessionStart/SessionEnd）：不支持 decision；本 handler 不应被注册到这些事件。
+// 详见：https://code.claude.com/docs/en/hooks
+export function formatOutput(ev, decided) {
+  const eventName = ev && typeof ev.hook_event_name === 'string' ? ev.hook_event_name : '';
+  if (eventName === 'PreToolUse') {
+    if (decided.decision === 'block') {
+      return {
+        hookSpecificOutput: {
+          hookEventName: 'PreToolUse',
+          permissionDecision: 'deny',
+          permissionDecisionReason: decided.reason
+        }
+      };
+    }
+    return {
+      hookSpecificOutput: {
+        hookEventName: 'PreToolUse',
+        permissionDecision: 'allow'
+      }
+    };
+  }
+  // Stop / PostToolUse / UserPromptSubmit / SubagentStop / PreCompact 等顶层 decision 事件
+  if (decided.decision === 'block') {
+    return { decision: 'block', reason: decided.reason };
+  }
+  // allow = 省略 decision（空对象即可，Claude Code 默认放行）
+  return {};
+}
+
+export function decide(ev) {
   if (ev.ddt_intent === 'claim-complete' && !hasEvidenceRef(headMessage(ev))) {
     return block('IL-1 违规：声明完成但 git HEAD 无 evidence-ref trailer。需先产新鲜执行证据并 commit 带 evidence-ref 方可声明完成。');
   }
@@ -82,5 +119,6 @@ function decide(ev) {
 
 const ev = readStdin();
 const evMerged = mergeStateFallback(ev);
-process.stdout.write(JSON.stringify(decide(evMerged)));
+const decided = decide(evMerged);
+process.stdout.write(JSON.stringify(formatOutput(evMerged, decided)));
 process.exit(0);
