@@ -11,9 +11,12 @@ function ids() {
   for (const arr of Object.values(hj.hooks || {})) for (const e of arr || []) if (e && e.id) s.add(e.id);
   return s;
 }
-test('三个 DDT hook 已注册', () => {
+test('四个 DDT hook 已注册（Stop 已删除）', () => {
   const s = ids();
   assert.ok(s.has('ddt:inject'));
   assert.ok(s.has('ddt:enforce-pre'));
-  assert.ok(s.has('ddt:enforce-stop'));
+  assert.ok(s.has('ddt:metrics-post'));
+  assert.ok(s.has('ddt:metrics-end'));
+  assert.ok(!s.has('ddt:enforce-stop'), 'ddt:enforce-stop 应已删除');
+  assert.equal(s.size, 4, '应恰好有 4 个 hook id');
 });
