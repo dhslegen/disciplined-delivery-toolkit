@@ -24,7 +24,7 @@ assert.equal(out.decision, 'block');  // 我们自己定义的字段
 | 文件 | 覆盖对象 | 协议来源 |
 |------|---------|---------|
 | `hook-enforce-contract.test.mjs` | `hooks/handlers/ddt-enforce.mjs` 的 PreToolUse + Stop 输出 | Claude Code hook schema |
-| `hook-charter-inject-contract.test.mjs` | `hooks/handlers/ddt-charter-inject.mjs` 的 SessionStart 输出 | Claude Code hook schema |
+| `hook-inject-contract.test.mjs` | `hooks/handlers/ddt-inject.mjs` 的 SessionStart 输出 | Claude Code hook schema |
 | `hook-metrics-contract.test.mjs` | `hooks/handlers/ddt-metrics.mjs` 的 PostToolUse + SessionEnd 行为（静默 exit 0） | Claude Code hook schema |
 | `bin-stdout-contract.test.mjs` | 7 个 bin CLI 工具的 stdout/stderr/exit code | DDT 内部约定 |
 | `skill-frontmatter-contract.test.mjs` | 15 个 SKILL.md 的 YAML frontmatter | Claude Code Skill spec |

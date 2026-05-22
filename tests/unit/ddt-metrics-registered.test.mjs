@@ -21,7 +21,7 @@ test('metrics 两个新 hook id 已注册', () => {
 
 test('既有 hook id 未被破坏', () => {
   const s = ids();
-  for (const id of ['ddt:charter-inject', 'ddt:enforce-pre', 'ddt:enforce-stop']) {
+  for (const id of ['ddt:inject', 'ddt:enforce-pre', 'ddt:enforce-stop']) {
     assert.ok(s.has(id), id + ' 不应被删');
   }
 });

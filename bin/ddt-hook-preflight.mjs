@@ -7,7 +7,7 @@ import path from 'node:path';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = process.env.DDT_PLUGIN_ROOT || path.resolve(here, '..');
 // 与 hooks/hooks.json 注册的 5 个 hook id 一致；与 bin/ddt-doctor.mjs REQUIRED_HOOKS 一致
-const REQUIRED = ['ddt:charter-inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end'];
+const REQUIRED = ['ddt:inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end'];
 
 let hooksJson;
 try {

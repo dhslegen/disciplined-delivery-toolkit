@@ -5,13 +5,13 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const script = path.join(root, 'hooks/handlers/ddt-charter-inject.mjs');
+const script = path.join(root, 'hooks/handlers/ddt-inject.mjs');
 
-test('注入 SessionStart additionalContext 含宪法', () => {
+test('注入 SessionStart additionalContext 含 using-ddt 内容', () => {
   const out = execFileSync('node', [script], { input: '{}', cwd: root, encoding: 'utf8' });
   const json = JSON.parse(out);
   assert.equal(json.hookSpecificOutput.hookEventName, 'SessionStart');
-  assert.match(json.hookSpecificOutput.additionalContext, /DDT 宪法/);
-  assert.match(json.hookSpecificOutput.additionalContext, /IL-1 无新鲜执行证据不得声明完成/);
+  assert.match(json.hookSpecificOutput.additionalContext, /北极星/);
+  assert.match(json.hookSpecificOutput.additionalContext, /三种入口/);
   assert.match(json.hookSpecificOutput.additionalContext, /<EXTREMELY_IMPORTANT>/);
 });

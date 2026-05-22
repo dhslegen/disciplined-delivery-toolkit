@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
     "SessionStart": [
-      { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-charter-inject.mjs\"" } ], "description": "DDT 宪法注入", "id": "ddt:charter-inject" }
+      { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-inject.mjs\"" } ], "description": "DDT 取向注入（using-ddt）", "id": "ddt:inject" }
     ],
     "PreToolUse": [
       { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-enforce.mjs\"" } ], "description": "DDT 强制层 PreToolUse", "id": "ddt:enforce-pre" }

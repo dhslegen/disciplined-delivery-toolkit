@@ -19,7 +19,7 @@ test('ddt-doctor：仓内运行 exit 0 + 输出 doctor 标题', () => {
 
 test('ddt-doctor：列出 5 个关键 hook id 注册状态', () => {
   const r = spawnSync('node', [script], { cwd: root, encoding: 'utf8' });
-  for (const id of ['ddt:charter-inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end']) {
+  for (const id of ['ddt:inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end']) {
     assert.match(r.stdout, new RegExp(id));
   }
 });
@@ -45,7 +45,7 @@ test('ddt-doctor 在非 plugin root 跑：plugin 自身健康段 [A] 应全 ✓'
     const r = spawnSync('node', [script], { cwd: tmp, encoding: 'utf8' });
     assert.equal(r.status, 0);
     // plugin 自身 5 个 hook id 仍应被识别（路径解析靠 __dirname 而非 cwd）
-    for (const id of ['ddt:charter-inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end']) {
+    for (const id of ['ddt:inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end']) {
       assert.match(r.stdout, new RegExp(`✓ ${id}`), `[A] 段应识别 ${id}（不受 cwd 影响）`);
     }
     // plugin bin 全部 ✓

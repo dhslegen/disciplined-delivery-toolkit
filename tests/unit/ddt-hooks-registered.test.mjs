@@ -13,7 +13,7 @@ function ids() {
 }
 test('三个 DDT hook 已注册', () => {
   const s = ids();
-  assert.ok(s.has('ddt:charter-inject'));
+  assert.ok(s.has('ddt:inject'));
   assert.ok(s.has('ddt:enforce-pre'));
   assert.ok(s.has('ddt:enforce-stop'));
 });

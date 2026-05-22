@@ -20,9 +20,9 @@ description: DDT v1.0 万能驱动闸门。无文本：重算 repo 状态推进�
 
 **SSoT 路径地图引用**：所有写 SSoT/衍生制品的动作必须按 charter §SSoT 路径硬清单。LLM 禁止自由发挥到 .ddt/prd/ / .ddt/decisions.jsonl / docs/superpowers/ 等已知错误路径。不确定时跑 `ddt-doctor.mjs` 看 [B] 段权威清单。
 
-## 1. 读 ddt-charter
+## 1. 读 using-ddt
 
-先 invoke 名为 `ddt-charter` 的 skill 读宪法（如未注入 SessionStart 路径）。宪法定义 Iron Laws / 5 站脊柱 / 意图分类规则 / SSoT 铁律链。
+先 invoke 名为 `using-ddt` 的 skill 读取向（如未注入 SessionStart 路径）。取向定义四句北极星 / 三种入口 / Design Checkpoint / 路径权威。
 
 ## 2. 处理两种调用形态
 

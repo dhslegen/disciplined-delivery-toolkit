@@ -1,4 +1,4 @@
-// SessionStart hook (ddt-charter-inject.mjs) 输出协议契约测试。
+// SessionStart hook (ddt-inject.mjs) 输出协议契约测试。
 // 协议：https://code.claude.com/docs/en/hooks
 //
 // SessionStart 用 hookSpecificOutput 注入 additionalContext（不能阻断会话）。
@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const script = path.join(root, 'hooks/handlers/ddt-charter-inject.mjs');
+const script = path.join(root, 'hooks/handlers/ddt-inject.mjs');
 
 function run(stdinObj) {
   const r = spawnSync('node', [script], { input: JSON.stringify(stdinObj), cwd: root, encoding: 'utf8' });
@@ -54,13 +54,13 @@ test('契约 SessionStart · 输出 hookSpecificOutput 含 additionalContext', (
   );
 });
 
-test('契约 SessionStart · additionalContext 含 DDT charter 关键指纹', () => {
-  // 这是 charter 注入有效性的契约保证——下游 LLM 必须能读到这些指纹。
-  // 如果未来 charter 文本重构丢失这些字符串，本测试立刻报错。
+test('契约 SessionStart · additionalContext 含 using-ddt 关键指纹', () => {
+  // 这是 using-ddt 注入有效性的契约保证——下游 LLM 必须能读到这些指纹。
+  // 如果未来 using-ddt 文本重构丢失这些字符串，本测试立刻报错。
   const { out } = run({ hook_event_name: 'SessionStart' });
   const ac = out.hookSpecificOutput.additionalContext;
-  for (const fingerprint of ['<EXTREMELY_IMPORTANT>', 'Iron Law', 'IL-1', 'IL-7', '5 站', 'SSoT']) {
-    assert.ok(ac.includes(fingerprint), `charter 必须含指纹 "${fingerprint}"`);
+  for (const fingerprint of ['<EXTREMELY_IMPORTANT>', '北极星', '三种入口', 'Design Checkpoint']) {
+    assert.ok(ac.includes(fingerprint), `using-ddt 必须含指纹 "${fingerprint}"`);
   }
 });
 
@@ -70,9 +70,9 @@ test('契约 SessionStart · 不输出顶层 decision（SessionStart 不能阻�
 });
 
 test('契约 SessionStart · 设 suppressOutput=true（避免污染会话开始）', () => {
-  // charter 注入应静默：用户看不到 hook 输出，只看到 LLM 响应
+  // using-ddt 注入应静默：用户看不到 hook 输出，只看到 LLM 响应
   const { out } = run({ hook_event_name: 'SessionStart' });
-  assert.equal(out.suppressOutput, true, 'charter 注入须静默');
+  assert.equal(out.suppressOutput, true, 'using-ddt 注入须静默');
 });
 
 test('契约 SessionStart · continue=true（明确允许会话继续）', () => {

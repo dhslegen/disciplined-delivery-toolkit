@@ -23,11 +23,9 @@ test('5 个 bin 承重件就位', () => {
   }
 });
 
-test('/ddt 命令含 state 桥与意图分类引用', () => {
+test('/ddt 命令含 state 桥', () => {
   const s = readFileSync(path.join(root, 'commands/ddt.md'), 'utf8');
   assert.match(s, /\.ddt\/state\/current\.json/);
-  assert.match(s, /ddt-charter/);
-  assert.match(s, /意图/);
 });
 
 test('/ddt-status 命令含 IL-7 反推语义', () => {

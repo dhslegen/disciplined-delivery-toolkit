@@ -7,9 +7,9 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-const REQUIRED_HOOKS = ['ddt:charter-inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end'];
+const REQUIRED_HOOKS = ['ddt:inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end'];
 const REQUIRED_BINS = ['ddt-status.mjs', 'ddt-contract-lint.mjs', 'ddt-report.mjs', 'ddt-decisions-append.mjs', 'ddt-changelog-append.mjs', 'resolve-tech-stack.mjs', 'ddt-hook-preflight.mjs'];
-const KEY_SKILLS = ['ddt-charter', 'ddt-brainstorming', 'ddt-design', 'ddt-impl-spec', 'ddt-deliver'];
+const KEY_SKILLS = ['using-ddt', 'ddt-brainstorming', 'ddt-design', 'ddt-impl-spec', 'ddt-deliver'];
 
 // 解析 plugin root（bin/ 的父目录）——不依赖 cwd
 const pluginRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -122,7 +122,7 @@ try {
   metricsCount = entries.filter(f => f.endsWith('.jsonl')).length;
 } catch { /* 无 metrics 目录 */ }
 console.log(`  ${metricsCount > 0 ? '✓' : '·'} .ddt/metrics/*.jsonl     发现 ${metricsCount} 个文件 ${metricsCount > 0 ? '（PostToolUse / SessionEnd hook 已落盘，强制层在工作的硬证据之一）' : '（hook 未触发或本会话尚未产生工具调用）'}`);
-console.log('  ·  charter 已注入        = 如果你在 LLM 会话里读到本 doctor 是被路由到 /ddt 自检 触发的，说明 SessionStart hook (ddt:charter-inject) 一定在工作');
+console.log('  ·  using-ddt 已注入      = 如果你在 LLM 会话里读到本 doctor 是被路由到 /ddt 自检 触发的，说明 SessionStart hook (ddt:inject) 一定在工作');
 console.log('');
 
 // ============================================================================

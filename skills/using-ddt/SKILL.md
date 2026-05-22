@@ -1,0 +1,82 @@
+---
+name: using-ddt
+description: Use at the start of every DDT session — orients you to DDT's place beside superpowers (four lightweight enhancements, three entry points, the docs/.ddt convention). DDT does not replace superpowers or monopolize entry.
+---
+
+# using-ddt（DDT 取向）
+
+DDT 在 superpowers 边上：不替代它、不垄断入口、不发明第二套项目管理。
+superpowers 的 `brainstorming → writing-plans → implementation → review` 是微观主链路。你能读到这段话 = DDT 的 SessionStart inject 在工作。
+
+## 四句北极星
+
+- 大需求先变小。
+- 小问题用 superpowers 做深。
+- 设计进计划前过闸。
+- 需要交付时再收口。
+
+## 三种入口（解释，不是强制路由）
+
+1. **开发者局部想法** → 直接 superpowers 原生链路。bug / 重构 / 测试补强 / 性能 / 探索都走这条。
+2. **大需求** → 先跑一条 superpowers 链路把它当**文档资产**实现，产 `docs/requirements/` + `docs/briefs/`，再逐个处理。
+3. **brief 驱动** → brief → brainstorming → Design Checkpoint → writing-plans → implementation → review。
+
+不是所有工作都要 requirements/briefs，也不是所有工作都要 verification/delivery。右尺寸。
+
+## 四项增强 → 用什么
+
+- **大需求变小**：用现有 vendored 链路产 requirements/briefs。**implementation 的对象可以是文档/契约/设计/测试资产，不必是代码。** 无需专门 skill。
+- **小问题做深**：直接 vendored 链路。
+- **设计进计划前过闸**：`ddt-design-checkpoint`。
+- **需要交付时再收口**：`ddt-deliver`（按需）。
+
+## Design Checkpoint（七问习惯，无固定模板/文件名）
+
+任何 design spec 进 `writing-plans` 前，留下最小判断：
+
+1. 是否允许进入 writing-plans？
+2. 影响 `docs/api/`？ 3. 影响 `docs/data/`？ 4. 影响 `docs/design/`？
+5. 需写 `.ddt/decisions.jsonl`？ 6. 需写 `.ddt/changelog.jsonl`？ 7. 有未解决冲突/开放问题？
+
+简单工作几行写进 spec 末尾即可；复杂工作交 `ddt-design-checkpoint` 整理并按需落 `docs/api,data,design`。**已完成 Checkpoint 就不必为调而调。**
+
+## 路径即指令（唯一权威位置，勿自由发挥）
+
+| 用途 | 路径 | 性质 |
+|---|---|---|
+| design spec | `docs/specs/` | 主链路常用 |
+| plan | `docs/plans/` | 主链路常用 |
+| reviewer 证据 | `docs/reviews/*.json` | IL-5 校验对象 |
+| 大需求 / 切片输入 | `docs/requirements/`、`docs/briefs/` | 按需 |
+| 契约 / 数据 / 设计 | `docs/api/`、`docs/data/`、`docs/design/` | 按需 |
+| 验收 / 交付 | `docs/verification/`、`docs/delivery/` | 按需 |
+| 决策 / 变更账本 | `.ddt/decisions.jsonl`、`.ddt/changelog.jsonl` | 入 git，仅经 append bin 追加 |
+| 状态 / 度量 | `.ddt/state/`、`.ddt/metrics/` | transient，不入 git |
+
+不确定写哪里：跑 `ddt-doctor.mjs` 看 [B] 段——doctor 是真相。
+
+## 原则（superpowers 自带，DDT 不另立法）
+
+纪律住在 vendored skill 里，按需 invoke：
+
+- 证据先于断言 → `ddt-verification`
+- 无根因不修 → `ddt-systematic-debugging`
+- 未批准设计不实现 → `ddt-brainstorming` → `ddt-writing-plans`
+- reviewer 无引证不 PASS → `ddt-requesting-review` / `ddt-receiving-review`
+
+**唯一不可商量的硬骨头**：reviewer 写 `docs/reviews/<task-id>-<role>.json`（role ∈ `spec|quality|final`）时，结构须为
+
+```json
+{ "task_id": "...", "reviewer_role": "spec|quality|final", "verdict": "PASS|FAIL",
+  "cited_evidence": ["文件:行 / 命令输出 / 测试名，PASS 时 ≥1 条"],
+  "issues": [{ "severity": "critical|important|minor", "where": "文件:行", "note": "..." }],
+  "ts": "ISO8601" }
+```
+
+`verdict=PASS` 时 `cited_evidence` 必须非空，否则 PreToolUse hook 拦截。其余都是原则，不是闸机。
+
+## 按需协作 & 收口
+
+- **多人/多切片**：每切片在 `slice/<id>` branch 开发并 `git push -u`，`/ddt-status` 跑 `git for-each-ref` 反推「在做谁」。git branch 是 ground truth，非强制。
+- `.ddt/decisions.jsonl`、`.ddt/changelog.jsonl`、`.ddt/metrics/*.jsonl` 已配 `.gitattributes merge=union` 自动合并并发追加。
+- **收口**（`ddt-deliver`）只在需要时：多实现汇合、toB 验收、部署、数据迁移、API/data/design 变更、客户交付说明、回滚/交付证据。小修小改不强制。
