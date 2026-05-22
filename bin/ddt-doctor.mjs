@@ -130,10 +130,10 @@ console.log('');
 // ============================================================================
 console.log('## [C] LLM 必读：hook 工作状态判定');
 console.log('');
-console.log('  Iron Laws 是否降级，**只看 plugin 自身健康段 [A] 是否齐全**。');
+console.log('  强制层（L2）是否降级，**只看 plugin 自身健康段 [A] 是否齐全**。');
 console.log('');
-console.log('  ✓ 若 [A] 段全部 ✓ → 强制层 hook 已注册到 Claude Code runtime，Iron Laws 全效。');
-console.log('  ✗ 若 [A] 段任一 ✗ → 对应 IL 降级，按 charter 「hook 缺失降级声明」标注。');
+console.log('  ✓ 若 [A] 段全部 ✓ → 强制层 hook 已注册到 Claude Code runtime，IL-5 硬闸生效（L2 全效）。');
+console.log('  ✗ 若 [A] 段任一 ✗ → 对应 hook 降级，按 using-ddt「hook 缺失降级声明」标注。');
 console.log('');
 console.log('  **绝不**通过看用户的 .claude/settings.local.json 是否有 hooks 段来判定！');
 console.log('  plugin hooks 注册在 plugin 自己的 hooks/hooks.json，不在用户 settings。');
