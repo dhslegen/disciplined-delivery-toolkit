@@ -5,22 +5,23 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Node](https://img.shields.io/badge/Node-%E2%89%A522-43853d.svg)](./package.json)
-[![Status](https://img.shields.io/badge/Status-v1.0--alpha-blue.svg)](./docs/specs/2026-05-18-ddt-v1-redesign-design.md)
-[![Tests](https://img.shields.io/badge/Tests-159%2F159%20passing-brightgreen.svg)](./tests)
+[![Status](https://img.shields.io/badge/Status-v1.0--alpha-blue.svg)](./docs/specs/2026-05-22-ddt-superpowers-faithful-redesign-design.md)
+[![Tests](https://img.shields.io/badge/Tests-130%2F130%20passing-brightgreen.svg)](./tests)
 
 ---
 
 ## 是什么
 
-DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，把 **[obra/superpowers](https://github.com/obra/superpowers) 的工程纪律基底**（brainstorm → plan → implement，TDD，subagent 评审三角）和**面向政企/团队交付的治理外壳**（5 站固定链、唯一真相源、Iron Law 文件事实强制、AI 效能 ROI）合在同一条流水线里。
+DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，在 **[obra/superpowers](https://github.com/obra/superpowers) 工程纪律基底**旁边增加四项轻量治理增强：大需求先变小、设计进计划前过闸、需要交付时再收口、决策/变更账本留痕。
 
-**一句话**：让任意 toB 项目，**任何团队成员**在 Claude Code 里敲下 `/ddt <一句话需求>`，得到一条**可复现、可问责、有文档留痕**的端到端交付流——而不是一次性的"看起来能跑的 demo"。
+**DDT 在 superpowers 边上，不替代它，不垄断入口。** superpowers 的 `brainstorming → writing-plans → implementation → review` 是微观主链路，DDT 不打断它。
 
-```
-需求 ────► 契约 ────► 实现 ────► 验证 ────► 交付
-（设计 spec）（OpenAPI    （spec→plan   （评审+测试   （ROI 报告+
-          /Schema）    →implement）  门控）        效能复盘）
-```
+**四句北极星**：
+
+- 大需求先变小。
+- 小问题用 superpowers 做深。
+- 设计进计划前过闸。
+- 需要交付时再收口。
 
 ---
 
@@ -28,24 +29,23 @@ DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，把 **[obra
 
 - ✅ **政企/B 端交付团队**：客户多角色、需求易变、要求过程可审计、强调质量门禁。
 - ✅ **小到 10 人内、大到几十人协作的开发者**：需要让"AI 写的代码"和"人写的代码"接受同一套纪律。
-- ✅ **想用 AI 提效但不愿牺牲工程质量的工程师**：想要 LLM 速度，但需要 hook 文件事实强制兜底防漂移。
+- ✅ **想用 AI 提效但不愿牺牲工程质量的工程师**：想要 LLM 速度，但需要 hook 文件事实强制兜底。
 - ⚠️ **不适合**：一次性脚本、个人玩具项目（用 superpowers 即可，DDT 的治理外壳是过度工程）。
 
 ---
 
-## 为什么不直接用 Claude Code / superpowers
+## 与裸 Claude Code / superpowers 的区别
 
 | 维度 | 裸 Claude Code | superpowers | **DDT** |
 |------|---------------|-------------|---------|
-| 写代码节奏 | 自由（容易跳过测试） | TDD 纪律（spec→plan→implement） | TDD 纪律（**继承 superpowers**） |
-| 团队协作 | 无规约 | 弱（个人开发友好） | **强：5 站固定链 + SSoT 三档文件** |
-| 决策可追溯 | 散落在对话里 | 部分 | **decisions.jsonl + changelog.jsonl 强制写入** |
-| 多角色变更管控 | 无 | 无 | **Iron Law IL-1 ~ IL-7（hook 强制）** |
-| 跳过质量门? | 一句话就跳过 | 弱告警 | **PreToolUse hook 真的拦下（IL-3）** |
-| 契约稳定性 | 易漂移 | 弱 | **OpenAPI 唯一来源 + 写保护（IL-4）** |
-| 效能复盘 | 无 | 无 | **被动埋点 + ROI 报告（/ddt 交付）** |
+| 写代码节奏 | 自由（容易跳过测试） | TDD 纪律（brainstorm → plan → implement） | TDD 纪律（**继承 superpowers**） |
+| 团队协作 | 无规约 | 弱（个人开发友好） | **决策/变更账本 + 多切片协作** |
+| 决策可追溯 | 散落在对话里 | 部分 | **`.ddt/decisions.jsonl` + `.ddt/changelog.jsonl`** |
+| 设计进计划前 | 无门控 | 无 | **Design Checkpoint（七问习惯）** |
+| 评审引证强制 | 无 | 弱告警 | **IL-5：PreToolUse hook 真的拦下** |
+| 收口证据 | 无 | 无 | **`ddt-deliver`（按需）ROI 报告** |
 
-**DDT ≠ superpowers + 一堆 agents**。v1.0 推倒重来后，DDT 不再是"团队 agent 编排"，而是**纪律 + 治理的最薄外壳**：只有 2 个命令，所有"做事"都委托给 15 个 skill（其中 9 个直接 vendoring superpowers），所有"强制"都委托给 hook。
+**DDT ≠ superpowers + 一堆 agents**。v1.0 是最薄治理外壳：2 个命令、13 个 skill（9 个直接 vendoring superpowers）、4 个 hook、所有"做事"委托给 skill。
 
 ---
 
@@ -65,8 +65,8 @@ DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，把 **[obra
 
 安装后会出现两条命令：
 
-- `/ddt <需求一句话或意图>` —— 总驱动闸门（路由到 5 站）
-- `/ddt-status` —— 只读重算当前项目状态（IL-7 推理承载体）
+- `/ddt [一句话意图]` —— 向导闸门，按上下文引导下一步
+- `/ddt-status` —— 只读重算当前项目状态
 
 ### 如何确认拿到最新版本
 
@@ -106,70 +106,32 @@ gh api repos/dhslegen/disciplined-delivery-toolkit/commits/main --jq .sha[0:7]
 /ddt 我想给部门做一个会议室预订小工具，避免冲突，支持周期性预订
 ```
 
-DDT 会**自动**：
+DDT 会根据当前项目状态**向导**：
 
-1. **第 1 站 — 需求**：调用 `ddt-brainstorming` 头脑风暴 → 输出 `docs/specs/YYYY-MM-DD-<topic>-design.md`（设计 spec 集合，多文件平等），等你审批；
-2. **第 2 站 — 契约**：调用 `ddt-design` 落 OpenAPI / data model 到 `openapi/` 与 `schemas/`，hook 锁住写保护；
-3. **第 3 站 — 实现**：调用 `ddt-writing-plans` 拆 WBS → `ddt-subagent-driven` 派发 **Implementer + Spec Reviewer + Quality Reviewer** 三角逐任务执行，TDD 强制；
-4. **第 4 站 — 验证**：所有任务完成后 `ddt-verification` 跑 Final Reviewer + 全量测试；
-5. **第 5 站 — 交付**：`ddt-deliver` 生成 ROI 报告 `docs/efficiency-report.md` 并归档 changelog。
+- 无 spec → 引导调用 `ddt-brainstorming`，产 `docs/specs/` 设计文档，等你审批；
+- 有 spec 未过闸 → 引导 `ddt-design-checkpoint`（七问），判定是否进入 planning；
+- 过闸后 → 引导 `ddt-writing-plans` 拆任务 → `ddt-subagent-driven` 三角执行（TDD 强制）；
+- 完成后 → 按需用 `ddt-deliver` 收口，生成 ROI 报告。
 
 任何时候敲 `/ddt-status` 看当前位置：
 
 ```
 /ddt-status
-→ 当前站：实现
-→ 进行中任务：3/8（Task 4 BLOCKED：缺 schema 决策 D-2026-05-20-003）
+→ 当前阶段：实现
+→ 进行中任务：3/8
 → 待决策：1 条（pending）
-→ Iron Law 状态：IL-3 ✅  IL-4 ✅  IL-5 ⚠ 1 条 PASS 未引证
+→ IL-5 hook 状态：✅ 已注册
 ```
 
 ---
 
-## 5 站脊柱
+## 三种入口（解释，不是强制路由）
 
-```
-┌──────────┐   ┌──────────┐   ┌──────────────────────────────┐   ┌──────────┐   ┌──────────┐
-│   需求    │   │   契约    │   │           实现                │   │   验证    │   │   交付    │
-│          │──►│          │──►│  spec→plan→implement 弧线     │──►│          │──►│          │
-│ 设计 spec │  │ OpenAPI  │   │  (subagent 三角 + TDD)         │   │ 评审+测试 │   │ ROI+归档 │
-└──────────┘   └──────────┘   └──────────────────────────────┘   └──────────┘   └──────────┘
-   ddt-brain    ddt-design     ddt-impl-spec → ddt-writing-plans   ddt-verifica  ddt-deliver
-   storming                    → ddt-subagent-driven → ddt-tdd      tion
-```
+1. **开发者局部想法** → 直接 superpowers 原生链路。bug / 重构 / 测试补强 / 性能 / 探索都走这条。
+2. **大需求** → 先跑一条 superpowers 链路把它当**文档资产**实现，产 `docs/requirements/` + `docs/briefs/`，再逐个处理。
+3. **brief 驱动** → brief → brainstorming → Design Checkpoint → writing-plans → implementation → review。
 
-**站之间靠文件衔接，不靠对话记忆**。这是 toB 团队协作的根本：任何成员、任何时间、任何分支恢复，都能从文件状态精确算出"我在哪、下一步是什么"。
-
----
-
-## Iron Laws（铁律）
-
-7 条强制规则。**前 5 条由 hook 在 PreToolUse / Stop 时刻执行文件事实校验**，第 6/7 条由 charter skill 持续约束。违反时 hook 会**真的拦下工具调用**，不是温柔提示。
-
-| ID | 规则 | 强制方式 | 文件来源 |
-|----|------|---------|---------|
-| IL-1 | 任何 commit 必须有设计 spec 引证 trailer | PreToolUse hook 校验 `Spec-Ref:` trailer | git log |
-| IL-2 | 决策必须双向闭环（pending → resolved） | charter skill + `/ddt-status` 持续暴露 | `decisions.jsonl` |
-| IL-3 | 待决策未解决时禁止进入下一站 | PreToolUse hook 阻断 | `decisions.jsonl` + `state/current.json` |
-| IL-4 | OpenAPI / schema 路径写保护 | PreToolUse hook 阻断 `Write/Edit/MultiEdit/NotebookEdit` | 路径前缀 |
-| IL-5 | 评审 PASS 输出必须引证文件 + 行号 | PreToolUse hook 校验 reviewer 输出格式 | review 文件结构 |
-| IL-6 | Session 结束时必须更新 changelog 或显式跳过 | Stop hook 提醒 | `changelog.jsonl` |
-| IL-7 | `/ddt-status` 必须基于**重算事实**，不基于记忆 | charter skill 约束 + 命令实现 | 所有 SSoT 文件 |
-
-**为什么是文件事实？** LLM 上下文会丢、会幻觉、会自圆其说。文件不会。hook 只读文件、不读对话，所以**判定不可争辩**。
-
----
-
-## SSoT 三档（唯一真相源层级）
-
-| 档位 | 文件 | 谁能写 | 用途 |
-|------|------|-------|------|
-| 一档（永久，framework-recommended SSoT） | **`docs/specs/YYYY-MM-DD-<topic>-design.md`**（设计 spec 集合）, **`docs/ssot/openapi/`**（契约）, **`docs/ssot/decisions.jsonl`**, **`docs/ssot/changelog.jsonl`** | ddt-brainstorming/ddt-impl-spec / ddt-design / 专用 bin appender | 跨人跨时间的真相，目录命名即语义边界 |
-| 一档（衍生制品） | `docs/plans/YYYY-MM-DD-<slug>-plan.md`, `docs/reviews/<task-id>-<reviewer-role>.json`, `docs/architecture/YYYY-MM-DD-<topic>.md` | ddt-writing-plans / reviewer subagent / ddt-design | 切片 plan、reviewer 输出、架构决策 |
-| 三档（工作态） | `.ddt/state/current.json`, `.ddt/metrics/YYYY-MM-DD.jsonl` | command/hook 自动写 | 当前位置 + 被动度量埋点 |
-| 衍生（不入库） | `docs/efficiency-report.md` | `bin/ddt-report.mjs` 重算生成 | ROI 视图（运行产物） |
-
-**核心约束**：衍生信息**永远从一档+二档重算**，不持久化。这避免"派生数据腐烂"问题——LLM 重新打开项目时不会被过期摘要误导。
+不是所有工作都要 requirements/briefs，也不是所有工作都要 verification/delivery。右尺寸。
 
 ---
 
@@ -177,19 +139,17 @@ DDT 会**自动**：
 
 ### 命令（2 个，故意只有这么少）
 
-- **`/ddt [一句话意图]`** —— 总驱动闸门。读 charter，分类意图，写 `.ddt/state/current.json`，路由到对应站的 discipline skill。
+- **`/ddt [一句话意图]`** —— 向导闸门。读取项目状态，按上下文引导下一步；不拦截自由工作。
 - **`/ddt-status`** —— 只读重算，调用 `bin/ddt-status.mjs` 输出当前事实快照。
 
-### Skill 清单（15 个，2 组）
+### Skill 清单（13 个，2 组）
 
-**治理外壳（DDT 原生，6 个）**：
+**治理外壳（DDT 原生，4 个）**：
 
-- `ddt-charter` —— 宪法（Iron Laws、5 站地图、意图分类、SSoT 链、合理化反模式表）
-- `ddt-design` —— 第 2 站契约（OpenAPI / data model 设计）
-- `ddt-impl-spec` —— 第 3 站入口（把 spec 切片成可被 writing-plans 吃的 implement-spec）
-- `ddt-design-source` —— 外部 UI 设计回环（v0/figma/claude.ai/design 集成）
-- `ddt-frontend-craft` —— 前端直构（Lovable 风的本地路线，与 design-source 互补）
-- `ddt-deliver` —— 第 5 站交付（ROI 报告 + 归档）
+- `using-ddt` —— 取向文档（SessionStart 注入；四句北极星、三种入口、路径即指令）
+- `ddt-design-checkpoint` —— 设计过闸（七问习惯，设计进计划前的最小留痕）
+- `ddt-deliver` —— 收口（按需：ROI 报告 + 决策/变更归档）
+- `ddt-design-source` —— 外部 UI 设计回环（v0/figma/claude.ai/design 集成，按需）
 
 **纪律基底（vendoring superpowers，9 个）**：
 
@@ -205,19 +165,35 @@ DDT 会**自动**：
 
 > Vendoring 而非依赖：用户只装 DDT 一个 plugin 就能用全套，不需要先装 superpowers。每个 vendored skill 顶部都加了"DDT 强制层声明"段落，说明 hook 缺席时如何降级。原文照搬，授权保留（见 [LICENSE](./LICENSE) Third-Party Notices）。
 
-### Hooks（5 个）
+### Hooks（4 个，L2 强制层）
 
 | Hook ID | 触发时机 | 作用 |
 |---------|---------|------|
-| `ddt:charter-inject` | SessionStart | 把 charter 注入会话（让 LLM "记得" 宪法） |
-| `ddt:enforce-pre` | PreToolUse `*` | 执行 IL-3 / IL-4 / IL-5 / IL-1 兜底 |
-| `ddt:enforce-stop` | Stop | 执行 IL-1（commit trailer） / IL-6（changelog 提醒） |
+| `ddt:inject` | SessionStart | 把 `using-ddt` 注入会话（取向、路径规约） |
+| `ddt:enforce-pre` | PreToolUse `*` | **唯一硬闸**：IL-5 reviewer 输出须含引证才能通过 |
 | `ddt:metrics-post` | PostToolUse `*` | 被动埋点（工具调用计数、耗时、文件改动） |
 | `ddt:metrics-end` | SessionEnd | 落 `.ddt/metrics/YYYY-MM-DD.jsonl` |
 
+**强制层定位（L2）**：行为为主 + 唯一 IL-5 牙。纪律主要由 vendored skill 内容承载；IL-5 是唯一 hook 硬拦的规则（reviewer PASS 必须有 cited_evidence）。其余原则由 skill 原文和 using-ddt 约束，不靠闸机强制。
+
 ---
 
-## 项目结构
+## 唯一引证规则（IL-5）
+
+reviewer（spec / quality / final）写 `docs/reviews/<task-id>-<role>.json` 时，结构须为：
+
+```json
+{ "task_id": "...", "reviewer_role": "spec|quality|final", "verdict": "PASS|FAIL",
+  "cited_evidence": ["文件:行 / 命令输出 / 测试名，PASS 时 ≥1 条"],
+  "issues": [{ "severity": "critical|important|minor", "where": "文件:行", "note": "..." }],
+  "ts": "ISO8601" }
+```
+
+`verdict=PASS` 时 `cited_evidence` 必须非空，否则 PreToolUse hook 拦截写入。其余都是原则，不是闸机。
+
+---
+
+## 物理结构
 
 ```
 disciplined-delivery-toolkit/
@@ -225,11 +201,11 @@ disciplined-delivery-toolkit/
 │   ├── marketplace.json     ← marketplace 注册
 │   └── plugin.json          ← plugin 元数据
 ├── commands/                ← /ddt, /ddt-status
-├── skills/                  ← 15 个 SKILL.md（6 原生 + 9 vendoring）
+├── skills/                  ← 13 个 SKILL.md（4 原生 + 9 vendoring）
 ├── hooks/
-│   ├── hooks.json           ← 注册 5 个 hook
+│   ├── hooks.json           ← 注册 4 个 hook
 │   └── handlers/            ← *.mjs handler 实现
-├── bin/                     ← 8 个承重 CLI 工具
+├── bin/                     ← 承重 CLI 工具（零依赖）
 │   ├── ddt-status.mjs       ← /ddt-status 数据源
 │   ├── ddt-decisions-append.mjs
 │   ├── ddt-changelog-append.mjs
@@ -238,16 +214,38 @@ disciplined-delivery-toolkit/
 │   ├── ddt-hook-preflight.mjs
 │   ├── ddt-report.mjs       ← ROI 报告生成
 │   └── ddt-doctor.mjs       ← 健康检查
-├── tests/                   ← node --test，零依赖，104 用例
+├── tests/                   ← node --test，零依赖，130 用例
 │   ├── unit/
 │   └── integration/
 ├── docs/
-│   ├── specs/               ← v1.0 设计 SSoT
-│   ├── plans/               ← 5 个实施计划
+│   ├── specs/               ← design spec 集合
+│   ├── plans/               ← 实施计划
 │   └── research/            ← 背景调研
 ├── LICENSE
 ├── README.md
 └── package.json
+```
+
+**项目 docs/.ddt 路径规约**（以你自己的项目为例）：
+
+```
+<your-project>/
+├── docs/
+│   ├── requirements/        ← 大需求切片输入（按需）
+│   ├── briefs/              ← 切片 brief（按需）
+│   ├── specs/               ← design spec
+│   ├── plans/               ← writing-plans 产出
+│   ├── reviews/             ← reviewer 证据（IL-5 校验对象）
+│   ├── api/                 ← OpenAPI / 契约（按需）
+│   ├── data/                ← data model（按需）
+│   ├── design/              ← UI/架构设计（按需）
+│   ├── verification/        ← 验收证据（按需）
+│   └── delivery/            ← 交付说明（按需）
+└── .ddt/
+    ├── decisions.jsonl      ← 人工决策账本（入 git）
+    ├── changelog.jsonl      ← 变更账本（入 git）
+    ├── state/               ← 工作态（transient，不入 git）
+    └── metrics/             ← 被动度量（transient，不入 git）
 ```
 
 ---
@@ -301,10 +299,6 @@ git push -u origin slice/us-3    # push 让团队看见 = claim
 
 > ⚠️ **多人协作的局限**：当前只做了基础协作支持（避免 jsonl 冲突 + 切片可见性）。**未做**：跨 plugin 版本协商、共享 review 状态、错误恢复协调。stable 阶段补足。
 
-### 自定义 Iron Law
-
-`hooks/handlers/ddt-enforce.mjs` 是单文件 ~300 行。`bin/lib/ddt-facts.mjs` 是纯函数事实抽取。fork 后修改即可加自定义铁律。
-
 ### 添加新 skill
 
 把新的 `SKILL.md` 扔进 `skills/<slug>/`，Claude Code 会自动发现。命名建议加 `ddt-` 前缀避免和其他 plugin 冲突。
@@ -341,6 +335,6 @@ vendoring 的 superpowers skill 保留原 [MIT License](./LICENSE) Copyright (c)
 
 ## 进一步阅读
 
-- 设计 SSoT：[`docs/specs/2026-05-18-ddt-v1-redesign-design.md`](./docs/specs/2026-05-18-ddt-v1-redesign-design.md) —— v1.0 完整设计规格（247 行）
-- 实施计划（5 个）：[`docs/plans/`](./docs/plans/) —— 从 Foundation 到 Metrics+ROI
+- 重设计规格：[`docs/specs/2026-05-22-ddt-superpowers-faithful-redesign-design.md`](./docs/specs/2026-05-22-ddt-superpowers-faithful-redesign-design.md) —— v1.0 完整设计规格
+- 实施计划：[`docs/plans/`](./docs/plans/)
 - 背景调研：[`docs/research/`](./docs/research/) —— superpowers 深度调研 + 领导愿景
