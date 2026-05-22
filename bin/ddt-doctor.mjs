@@ -63,17 +63,23 @@ console.log('## [B] 当前项目 DDT 状态（cwd: ' + cwd + '）');
 console.log('');
 
 console.log('### 项目骨架');
-console.log(`  ${existsSync(path.join(cwd, '.git')) ? '✓' : '✗'} .git/                       （IL-7 进度反推依赖 git 历史）`);
+console.log(`  ${existsSync(path.join(cwd, '.git')) ? '✓' : '✗'} .git/                       （进度反推依赖 git 历史）`);
 console.log('');
-console.log('  [SSoT 真相 — framework-recommended core]');
-console.log(`  ${existsSync(path.join(cwd, 'docs/specs')) ? '✓' : '✗'} docs/specs/                 （设计 spec 集合，多文件平等，brainstorming/impl-spec 产物）`);
-console.log(`  ${existsSync(path.join(cwd, 'docs/ssot/decisions.jsonl')) ? '✓' : '✗'} docs/ssot/decisions.jsonl   （决策账本，append-only）`);
-console.log(`  ${existsSync(path.join(cwd, 'docs/ssot/changelog.jsonl')) ? '✓' : '✗'} docs/ssot/changelog.jsonl   （变更账本，append-only）`);
-console.log(`  ${existsSync(path.join(cwd, 'docs/ssot/openapi')) ? '✓' : '✗'} docs/ssot/openapi/          （契约 SSoT 铁律链次层）`);
+console.log('  [SSoT 真相 — 入 git，append-only，经专用 bin 追加]');
+console.log(`  ${existsSync(path.join(cwd, 'docs/specs')) ? '✓' : '✗'} docs/specs/                 （设计 spec 集合，brainstorming 产物）`);
+console.log(`  ${existsSync(path.join(cwd, '.ddt/decisions.jsonl')) ? '✓' : '✗'} .ddt/decisions.jsonl        （决策账本，append-only，入 git 白名单）`);
+console.log(`  ${existsSync(path.join(cwd, '.ddt/changelog.jsonl')) ? '✓' : '✗'} .ddt/changelog.jsonl        （变更账本，append-only，入 git 白名单）`);
 console.log('');
-console.log('  [衍生制品 — 多文件，按切片/任务展开]');
+console.log('  [派生制品 — 多文件，按切片/任务展开]');
 console.log(`  ${existsSync(path.join(cwd, 'docs/plans')) ? '✓' : '✗'} docs/plans/                 （切片 plan 目录）`);
 console.log(`  ${existsSync(path.join(cwd, 'docs/reviews')) ? '✓' : '✗'} docs/reviews/               （reviewer 输出，IL-5 校验对象）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/api')) ? '✓' : '✗'} docs/api/                   （契约，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/data')) ? '✓' : '✗'} docs/data/                  （数据设计，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/design')) ? '✓' : '✗'} docs/design/                （架构/设计，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/requirements')) ? '✓' : '✗'} docs/requirements/          （大需求切片，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/briefs')) ? '✓' : '✗'} docs/briefs/                （需求 brief，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/verification')) ? '✓' : '✗'} docs/verification/          （验收记录，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/delivery')) ? '✓' : '✗'} docs/delivery/              （交付包，按需）`);
 console.log('');
 console.log('  [transient 工作态 — 不入 git，每次覆盖]');
 console.log(`  ${existsSync(path.join(cwd, '.ddt/state/current.json')) ? '✓' : '✗'} .ddt/state/current.json     （command→hook 字段桥）`);
@@ -81,9 +87,17 @@ console.log(`  ${existsSync(path.join(cwd, '.ddt/metrics')) ? '✓' : '✗'} .dd
 console.log('');
 console.log('  [多人协作支持]');
 const gaPath = path.join(cwd, '.gitattributes');
-let hasUnionMerge = false;
-try { hasUnionMerge = readFileSync(gaPath, 'utf8').includes('merge=union'); } catch { /* 文件不存在 */ }
-console.log(`  ${hasUnionMerge ? '✓' : '·'} .gitattributes union merge  ${hasUnionMerge ? '（jsonl 并发追加自动合并）' : '（缺失：建议从 plugin 复制模板。两人并发 append decisions/changelog 会撞 git conflict）'}`);
+let gaContent = '';
+try { gaContent = readFileSync(gaPath, 'utf8'); } catch { /* 文件不存在 */ }
+const hasDdtUnionMerge = gaContent.includes('.ddt/decisions.jsonl') && gaContent.includes('merge=union');
+console.log(`  ${hasDdtUnionMerge ? '✓' : '·'} .gitattributes .ddt/decisions.jsonl merge=union  ${hasDdtUnionMerge ? '（jsonl 并发追加自动合并）' : '（缺失：建议从 plugin 复制模板。两人并发 append decisions/changelog 会撞 git conflict）'}`);
+console.log('');
+console.log('  [.gitignore 外科白名单]');
+const giPath = path.join(cwd, '.gitignore');
+let giContent = '';
+try { giContent = readFileSync(giPath, 'utf8'); } catch { /* 文件不存在 */ }
+const hasDdtWhitelist = giContent.includes('!.ddt/decisions.jsonl');
+console.log(`  ${hasDdtWhitelist ? '✓' : '·'} .gitignore !.ddt/decisions.jsonl 白名单  ${hasDdtWhitelist ? '（SSoT 入 git，transient 被 ignore）' : '（缺失：.ddt/ 整目录 ignore 但 decisions/changelog 未放行）'}`);
 console.log('');
 console.log('  [v0.x 残留检测（多插件污染防护）]');
 const hasV0Residual = existsSync(path.join(cwd, '.ddt/progress.json'));
