@@ -2,11 +2,12 @@
 .claude/
 node_modules/
 
-# .ddt/ 整个目录都是 transient（state / metrics / 以及 v0.x 残留 progress.json 等）
-# v1.1 SSoT 真相（decisions.jsonl / changelog.jsonl）已迁到 docs/ssot/，与 .ddt/ 解耦
-# 整目录 ignore 比精确 ignore 子目录更稳——避免未来未知 transient 文件（如 v0.x 老 plugin
-# 偷偷写的 .ddt/progress.json）漏过 ignore 规则
-/.ddt/
+# .ddt/ 默认 transient（state / metrics / v0.x 残留 progress.json 等），
+# 但 SSoT 真相 decisions.jsonl / changelog.jsonl 必入 git——外科白名单放行这两个。
+# 用 .ddt/ 不带前导斜杠以同时兜住任意嵌套位置（如误写到 skills/.ddt/）。
+.ddt/*
+!.ddt/decisions.jsonl
+!.ddt/changelog.jsonl
 
 # 运行产物（ddt-report 生成），按设计是 transient working file，不入 git
 docs/efficiency-report.md
