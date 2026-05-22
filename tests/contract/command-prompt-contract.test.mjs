@@ -51,16 +51,34 @@ test('契约 commands/* · 当前 plugin 只暴露 ddt 和 ddt-status 两条命�
     'plugin "2 命令" 设计原则：只允许 ddt + ddt-status');
 });
 
-test('契约 commands/ddt.md · 必须含元命令短路识别段（v1.1 dogfood 第 6 条修复）', () => {
+test('契约 commands/ddt.md · 必须解释三种入口（向导语义）', () => {
   const md = readCmd('ddt');
-  assert.match(md, /元命令短路识别|selfcheck|自检/,
-    '/ddt 必须能识别"自检/doctor/preflight"元命令，直接路由 ddt-doctor.mjs');
+  assert.match(md, /三种入口|三类入口|entry point/i,
+    '/ddt 向导必须解释三种入口，而非强制路由');
 });
 
-test('契约 commands/ddt.md · 必须引用 charter SSoT 路径地图', () => {
+test('契约 commands/ddt.md · 必须含向导建议语义（不拦截）', () => {
   const md = readCmd('ddt');
-  assert.match(md, /SSoT 路径|charter.*路径/,
-    '/ddt 必须引用 charter 的 SSoT 路径硬清单，禁止 LLM 自由发挥');
+  assert.match(md, /建议|suggest|不拦截|可跳过|可无视|直接动手/,
+    '/ddt 必须明示这是建议而非强制拦截');
+});
+
+test('契约 commands/ddt.md · 必须指向 superpowers 原生链路', () => {
+  const md = readCmd('ddt');
+  assert.match(md, /superpowers|原生链路|systematic-debugging/,
+    '/ddt 向导应指引开发者使用 superpowers 原生链路');
+});
+
+test('契约 commands/ddt.md · 不得含强制意图分类路由口吻', () => {
+  const md = readCmd('ddt');
+  assert.doesNotMatch(md, /按宪法.*意图分类|意图分类强制|必须先 spec|5 站脊柱/,
+    '/ddt 不得有"按宪法意图分类"或"5 站脊柱"等强制流程口吻');
+});
+
+test('契约 commands/ddt.md · 不得含 docs/ssot 旧路径', () => {
+  const md = readCmd('ddt');
+  assert.doesNotMatch(md, /docs\/ssot/,
+    '/ddt 不得含 docs/ssot 旧路径');
 });
 
 test('契约 commands/ddt-status.md · 必须说明 plugin bin 路径策略', () => {

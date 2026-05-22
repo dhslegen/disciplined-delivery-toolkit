@@ -23,9 +23,12 @@ test('5 个 bin 承重件就位', () => {
   }
 });
 
-test('/ddt 命令含 state 桥', () => {
+test('/ddt 命令为可选向导（给建议不拦截）', () => {
   const s = readFileSync(path.join(root, 'commands/ddt.md'), 'utf8');
-  assert.match(s, /\.ddt\/state\/current\.json/);
+  // 向导语义：含三种入口 + 建议/不拦截口吻，不含强制意图分类
+  assert.match(s, /三种入口|entry point/i);
+  assert.match(s, /建议|suggest|不拦截|可无视|直接动手/);
+  assert.doesNotMatch(s, /按宪法.*意图分类|5 站脊柱/);
 });
 
 test('/ddt-status 命令含 IL-7 反推语义', () => {

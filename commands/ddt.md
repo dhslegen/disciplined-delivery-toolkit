@@ -1,77 +1,59 @@
 ---
-description: DDT v1.0 万能驱动闸门。无文本：重算 repo 状态推进到下一闸门。有文本：分类意图后路由到对应纪律 skill。
+description: DDT v1.0 可选向导。无文本：读 repo 状态给进度建议。有文本：判断更像哪种入口并给出建议（非强制，可无视直接动手）。
 ---
 
-# /ddt — DDT 万能驱动闸门
+# /ddt — DDT 可选向导
 
-你的任务是处理用户的 `/ddt [自由文本]` 调用，按下面流程执行：
+你是一个**可选向导，给建议不拦截**。开发者可以无视本向导，直接使用 superpowers 原生 skill 链路。
 
-## 0. 元命令短路识别（先做，不进意图分类）
+## 三种入口（解释，不是强制路由）
 
-如果用户的自由文本是以下"元命令"之一（包括同义词、中英文混用），**直接路由到对应 bin，不进 charter 意图分类**：
+| 入口 | 特征 | 建议链路 |
+|------|------|---------|
+| ① 局部想法 | bug / 重构 / 测试补强 / 性能 / 探索 / 本地改动 | 直接 superpowers 原生链路（bug 建议 `systematic-debugging`） |
+| ② 大需求 | 模糊 / 跨模块 / 规模大 / 多人协作 | 先用 superpowers 链路产 `docs/requirements/` + `docs/briefs/`，再逐个处理 |
+| ③ brief 驱动 | 已有 brief，需要完整交付链路 | brief → brainstorming → Design Checkpoint（`ddt-design-checkpoint`）→ writing-plans → implementation → review |
 
-| 用户文本含 | 路由到 |
-|------------|--------|
-| `自检` / `doctor` / `preflight` / `check` / `health` / `体检` / `selfcheck` | `bin/ddt-doctor.mjs`（参 ddt-status.md 路径策略，优先 PATH，fallback `node "${CLAUDE_PLUGIN_ROOT}/bin/ddt-doctor.mjs"`） |
-| `状态` / `status` / `where am I` / `在哪` | 提示用户改敲 `/ddt-status` 命令（独立命令更准确） |
-| `report` / `效能` / `ROI` / `度量` | `bin/ddt-report.mjs` |
+**这是建议，非强制。要直接动手就动手，向导不会拦截你。**
 
-**关键约束**：元命令路由后，**完全照搬 bin 的 stdout 给用户**，不要自由发挥、不要自己扫文件、不要自己判定 hook 注册状态。如果 bin 找不到，明确告诉用户："plugin bin 不可用，请检查安装 / `/plugin marketplace update`"——**禁止降级到 LLM 自己模拟事实**，这会破坏 IL-7。
+## 处理用户输入
 
-**SSoT 路径地图引用**：所有写 SSoT/衍生制品的动作必须按 charter §SSoT 路径硬清单。LLM 禁止自由发挥到 .ddt/prd/ / .ddt/decisions.jsonl / docs/superpowers/ 等已知错误路径。不确定时跑 `ddt-doctor.mjs` 看 [B] 段权威清单。
+### 无自由文本（纯 `/ddt`）
 
-## 1. 读 using-ddt
+调用 `bin/ddt-status.mjs` 读取 repo 事实（pending decisions、spec/plan 文件、`slice/*` branch）并输出进度摘要。
 
-先 invoke 名为 `using-ddt` 的 skill 读取向（如未注入 SessionStart 路径）。取向定义四句北极星 / 三种入口 / Design Checkpoint / 路径权威。
-
-## 2. 处理两种调用形态
-
-### A. 无自由文本（纯 `/ddt`）
-
-调 `bin/ddt-status.mjs` 重算 repo 事实（pending decisions、存在的 spec/plan 文件）→ 按 5 站脊柱判定**下一个该打断真人的闸门**：
-- 有 pending decisions：报告人需异步裁决哪条
-- 切片有 spec 但无 plan：可能推进到 plan 步
-- 全绿低风险段：自动放行并记审计痕（不打断人）
-- 其他：根据脊柱拓扑判定下一阶段
-
-输出"在哪 / 下一步 / 谁该决策什么"摘要给用户。
-
-### B. 带自由文本（`/ddt <文本>`）
-
-按宪法"意图分类规则"将文本归类为：
-- `genesis`（无 .ddt/ 时自动判定为起项目）
-- `amend`（改/删需求）
-- `new-feature`（新增需求）
-- `bug`（bug 修复）
-- `refactor`（重构）
-- `rerun-slice`（局部重跑某切片）
-
-**为各意图配 ddt_intent 字段**（强制层 hook 读这个字段判 IL）：
-- `genesis` / `new-feature` / `amend` → `ddt_intent` 暂不设（属需求站，不在 build 上下文）
-- `bug` → 装载 `ddt-systematic-debugging` skill 并设 `ddt_intent='debug'`
-- `refactor` → `ddt_intent='refactor'`，进 `ddt-writing-plans` 走重构路径
-- `rerun-slice` → `ddt_intent='enter-spec'` 或 `'enter-plan'`/`'enter-impl'`（视用户文本中是否提到具体阶段）+ 设 `ddt_slice=<切片 id>`
-
-## 3. 写 `.ddt/state/current.json`（命令→hook 字段桥）
-
-每次 `/ddt` 路由完意图后，**必须写一次** `.ddt/state/current.json`：
-
-```json
-{ "ddt_intent": "<分类结果>", "ddt_slice": "<可选，切片 id>", "set_by": "/ddt", "at": "<ISO8601>" }
+```bash
+ddt-status.mjs 2>/dev/null \
+  || node "${CLAUDE_PLUGIN_ROOT:?需 plugin 环境}/bin/ddt-status.mjs"
 ```
 
-此文件供 hook 在 stdin 缺字段时 fallback 读取（Plan 4 Task 1）。这是 transient 工作态文件，**不是 SSoT 真相**，下次 `/ddt` 覆盖。
+输出"在哪 / 下一步建议 / 待决条目"摘要。如果 bin 找不到，告诉用户检查 DDT plugin 安装。
 
-## 4. 装载对应纪律 skill 并开始工作
+### 有自由文本（`/ddt <文本>`）
 
-按意图分类装载 skill 并按其纪律开展工作循环。所有重大决策点（spec/plan/契约/出包等）由对应 skill 内置的人工闸门驱动。
+判断文本更像哪种入口，给出具体建议：
 
-## 5. 风险地板与右尺寸化
+- **像局部想法**（bug/重构/测试/性能探索）→ 建议直接进 superpowers 原生链路。若是 bug，建议调用 `ddt-systematic-debugging`；若是重构，建议 `brainstorming` → `writing-plans` → implementation。明确说"可以直接开始，不需要额外仪式"。
 
-按宪法比例原则：分类器只能升档不能降档；触及 `认证/授权/资金/数据迁移/契约/用户数据删除/部署配置` 任一恒最高硬度；验证/交付永不自动放行。
+- **像大需求**（模糊/跨模块/大/多人）→ 建议先用 superpowers 链路把它当文档资产实现：`brainstorming` 理解切片思路 → `writing-plans` 计划如何产出 → implementation 写出 `docs/requirements/` + `docs/briefs/` → review 审查是否 bite-size。
 
-## 失败模式
+- **已有 brief 或 design spec**→ 建议 brainstorming（确认方向）→ Design Checkpoint（`ddt-design-checkpoint`，七问过闸，简单任务可直接跳过）→ `writing-plans` → implementation → review。
 
-- preflight 检查失败（hook 未注册）→ 拒绝启动并提示运行 `bin/ddt-hook-preflight.mjs` 修复
-- 意图分类不确定时主动问用户而非猜测
-- 任何 hook 阻断须以 IL 引用回报用户
+结尾明示：**「以上是建议，非强制流程。要直接动手请忽略向导，选你认为合适的 superpowers skill 开始即可。」**
+
+## 路径参考（不确定时跑 ddt-doctor 看 [B] 段权威清单）
+
+| 用途 | 路径 |
+|------|------|
+| design spec | `docs/specs/` |
+| plan | `docs/plans/` |
+| reviewer 证据 | `docs/reviews/` |
+| 大需求 / 切片输入 | `docs/requirements/`、`docs/briefs/` |
+| 决策账本 | `.ddt/decisions.jsonl` |
+| 状态 / 度量（transient） | `.ddt/state/`、`.ddt/metrics/` |
+
+如果需要查看完整路径地图或 hook 注册状态，运行 `ddt-doctor.mjs`（含 [B] 段权威路径清单）。
+
+## 结尾建议
+
+跑 `/ddt-status` 看 repo 当前进度快照（只读不写，从 git + decisions + spec/plan 反推）。
