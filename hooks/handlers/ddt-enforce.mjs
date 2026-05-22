@@ -112,7 +112,7 @@ export function decide(ev) {
   }
   if (ev.hook_event_name === 'PreToolUse' && ['Edit','Write','MultiEdit','NotebookEdit'].includes(ev.tool_name)) {
     const fp = ev.tool_input && typeof ev.tool_input.file_path === 'string' ? ev.tool_input.file_path : '';
-    // IL-5 reviewer 输出路径（v1.1）：reviewer 是 SSoT 衍生制品，住 docs/reviews/（git 跟踪），不在 .ddt/ transient
+    // IL-5 reviewer 输出路径：reviewer 是 SSoT 衍生制品，住 docs/reviews/（git 跟踪），不在 .ddt/ transient
     if (/^docs\/reviews\/.+\.json$/.test(fp)) {
       const raw = ev.tool_input && typeof ev.tool_input.content === 'string' ? ev.tool_input.content : '';
       let parsed = null;

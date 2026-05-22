@@ -58,7 +58,7 @@ export function hasEscalationFor(changelogJsonlOrRows, paths) {
 }
 /** 校验 reviewer 输出对象是否符合 `docs/reviews/*.json` 约定（IL-5）。
  *  返回 {ok:boolean, reason?:string}。手工实现保零依赖。
- *  路径决策（v1.1）：reviewer 输出是 SSoT 衍生制品，住 docs/reviews/（git 跟踪），不在 .ddt/ transient。 */
+ *  路径决策：reviewer 输出是 SSoT 衍生制品，住 docs/reviews/（git 跟踪），不在 .ddt/ transient。 */
 export function isValidReviewOutput(obj) {
   if (!obj || typeof obj !== 'object') return { ok: false, reason: '非对象' };
   for (const k of ['task_id', 'reviewer_role', 'verdict', 'ts']) {

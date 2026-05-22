@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -74,8 +74,25 @@ test('ddt-doctor 在非 plugin root 跑：项目状态段 [B] 应反映 cwd 实�
     assert.match(r.stdout, /✗ docs\/api/);
     // transient
     assert.match(r.stdout, /✗ \.ddt\/state\/current\.json/);
-    // .gitattributes union merge 校验
-    assert.match(r.stdout, /\.ddt\/decisions\.jsonl.*merge=union|gitattributes.*union/);
+    // .gitattributes 缺失时应输出缺失提示
+    assert.match(r.stdout, /缺失|建议从 plugin 复制/);
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test('ddt-doctor .gitattributes union merge 检查：decisions + changelog 均配置时显示 ✓', () => {
+  const tmp = mkdtempSync(path.join(tmpdir(), 'ddt-doctor-ga-test-'));
+  try {
+    // 写含两条 merge=union 的 .gitattributes
+    writeFileSync(path.join(tmp, '.gitattributes'), [
+      '.ddt/decisions.jsonl merge=union',
+      '.ddt/changelog.jsonl merge=union',
+    ].join('\n'));
+    const r = spawnSync('node', [script], { cwd: tmp, encoding: 'utf8' });
+    assert.equal(r.status, 0);
+    // 两条 union 都配置时，doctor 应显示 ✓ 且输出中含 union 标记
+    assert.match(r.stdout, /✓.*\.gitattributes.*merge=union|✓.*\.jsonl.*union/);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }

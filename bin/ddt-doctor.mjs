@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// DDT v1.0 doctor：健康检查。分两段：
+// DDT doctor：健康检查。分两段：
 //   [A] plugin 自身健康（hooks.json 注册 / bin 文件 / skill 文件）—— 路径用 __dirname 解析，不依赖 cwd
 //   [B] 当前项目 DDT 状态（cwd 下 .git / .ddt/ / metrics 文件）—— 路径用 cwd
 // 零依赖。
@@ -89,8 +89,10 @@ console.log('  [多人协作支持]');
 const gaPath = path.join(cwd, '.gitattributes');
 let gaContent = '';
 try { gaContent = readFileSync(gaPath, 'utf8'); } catch { /* 文件不存在 */ }
-const hasDdtUnionMerge = gaContent.includes('.ddt/decisions.jsonl') && gaContent.includes('merge=union');
-console.log(`  ${hasDdtUnionMerge ? '✓' : '·'} .gitattributes .ddt/decisions.jsonl merge=union  ${hasDdtUnionMerge ? '（jsonl 并发追加自动合并）' : '（缺失：建议从 plugin 复制模板。两人并发 append decisions/changelog 会撞 git conflict）'}`);
+const hasDecisionsUnion = /\.ddt\/decisions\.jsonl[^\n]*merge=union/.test(gaContent);
+const hasChangelogUnion = /\.ddt\/changelog\.jsonl[^\n]*merge=union/.test(gaContent);
+const hasDdtUnionMerge = hasDecisionsUnion && hasChangelogUnion;
+console.log(`  ${hasDdtUnionMerge ? '✓' : '·'} .gitattributes .ddt/*.jsonl merge=union  ${hasDdtUnionMerge ? '（decisions + changelog 并发追加自动合并）' : '（缺失：建议从 plugin 复制模板。两人并发 append decisions/changelog 会撞 git conflict）'}`);
 console.log('');
 console.log('  [.gitignore 外科白名单]');
 const giPath = path.join(cwd, '.gitignore');

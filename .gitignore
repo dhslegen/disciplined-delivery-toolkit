@@ -4,7 +4,7 @@ node_modules/
 
 # .ddt/ 默认 transient（state / metrics / v0.x 残留 progress.json 等），
 # 但 SSoT 真相 decisions.jsonl / changelog.jsonl 必入 git——外科白名单放行这两个。
-# 用 .ddt/ 不带前导斜杠以同时兜住任意嵌套位置（如误写到 skills/.ddt/）。
+# .ddt/ 含斜杠，仅匹配仓根的 .ddt/；嵌套路径如 skills/.ddt/ 不受此规则影响。
 .ddt/*
 !.ddt/decisions.jsonl
 !.ddt/changelog.jsonl
