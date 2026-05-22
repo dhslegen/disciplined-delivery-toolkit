@@ -2,9 +2,10 @@
 // 不测业务，只测"hook 的 stdout 是否严格符合 Claude Code wire format"。
 // 这层测试存在的理由：v1.0 之前测试只断言 out.decision === 'block'，
 // 但实际协议要求 PreToolUse 用 hookSpecificOutput.permissionDecision，
-// 这层断空白导致 IL-3/4/5 在 dogfood 真实环境完全失效。
+// 这层断空白导致 IL-5 在 dogfood 真实环境完全失效。
 //
 // 协议来源：https://code.claude.com/docs/en/hooks（2026 起版本）
+// Phase C 起：enforce 仅处理 PreToolUse + IL-5，Stop 注册已删除。
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -71,36 +72,19 @@ test('契约 PreToolUse · allow 路径输出严格合法', () => {
   assert.ok(!('decision' in out), 'PreToolUse allow 不应有顶层 decision 字段');
 });
 
-test('契约 PreToolUse · deny 路径输出严格合法（IL-4）', () => {
+test('契约 PreToolUse · deny 路径输出严格合法（IL-5 PASS 无 cited_evidence）', () => {
   const out = run({
     hook_event_name: 'PreToolUse',
-    ddt_intent: 'build-edit',
-    tool_name: 'Edit',
-    tool_input: { file_path: 'docs/api/x.yaml' },
-    ddt_test_changelog: ''
+    tool_name: 'Write',
+    tool_input: {
+      file_path: 'docs/reviews/T1-spec.json',
+      content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":[],"ts":"2026-05-20T00:00:00Z"}'
+    }
   });
   assertSchemaValid(out, 'PreToolUse');
   assert.equal(out.hookSpecificOutput?.permissionDecision, 'deny');
-  assert.match(out.hookSpecificOutput?.permissionDecisionReason ?? '', /IL-4/);
+  assert.match(out.hookSpecificOutput?.permissionDecisionReason ?? '', /IL-5/);
   assert.ok(!('decision' in out), 'PreToolUse deny 不应有顶层 decision 字段');
-});
-
-test('契约 Stop · allow 路径输出严格合法', () => {
-  const out = run({ hook_event_name: 'Stop' });
-  assertSchemaValid(out, 'Stop');
-  // Stop allow = 省略 decision 字段
-  assert.ok(!('decision' in out), 'Stop allow 必须省略 decision 字段');
-});
-
-test('契约 Stop · block 路径输出严格合法（IL-6）', () => {
-  const out = run({
-    hook_event_name: 'Stop',
-    ddt_intent: 'enter-deliver',
-    ddt_test_decisions: '{"gate":"s","slice":"x","status":"pending","ref":"t1"}\n'
-  });
-  assertSchemaValid(out, 'Stop');
-  assert.equal(out.decision, 'block');
-  assert.match(out.reason ?? '', /IL-6/);
 });
 
 test('契约 · 不输出非法 "allow" 顶层 decision 值', () => {
@@ -108,7 +92,6 @@ test('契约 · 不输出非法 "allow" 顶层 decision 值', () => {
   // 反向测：扫描多种 allow 场景，确认无一返回 { decision: 'allow' }。
   const cases = [
     { hook_event_name: 'PreToolUse', tool_name: 'Read', tool_input: { file_path: 'x' } },
-    { hook_event_name: 'Stop' },
     { hook_event_name: 'PreToolUse', tool_name: 'Write', tool_input: { file_path: 'normal/file.ts' } }
   ];
   for (const ev of cases) {
@@ -117,11 +100,4 @@ test('契约 · 不输出非法 "allow" 顶层 decision 值', () => {
       assert.notEqual(out.decision, 'allow', `event ${ev.hook_event_name}: 不得返回 { decision: 'allow' }（协议不支持）`);
     }
   }
-});
-
-test('契约 · 不输出 reason 当 decision 是 allow（Stop 路径）', () => {
-  // Stop allow 应当完全省略 decision + reason，避免 wire format 携带误导字段
-  const out = run({ hook_event_name: 'Stop' });
-  assert.ok(!('decision' in out));
-  assert.ok(!('reason' in out));
 });
