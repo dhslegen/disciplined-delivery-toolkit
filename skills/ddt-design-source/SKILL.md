@@ -50,7 +50,8 @@ description: Use on demand for a frontend slice whose convergence target is judg
 
 ## 与其他 skill 的关系
 
-- 上游：`ddt-brainstorming`（产 spec）、`ddt-design-checkpoint`（契约影响面判断）
+- 上游：`ddt-brainstorming`（产 spec）
+- 可选参考：`ddt-design-checkpoint`——如已完成 Checkpoint，其 `docs/api/` 产物作为 Export 步的约束输入
 - 摄取后继续：`ddt-writing-plans` + `ddt-subagent-driven`
 - 审查：`ddt-requesting-review`
 
