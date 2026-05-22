@@ -76,7 +76,7 @@ test('契约 PreToolUse · deny 路径输出严格合法（IL-4）', () => {
     hook_event_name: 'PreToolUse',
     ddt_intent: 'build-edit',
     tool_name: 'Edit',
-    tool_input: { file_path: 'docs/ssot/openapi/x.yaml' },
+    tool_input: { file_path: 'docs/api/x.yaml' },
     ddt_test_changelog: ''
   });
   assertSchemaValid(out, 'PreToolUse');

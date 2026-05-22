@@ -58,7 +58,6 @@ test('契约 bin/ddt-doctor.mjs · 三段标题结构稳定', () => {
 test('契约 bin/ddt-report.mjs · exit 0 + 写 docs/efficiency-report.md', () => {
   const dir = freshDir();
   mkdirSync(path.join(dir, '.ddt/metrics'), { recursive: true });
-  mkdirSync(path.join(dir, 'docs/ssot'), { recursive: true });
   const r = spawnSync('node', [bin('ddt-report.mjs')], { cwd: dir, encoding: 'utf8' });
   assert.equal(r.status, 0);
   assert.match(r.stdout, /wrote docs\/efficiency-report\.md/, 'stdout 必须告知写文件路径');

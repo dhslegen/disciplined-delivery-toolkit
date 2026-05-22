@@ -1,1 +1,1 @@
-{"kind":"escalation","paths":["docs/ssot/openapi/user.yaml"],"reason":"契约缺字段，弹回设计","ts":"2026-05-20T01:00:00Z"}
+{"kind":"escalation","paths":["docs/api/user.yaml"],"reason":"契约缺字段，弹回设计","ts":"2026-05-20T01:00:00Z"}
