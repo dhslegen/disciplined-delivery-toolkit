@@ -3,7 +3,7 @@
 // 纯确定性事实镜头，不做判断/不写文件。
 //
 // 多人协作：增 in_progress_slices 字段，从 git for-each-ref 反推 slice 分支可见性
-// "谁在做什么切片"（按 slice/<id> branch 命名约定，详见 charter）。
+// "谁在做什么切片"（按 slice/<id> branch 命名约定，详见 using-ddt 路径约定）。
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { readDecisions } from './lib/ddt-facts.mjs';
