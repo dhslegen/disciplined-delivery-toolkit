@@ -11,8 +11,8 @@ const script = path.join(root, 'bin/ddt-status.mjs');
 
 function runIn(setup) {
   const dir = mkdtempSync(path.join(os.tmpdir(), 'ddt-st-'));
-  // SSoT 路径（v1.1）：framework-recommended SSoT 在 docs/ssot/；衍生制品在 docs/{specs,plans,reviews}
-  mkdirSync(path.join(dir, 'docs/ssot'), { recursive: true });
+  // SSoT 路径：SSoT 真相在 .ddt/；衍生制品在 docs/{specs,plans,reviews}
+  mkdirSync(path.join(dir, '.ddt'), { recursive: true });
   mkdirSync(path.join(dir, 'docs/specs'), { recursive: true });
   mkdirSync(path.join(dir, 'docs/plans'), { recursive: true });
   if (setup) setup(dir);
@@ -31,7 +31,7 @@ test('ddt-status：空仓返回基线结构', () => {
 
 test('ddt-status：列 pending decisions（未 resolved）', () => {
   const { out } = runIn(dir => {
-    writeFileSync(path.join(dir, 'docs/ssot/decisions.jsonl'),
+    writeFileSync(path.join(dir, '.ddt/decisions.jsonl'),
       '{"status":"pending","gate":"design","ts":"t1"}\n{"status":"resolved","ref":"t1","ts":"t2"}\n{"status":"pending","gate":"build","ts":"t3"}\n');
   });
   assert.equal(out.pending_decisions.length, 1);

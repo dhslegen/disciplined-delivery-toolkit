@@ -34,12 +34,12 @@ function headMessage(ev) {
 }
 function decisionsText(ev) {
   if (typeof ev.ddt_test_decisions === 'string') return ev.ddt_test_decisions;
-  // SSoT 路径决策（v1.1）：framework-recommended SSoT 住 docs/ssot/；.ddt/ 仅 transient
-  try { return readFileSync('docs/ssot/decisions.jsonl', 'utf8'); } catch { return ''; }
+  // SSoT 路径：SSoT 真相住 .ddt/，入 git（外科白名单）
+  try { return readFileSync('.ddt/decisions.jsonl', 'utf8'); } catch { return ''; }
 }
 function changelogText(ev) {
   if (typeof ev.ddt_test_changelog === 'string') return ev.ddt_test_changelog;
-  try { return readFileSync('docs/ssot/changelog.jsonl', 'utf8'); } catch { return ''; }
+  try { return readFileSync('.ddt/changelog.jsonl', 'utf8'); } catch { return ''; }
 }
 // 内部决定结构（便于 decide() 单元可读 + 测试），不是 Claude Code wire format。
 // wire format 由 formatOutput(ev, decided) 按 hook_event_name 适配输出。
@@ -97,16 +97,16 @@ export function decide(ev) {
     let fp = ev.tool_input && typeof ev.tool_input.file_path === 'string' ? ev.tool_input.file_path : '';
     if (fp.startsWith('./')) fp = fp.slice(2); // 剥 ./ 前缀
     const fpLower = fp.toLowerCase();
-    // SSoT 路径硬清单：与 charter §SSoT 路径地图一一对应
+    // SSoT 路径硬清单：与路径地图一一对应
     //   docs/specs/            —— 设计 spec 集合（SSoT 真相，多文件平等）
-    //   docs/ssot/openapi/     —— 契约（SSoT 铁律链次层）
+    //   docs/api/              —— 契约（SSoT 铁律链次层）
     //   docs/plans/            —— 切片 plan（SSoT 派生，下层不私改）
     // decisions.jsonl / changelog.jsonl 走 append-only 专用 bin，不直接 Edit/Write，不在此清单
-    const PROTECTED = ['docs/specs/', 'docs/ssot/openapi/', 'docs/plans/'];
+    const PROTECTED = ['docs/specs/', 'docs/api/', 'docs/plans/'];
     if (fp && PROTECTED.some(pre => fpLower.startsWith(pre))) {
       const tp = [fp];
       if (!hasEscalationFor(changelogText(ev), tp)) {
-        return block(`IL-4 违规：build 上下文试图修改受保护路径 ${tp.join(',')}（属设计 spec/契约/plan SSoT），且 docs/ssot/changelog.jsonl 无对应 escalation 记录。下层不得私改上层 SSoT——先写 escalation 走变更门。`);
+        return block(`IL-4 违规：build 上下文试图修改受保护路径 ${tp.join(',')}（属设计 spec/契约/plan SSoT），且 .ddt/changelog.jsonl 无对应 escalation 记录。下层不得私改上层 SSoT——先写 escalation 走变更门。`);
       }
     }
   }
