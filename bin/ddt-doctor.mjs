@@ -9,7 +9,7 @@ import path from 'node:path';
 
 const REQUIRED_HOOKS = ['ddt:inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end'];
 const REQUIRED_BINS = ['ddt-status.mjs', 'ddt-contract-lint.mjs', 'ddt-report.mjs', 'ddt-decisions-append.mjs', 'ddt-changelog-append.mjs', 'resolve-tech-stack.mjs', 'ddt-hook-preflight.mjs'];
-const KEY_SKILLS = ['using-ddt', 'ddt-brainstorming', 'ddt-design', 'ddt-impl-spec', 'ddt-deliver'];
+const KEY_SKILLS = ['using-ddt', 'ddt-brainstorming', 'ddt-design-checkpoint', 'ddt-deliver', 'ddt-design-source'];
 
 // 解析 plugin root（bin/ 的父目录）——不依赖 cwd
 const pluginRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');

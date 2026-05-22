@@ -35,9 +35,9 @@ test('/ddt-status 命令含 IL-7 反推语义', () => {
   assert.match(s, /仅读不写|不推进、不改|绝不/);
 });
 
-test('ddt-design 契约 lint 引用 bin/ddt-contract-lint.mjs（已激活）', () => {
-  const s = readFileSync(path.join(root, 'skills/ddt-design/SKILL.md'), 'utf8');
-  assert.match(s, /ddt-contract-lint\.mjs/);
-  assert.match(s, /exit=0/);
+test('ddt-design-checkpoint 含七问 Design Checkpoint 且路径引用正确', () => {
+  const s = readFileSync(path.join(root, 'skills/ddt-design-checkpoint/SKILL.md'), 'utf8');
+  assert.match(s, /writing-plans/);
+  assert.match(s, /docs\/api/);
   assert.doesNotMatch(s, /待激活/);
 });

@@ -49,7 +49,7 @@ description: DDT v1.0 万能驱动闸门。无文本：重算 repo 状态推进�
 **为各意图配 ddt_intent 字段**（强制层 hook 读这个字段判 IL）：
 - `genesis` / `new-feature` / `amend` → `ddt_intent` 暂不设（属需求站，不在 build 上下文）
 - `bug` → 装载 `ddt-systematic-debugging` skill 并设 `ddt_intent='debug'`
-- `refactor` → `ddt_intent='refactor'`，进 `ddt-impl-spec` 走重构子句
+- `refactor` → `ddt_intent='refactor'`，进 `ddt-writing-plans` 走重构路径
 - `rerun-slice` → `ddt_intent='enter-spec'` 或 `'enter-plan'`/`'enter-impl'`（视用户文本中是否提到具体阶段）+ 设 `ddt_slice=<切片 id>`
 
 ## 3. 写 `.ddt/state/current.json`（命令→hook 字段桥）

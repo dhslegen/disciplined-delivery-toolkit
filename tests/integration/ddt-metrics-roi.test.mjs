@@ -21,9 +21,10 @@ test('hooks.json 注册了 metrics-post + metrics-end', () => {
   assert.ok(ids.has('ddt:metrics-end'));
 });
 
-test('ddt-deliver SKILL.md ROI 段已激活（Plan 5 已落地）', () => {
+test('ddt-deliver SKILL.md ROI 段已激活（bin/ddt-report.mjs 已就位）', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-deliver/SKILL.md'), 'utf8');
-  assert.match(s, /激活状态.*Plan 5 已落地/);
+  // Phase D 重设计后：ddt-deliver 转为按需收口，ROI 报告通过 bin/ddt-report.mjs 按需产出
+  assert.match(s, /ddt-report\.mjs/);
   assert.doesNotMatch(s, /\*\*待激活\*\*：报告生成由 Plan 5 度量层实现/);
 });
 
