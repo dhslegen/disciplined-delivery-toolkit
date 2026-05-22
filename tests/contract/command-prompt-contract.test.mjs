@@ -59,7 +59,7 @@ test('契约 commands/ddt.md · 必须解释三种入口（向导语义）', () 
 
 test('契约 commands/ddt.md · 必须含向导建议语义（不拦截）', () => {
   const md = readCmd('ddt');
-  assert.match(md, /建议|suggest|不拦截|可跳过|可无视|直接动手/,
+  assert.match(md, /不拦截|可无视|直接动手|给建议.*不拦截/,
     '/ddt 必须明示这是建议而非强制拦截');
 });
 
@@ -71,8 +71,8 @@ test('契约 commands/ddt.md · 必须指向 superpowers 原生链路', () => {
 
 test('契约 commands/ddt.md · 不得含强制意图分类路由口吻', () => {
   const md = readCmd('ddt');
-  assert.doesNotMatch(md, /按宪法.*意图分类|意图分类强制|必须先 spec|5 站脊柱/,
-    '/ddt 不得有"按宪法意图分类"或"5 站脊柱"等强制流程口吻');
+  assert.doesNotMatch(md, /意图分类|必须先 spec|5 站脊柱/,
+    '/ddt 不得有"意图分类"或"5 站脊柱"等强制流程口吻');
 });
 
 test('契约 commands/ddt.md · 不得含 docs/ssot 旧路径', () => {

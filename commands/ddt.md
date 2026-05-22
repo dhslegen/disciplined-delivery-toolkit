@@ -37,7 +37,7 @@ ddt-status.mjs 2>/dev/null \
 
 - **像大需求**（模糊/跨模块/大/多人）→ 建议先用 superpowers 链路把它当文档资产实现：`brainstorming` 理解切片思路 → `writing-plans` 计划如何产出 → implementation 写出 `docs/requirements/` + `docs/briefs/` → review 审查是否 bite-size。
 
-- **已有 brief 或 design spec**→ 建议 brainstorming（确认方向）→ Design Checkpoint（`ddt-design-checkpoint`，七问过闸，简单任务可直接跳过）→ `writing-plans` → implementation → review。
+- **已有 brief 或 design spec** → 建议 brainstorming（确认方向）→ Design Checkpoint（`ddt-design-checkpoint`，七问过闸，简单任务可直接跳过）→ `writing-plans` → implementation → review。
 
 结尾明示：**「以上是建议，非强制流程。要直接动手请忽略向导，选你认为合适的 superpowers skill 开始即可。」**
 
@@ -54,6 +54,6 @@ ddt-status.mjs 2>/dev/null \
 
 如果需要查看完整路径地图或 hook 注册状态，运行 `ddt-doctor.mjs`（含 [B] 段权威路径清单）。
 
-## 结尾建议
+## 相关命令
 
 跑 `/ddt-status` 看 repo 当前进度快照（只读不写，从 git + decisions + spec/plan 反推）。
