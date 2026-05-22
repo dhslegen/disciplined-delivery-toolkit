@@ -33,3 +33,4 @@ test('reviewer 输出规范：using-ddt 含 cited_evidence 字段约束 + JSON S
   const sch = JSON.parse(readFileSync(path.join(root, 'bin/schema/review-output.schema.json'), 'utf8'));
   assert.equal(sch.title, 'DDT Reviewer Output');
 });
+

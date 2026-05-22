@@ -6,16 +6,16 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const charterPath = path.resolve(here, '../../skills/using-ddt/SKILL.md');
+const skillPath = path.resolve(here, '../../skills/using-ddt/SKILL.md');
 
-let charter;
+let content;
 try {
-  charter = readFileSync(charterPath, 'utf8');
+  content = readFileSync(skillPath, 'utf8');
 } catch {
   process.stdout.write(JSON.stringify({ continue: true, suppressOutput: true }));
   process.exit(0);
 }
-const wrapped = '<EXTREMELY_IMPORTANT>\n' + charter + '\n</EXTREMELY_IMPORTANT>';
+const wrapped = '<EXTREMELY_IMPORTANT>\n' + content + '\n</EXTREMELY_IMPORTANT>';
 process.stdout.write(JSON.stringify({
   continue: true,
   suppressOutput: true,
