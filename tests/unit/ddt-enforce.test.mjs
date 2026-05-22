@@ -98,7 +98,7 @@ test('IL-5 加固：MultiEdit/NotebookEdit 写 reviews PASS 无 cited 同样 blo
 
 // === 非 reviews 路径全部 allow（不误伤）===
 
-test('非完成声明事件 → allow（不误伤）', () => {
+test('Read/普通工具调用不触发 IL-5 → allow（不误伤）', () => {
   const r = run({ hook_event_name: 'PreToolUse', tool_name: 'Read', tool_input: { file_path: 'src/foo.ts' } });
   assert.ok(r.isAllow(), 'should allow');
 });

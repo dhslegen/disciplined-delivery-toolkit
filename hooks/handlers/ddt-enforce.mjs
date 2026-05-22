@@ -20,6 +20,7 @@ export function formatOutput(ev, decided) {
     }
     return { hookSpecificOutput: { hookEventName: 'PreToolUse', permissionDecision: 'allow' } };
   }
+  // 防御性兜底：本 hook 仅注册于 PreToolUse，此分支理论不可达
   if (decided.decision === 'block') return { decision: 'block', reason: decided.reason };
   return {};
 }
