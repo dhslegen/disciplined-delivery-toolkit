@@ -133,7 +133,7 @@ console.log('');
 console.log('  强制层（L2）是否降级，**只看 plugin 自身健康段 [A] 是否齐全**。');
 console.log('');
 console.log('  ✓ 若 [A] 段全部 ✓ → 强制层 hook 已注册到 Claude Code runtime，IL-5 硬闸生效（L2 全效）。');
-console.log('  ✗ 若 [A] 段任一 ✗ → 对应 hook 降级，按 using-ddt「hook 缺失降级声明」标注。');
+console.log('  ✗ 若 [A] 段任一 ✗ → 纪律降级为建议级，参各 skill 底部「DDT 强制层声明」。');
 console.log('');
 console.log('  **绝不**通过看用户的 .claude/settings.local.json 是否有 hooks 段来判定！');
 console.log('  plugin hooks 注册在 plugin 自己的 hooks/hooks.json，不在用户 settings。');
@@ -145,7 +145,7 @@ console.log('  state 桥（命令→hook 字段桥）的跨进程行为只能在
 console.log('  1. 装本 plugin 到 Claude Code');
 console.log('  2. 启会话敲 /ddt 帮我做一个测试项目');
 console.log('  3. 看 .ddt/state/current.json 是否被 /ddt 写出');
-console.log('  4. 触发任一工具调用，看 hook 是否读 state 并 enforce IL');
+console.log('  4. 触发任一工具调用，看 hook 是否读 state 并 enforce IL-5');
 console.log('  5. 跑 ddt-doctor.mjs 复检健康，跑 ddt-report.mjs 看 ROI 报告');
 console.log('');
 console.log('如以上任一不通，参 plan4-activation 与 plan5-metrics-roi 实施计划排查。');

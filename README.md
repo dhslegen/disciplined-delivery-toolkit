@@ -12,7 +12,7 @@
 
 ## 是什么
 
-DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，在 **[obra/superpowers](https://github.com/obra/superpowers) 工程纪律基底**旁边增加四项轻量治理增强：大需求先变小、设计进计划前过闸、需要交付时再收口、决策/变更账本留痕。
+DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，在 **[obra/superpowers](https://github.com/obra/superpowers) 工程纪律基底**旁边增加四项轻量治理增强：大需求先变小、小问题用 superpowers 做深、设计进计划前过闸、需要交付时再收口。
 
 **DDT 在 superpowers 边上，不替代它，不垄断入口。** superpowers 的 `brainstorming → writing-plans → implementation → review` 是微观主链路，DDT 不打断它。
 
@@ -38,7 +38,7 @@ DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，在 **[obra
 
 | 维度 | 裸 Claude Code | superpowers | **DDT** |
 |------|---------------|-------------|---------|
-| 写代码节奏 | 自由（容易跳过测试） | TDD 纪律（brainstorm → plan → implement） | TDD 纪律（**继承 superpowers**） |
+| 写代码节奏 | 自由（容易跳过测试） | TDD 纪律（brainstorm → plan → implement → review） | TDD 纪律（**继承 superpowers**） |
 | 团队协作 | 无规约 | 弱（个人开发友好） | **决策/变更账本 + 多切片协作** |
 | 决策可追溯 | 散落在对话里 | 部分 | **`.ddt/decisions.jsonl` + `.ddt/changelog.jsonl`** |
 | 设计进计划前 | 无门控 | 无 | **Design Checkpoint（七问习惯）** |
@@ -94,7 +94,7 @@ gh api repos/dhslegen/disciplined-delivery-toolkit/commits/main --jq .sha[0:7]
 /reload-plugins
 ```
 
-> alpha 阶段高频更新。如发现 hook 报错或 IL 失效，先 `/plugin marketplace update` + `/reload-plugins` 再排查。stable 发布时切回语义版本（`1.0.0`、`1.0.1`...），届时 bump 才意味着新版。
+> alpha 阶段高频更新。如发现 hook 报错或 IL-5 失效，先 `/plugin marketplace update` + `/reload-plugins` 再排查。stable 发布时切回语义版本（`1.0.0`、`1.0.1`...），届时 bump 才意味着新版。
 
 ---
 
