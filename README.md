@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Node](https://img.shields.io/badge/Node-%E2%89%A522-43853d.svg)](./package.json)
 [![Status](https://img.shields.io/badge/Status-v1.0--alpha-blue.svg)](./docs/specs/2026-05-22-ddt-superpowers-faithful-redesign-design.md)
-[![Tests](https://img.shields.io/badge/Tests-130%2F130%20passing-brightgreen.svg)](./tests)
+[![Tests](https://img.shields.io/badge/Tests-passing-brightgreen.svg)](./tests)
 
 ---
 
@@ -214,7 +214,7 @@ disciplined-delivery-toolkit/
 │   ├── ddt-hook-preflight.mjs
 │   ├── ddt-report.mjs       ← ROI 报告生成
 │   └── ddt-doctor.mjs       ← 健康检查
-├── tests/                   ← node --test，零依赖，130 用例
+├── tests/                   ← node --test，零依赖，全量绿
 │   ├── unit/
 │   └── integration/
 ├── docs/
