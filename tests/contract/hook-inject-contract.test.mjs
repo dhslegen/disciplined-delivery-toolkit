@@ -64,6 +64,19 @@ test('契约 SessionStart · additionalContext 含 using-ddt 关键指纹', () =
   }
 });
 
+test('契约 SessionStart · additionalContext 含 skill 点火铁律（DDT 力量来源，防回归）', () => {
+  // using-ddt 的命脉：照搬 superpowers「哪怕 1% 可能适用就绝对必须 invoke」的强制铁律。
+  // 没有它，vendored skill 不会自动触发，DDT 退化为哑文档。这段绝不可被"精简"删掉。
+  const { out } = run({ hook_event_name: 'SessionStart' });
+  const ac = out.hookSpecificOutput.additionalContext;
+  assert.match(ac, /1%/, '须含「1%」强制阈值');
+  assert.match(ac, /绝对必须|必须先 invoke/, '须含强制 invoke 措辞');
+  assert.match(ac, /用户显式指令/, '须含指令优先级');
+  for (const trigger of ['ddt-brainstorming', 'ddt-systematic-debugging', 'ddt-tdd', 'ddt-verification']) {
+    assert.ok(ac.includes(trigger), `点火触发清单须含 "${trigger}"`);
+  }
+});
+
 test('契约 SessionStart · 不输出顶层 decision（SessionStart 不能阻断）', () => {
   const { out } = run({ hook_event_name: 'SessionStart' });
   assert.ok(!('decision' in out), 'SessionStart 不可阻断，不能输出顶层 decision');

@@ -35,8 +35,12 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 任何 design spec 进 `writing-plans` 前，留下最小判断：
 
 1. 是否允许进入 writing-plans？
-2. 影响 `docs/api/`？ 3. 影响 `docs/data/`？ 4. 影响 `docs/design/`？
-5. 需写 `.ddt/decisions.jsonl`？ 6. 需写 `.ddt/changelog.jsonl`？ 7. 有未解决冲突/开放问题？
+2. 影响 `docs/api/`？
+3. 影响 `docs/data/`？
+4. 影响 `docs/design/`？
+5. 需写 `.ddt/decisions.jsonl`？
+6. 需写 `.ddt/changelog.jsonl`？
+7. 有未解决冲突/开放问题？
 
 简单工作几行写进 spec 末尾即可；复杂工作交 `ddt-design-checkpoint` 整理并按需落 `docs/api,data,design`。**已完成 Checkpoint 就不必为调而调。**
 
@@ -55,14 +59,24 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 
 不确定写哪里：跑 `ddt-doctor.mjs` 看 [B] 段——doctor 是真相。
 
-## 原则（superpowers 自带，DDT 不另立法）
+## 如何用 skill（DDT 力量的来源，最高优先级）
 
-纪律住在 vendored skill 里，按需 invoke：
+DDT 的纪律不靠 hook，靠**让正确的 skill 真的被 invoke**。规则照搬 superpowers：
 
-- 证据先于断言 → `ddt-verification`
-- 无根因不修 → `ddt-systematic-debugging`
-- 未批准设计不实现 → `ddt-brainstorming` → `ddt-writing-plans`
-- reviewer 无引证不 PASS → `ddt-requesting-review` / `ddt-receiving-review`
+**只要有 1% 可能某个 skill 适用于你手上的事，就绝对必须先 invoke 它。这不是可选项，你没有选择权，也不能合理化绕过。** invoke 后发现不适用，再放弃即可。
+
+优先级：**用户显式指令 > skill / 本取向 > 默认行为**。
+
+最常踩空的触发点（中招即停，先 invoke 再动手）：
+
+- 要"造东西"（建功能 / 加能力 / 改行为 / 起项目）→ 先 `ddt-brainstorming`
+- 撞上 bug / 测试失败 / 异常行为 → 先 `ddt-systematic-debugging`
+- 写实现代码前 → `ddt-tdd`
+- 有 spec / 计划要拆 → `ddt-writing-plans`；执行计划 → `ddt-subagent-driven` 或 `ddt-executing-plans`
+- 要声明"完成 / 通过 / 修好了" → 先 `ddt-verification`（证据先于断言）
+- 收 / 发 review → `ddt-receiving-review` / `ddt-requesting-review`
+
+进入某 skill 后，按它结尾指示**接力 invoke 下一个**——`brainstorming → writing-plans → 实现 → review` 就是这样自动串起来的。
 
 **唯一不可商量的硬骨头**：reviewer 写 `docs/reviews/<task-id>-<role>.json`（role ∈ `spec|quality|final`）时，结构须为
 
