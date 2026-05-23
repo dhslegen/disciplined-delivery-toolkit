@@ -21,9 +21,10 @@ test('hooks.json 注册了 metrics-post + metrics-end', () => {
   assert.ok(ids.has('ddt:metrics-end'));
 });
 
-test('ddt-deliver SKILL.md ROI 段已激活（Plan 5 已落地）', () => {
+test('ddt-deliver SKILL.md ROI 段已激活（bin/ddt-report.mjs 已就位）', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-deliver/SKILL.md'), 'utf8');
-  assert.match(s, /激活状态.*Plan 5 已落地/);
+  // Phase D 重设计后：ddt-deliver 转为按需收口，ROI 报告通过 bin/ddt-report.mjs 按需产出
+  assert.match(s, /ddt-report\.mjs/);
   assert.doesNotMatch(s, /\*\*待激活\*\*：报告生成由 Plan 5 度量层实现/);
 });
 
@@ -38,7 +39,7 @@ test('ddt-doctor 输出可解析的健康报告（5 关键 hook）', () => {
   const r = spawnSync('node', [path.join(root, 'bin/ddt-doctor.mjs')], { cwd: root, encoding: 'utf8' });
   assert.equal(r.status, 0);
   assert.match(r.stdout, /DDT doctor/);
-  for (const id of ['ddt:charter-inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end']) {
+  for (const id of ['ddt:inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end']) {
     assert.match(r.stdout, new RegExp(id));
   }
 });

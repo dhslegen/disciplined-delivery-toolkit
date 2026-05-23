@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -17,9 +17,9 @@ test('ddt-doctor：仓内运行 exit 0 + 输出 doctor 标题', () => {
   assert.match(r.stdout, /bin\//);
 });
 
-test('ddt-doctor：列出 5 个关键 hook id 注册状态', () => {
+test('ddt-doctor：列出 4 个关键 hook id 注册状态（Stop 已删除）', () => {
   const r = spawnSync('node', [script], { cwd: root, encoding: 'utf8' });
-  for (const id of ['ddt:charter-inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end']) {
+  for (const id of ['ddt:inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end']) {
     assert.match(r.stdout, new RegExp(id));
   }
 });
@@ -44,8 +44,8 @@ test('ddt-doctor 在非 plugin root 跑：plugin 自身健康段 [A] 应全 ✓'
   try {
     const r = spawnSync('node', [script], { cwd: tmp, encoding: 'utf8' });
     assert.equal(r.status, 0);
-    // plugin 自身 5 个 hook id 仍应被识别（路径解析靠 __dirname 而非 cwd）
-    for (const id of ['ddt:charter-inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end']) {
+    // plugin 自身 4 个 hook id 仍应被识别（路径解析靠 __dirname 而非 cwd，Stop 已删除）
+    for (const id of ['ddt:inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end']) {
       assert.match(r.stdout, new RegExp(`✓ ${id}`), `[A] 段应识别 ${id}（不受 cwd 影响）`);
     }
     // plugin bin 全部 ✓
@@ -63,20 +63,36 @@ test('ddt-doctor 在非 plugin root 跑：项目状态段 [B] 应反映 cwd 实�
   try {
     const r = spawnSync('node', [script], { cwd: tmp, encoding: 'utf8' });
     assert.equal(r.status, 0);
-    // 空目录下应明确报告 .git/ + SSoT 4 件 + 衍生制品 + transient 都 ✗
+    // 空目录下应明确报告 .git/ + SSoT 件 + 衍生制品 + transient 都 ✗
     assert.match(r.stdout, /✗ \.git\//);
-    // SSoT 路径（v1.1，撤回 PRD 仪式后）：framework-recommended core
-    //   - docs/specs/（设计 spec 集合）
-    //   - docs/ssot/{decisions,changelog}.jsonl
-    //   - docs/ssot/openapi/
+    // SSoT 路径（新结构）：SSoT 真相住 .ddt/；设计 spec 在 docs/specs/
     assert.match(r.stdout, /✗ docs\/specs/);
-    assert.match(r.stdout, /✗ docs\/ssot\/decisions\.jsonl/);
-    assert.match(r.stdout, /✗ docs\/ssot\/changelog\.jsonl/);
-    assert.match(r.stdout, /✗ docs\/ssot\/openapi/);
-    // 衍生
+    assert.match(r.stdout, /✗ \.ddt\/decisions\.jsonl/);
+    assert.match(r.stdout, /✗ \.ddt\/changelog\.jsonl/);
+    // 衍生：docs/plans + docs/api
     assert.match(r.stdout, /✗ docs\/plans/);
+    assert.match(r.stdout, /✗ docs\/api/);
     // transient
     assert.match(r.stdout, /✗ \.ddt\/state\/current\.json/);
+    // .gitattributes 缺失时应输出缺失提示
+    assert.match(r.stdout, /缺失|建议从 plugin 复制/);
+  } finally {
+    rmSync(tmp, { recursive: true, force: true });
+  }
+});
+
+test('ddt-doctor .gitattributes union merge 检查：decisions + changelog 均配置时显示 ✓', () => {
+  const tmp = mkdtempSync(path.join(tmpdir(), 'ddt-doctor-ga-test-'));
+  try {
+    // 写含两条 merge=union 的 .gitattributes
+    writeFileSync(path.join(tmp, '.gitattributes'), [
+      '.ddt/decisions.jsonl merge=union',
+      '.ddt/changelog.jsonl merge=union',
+    ].join('\n'));
+    const r = spawnSync('node', [script], { cwd: tmp, encoding: 'utf8' });
+    assert.equal(r.status, 0);
+    // 两条 union 都配置时，doctor 应显示 ✓ 且输出中含 union 标记
+    assert.match(r.stdout, /✓.*\.gitattributes.*merge=union|✓.*\.jsonl.*union/);
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }

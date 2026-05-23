@@ -1,21 +1,4 @@
 // DDT 确定性事实提取器。纯函数，无副作用、不调 git，可单测。
-export function parseTrailers(commitMessage) {
-  const out = {};
-  const parts = String(commitMessage).split('\n\n');
-  if (parts.length < 2) return out; // 没有 body 部分，无 trailer
-  
-  // 取最后一个部分作为 trailer 候选
-  const lastPart = parts[parts.length - 1];
-  for (const line of lastPart.split('\n')) {
-    const m = /^([A-Za-z][A-Za-z0-9-]*):\s*(.*)$/.exec(line);
-    if (m) out[m[1].toLowerCase()] = m[2].trim();
-  }
-  return out;
-}
-export function hasEvidenceRef(commitMessage) {
-  const t = parseTrailers(commitMessage);
-  return typeof t['evidence-ref'] === 'string' && t['evidence-ref'].length > 0;
-}
 export function readDecisions(jsonlText) {
   const rows = [];
   for (const line of String(jsonlText).split('\n')) {
@@ -25,40 +8,9 @@ export function readDecisions(jsonlText) {
   }
   return rows;
 }
-export function hasUnresolvedPending(decisions) {
-  const resolved = new Set(
-    decisions.filter(d => d && d.status === 'resolved' && d.ref != null).map(d => String(d.ref))
-  );
-  return decisions.some(d => d && d.status === 'pending' && !resolved.has(String(d.ts)));
-}
-/** changedPaths 是否触及任一 protected 前缀。保留为通用 helper（与 ddt-enforce.mjs 的
- *  IL-4 内联实现并存——ddt-enforce.mjs 内联做了额外的小写化与 ./ 前缀剥离，因此暂未直接
- *  调用此函数；保留作为对外可测的纯 helper，供未来切换为统一实现使用）。 */
-export function pathTouchesProtected(changedPaths, protectedPrefixes) {
-  return changedPaths.some(p => protectedPrefixes.some(pre => String(p).startsWith(pre)));
-}
-/** 切片是否已有 spec 闸门"resolved + approve"决策（IL-3）。 */
-export function hasResolvedSpecApproval(decisions, slice) {
-  return decisions.some(d =>
-    d && d.gate === 'spec' && d.slice === slice
-      && d.status === 'resolved' && d.user_action === 'approve'
-  );
-}
-/** changelog 是否含覆盖给定 paths 的 escalation 记录（IL-4）。
- *  接受原始 jsonl 文本或已解析行数组。 */
-export function hasEscalationFor(changelogJsonlOrRows, paths) {
-  const rows = Array.isArray(changelogJsonlOrRows)
-    ? changelogJsonlOrRows
-    : readDecisions(changelogJsonlOrRows); // 同 jsonl 解析逻辑
-  const want = new Set(paths.map(String));
-  return rows.some(r =>
-    r && r.kind === 'escalation' && Array.isArray(r.paths) &&
-    r.paths.some(p => want.has(String(p)))
-  );
-}
 /** 校验 reviewer 输出对象是否符合 `docs/reviews/*.json` 约定（IL-5）。
  *  返回 {ok:boolean, reason?:string}。手工实现保零依赖。
- *  路径决策（v1.1）：reviewer 输出是 SSoT 衍生制品，住 docs/reviews/（git 跟踪），不在 .ddt/ transient。 */
+ *  路径决策：reviewer 输出是 SSoT 衍生制品，住 docs/reviews/（git 跟踪），不在 .ddt/ transient。 */
 export function isValidReviewOutput(obj) {
   if (!obj || typeof obj !== 'object') return { ok: false, reason: '非对象' };
   for (const k of ['task_id', 'reviewer_role', 'verdict', 'ts']) {

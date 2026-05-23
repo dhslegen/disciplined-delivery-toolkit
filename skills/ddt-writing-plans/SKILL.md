@@ -15,7 +15,7 @@ Assume they are a skilled developer, but know almost nothing about our toolset o
 
 **Context:** If working in an isolated worktree, it should have been created via the `superpowers:using-git-worktrees` skill at execution time.
 
-**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`（DDT v1.1 SSoT 路径：plans 是切片 plan 衍生制品，住 docs/plans/，git 跟踪。不要写 .ddt/plans/ 或 docs/plans/——按 charter SSoT 路径地图。）
+**Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`（DDT SSoT 路径约定：plans 是切片 plan 衍生制品，住 docs/plans/，git 跟踪。不要写 .ddt/plans/ 或其它路径——按 using-ddt 路径地图。）
 
 ## Scope Check
 

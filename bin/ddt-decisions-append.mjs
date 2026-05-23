@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// 追加一条 JSON 到 docs/ssot/decisions.jsonl。stdin 读对象，自动补 ts。
-// SSoT 路径决策（v1.1）：framework-recommended SSoT 真相住 docs/ssot/，与 .ddt/ transient 分离。
+// 追加一条 JSON 到 .ddt/decisions.jsonl。stdin 读对象，自动补 ts。
+// SSoT 路径：SSoT 真相住 .ddt/，与 transient state/metrics 同目录但入 git（白名单）。
 import { readFileSync, appendFileSync, mkdirSync } from 'node:fs';
 
 let raw = '';
@@ -13,6 +13,6 @@ if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
 }
 if (!obj.ts) obj.ts = new Date().toISOString();
 
-mkdirSync('docs/ssot', { recursive: true });
-appendFileSync('docs/ssot/decisions.jsonl', JSON.stringify(obj) + '\n', 'utf8');
+mkdirSync('.ddt', { recursive: true });
+appendFileSync('.ddt/decisions.jsonl', JSON.stringify(obj) + '\n', 'utf8');
 process.exit(0);

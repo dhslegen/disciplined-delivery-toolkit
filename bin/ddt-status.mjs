@@ -2,8 +2,8 @@
 // /ddt-status 用：从 cwd 提取事实（decisions pending、spec/plan 文件存在性、git 切片 branch）。
 // 纯确定性事实镜头，不做判断/不写文件。
 //
-// v1.1 多人协作 Tier 1：增 in_progress_slices 字段，从 git for-each-ref 反推
-// "谁在做什么切片"（按 slice/<id> branch 命名约定，详见 charter）。
+// 多人协作：增 in_progress_slices 字段，从 git for-each-ref 反推 slice 分支可见性
+// "谁在做什么切片"（按 slice/<id> branch 命名约定，详见 using-ddt 路径约定）。
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { readDecisions } from './lib/ddt-facts.mjs';
@@ -72,7 +72,7 @@ function getGitBranches() {
 }
 
 let decisionsText = '';
-try { decisionsText = readFileSync('docs/ssot/decisions.jsonl', 'utf8'); } catch { /* 空仓 */ }
+try { decisionsText = readFileSync('.ddt/decisions.jsonl', 'utf8'); } catch { /* 空仓 */ }
 
 const out = {
   pending_decisions: pendingDecisions(decisionsText),

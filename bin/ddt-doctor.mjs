@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// DDT v1.0 doctor：健康检查。分两段：
+// DDT doctor：健康检查。分两段：
 //   [A] plugin 自身健康（hooks.json 注册 / bin 文件 / skill 文件）—— 路径用 __dirname 解析，不依赖 cwd
 //   [B] 当前项目 DDT 状态（cwd 下 .git / .ddt/ / metrics 文件）—— 路径用 cwd
 // 零依赖。
@@ -7,9 +7,9 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-const REQUIRED_HOOKS = ['ddt:charter-inject', 'ddt:enforce-pre', 'ddt:enforce-stop', 'ddt:metrics-post', 'ddt:metrics-end'];
+const REQUIRED_HOOKS = ['ddt:inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end'];
 const REQUIRED_BINS = ['ddt-status.mjs', 'ddt-contract-lint.mjs', 'ddt-report.mjs', 'ddt-decisions-append.mjs', 'ddt-changelog-append.mjs', 'resolve-tech-stack.mjs', 'ddt-hook-preflight.mjs'];
-const KEY_SKILLS = ['ddt-charter', 'ddt-brainstorming', 'ddt-design', 'ddt-impl-spec', 'ddt-deliver'];
+const KEY_SKILLS = ['using-ddt', 'ddt-brainstorming', 'ddt-design-checkpoint', 'ddt-deliver', 'ddt-design-source'];
 
 // 解析 plugin root（bin/ 的父目录）——不依赖 cwd
 const pluginRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -63,17 +63,23 @@ console.log('## [B] 当前项目 DDT 状态（cwd: ' + cwd + '）');
 console.log('');
 
 console.log('### 项目骨架');
-console.log(`  ${existsSync(path.join(cwd, '.git')) ? '✓' : '✗'} .git/                       （IL-7 进度反推依赖 git 历史）`);
+console.log(`  ${existsSync(path.join(cwd, '.git')) ? '✓' : '✗'} .git/                       （进度反推依赖 git 历史）`);
 console.log('');
-console.log('  [SSoT 真相 — framework-recommended core]');
-console.log(`  ${existsSync(path.join(cwd, 'docs/specs')) ? '✓' : '✗'} docs/specs/                 （设计 spec 集合，多文件平等，brainstorming/impl-spec 产物）`);
-console.log(`  ${existsSync(path.join(cwd, 'docs/ssot/decisions.jsonl')) ? '✓' : '✗'} docs/ssot/decisions.jsonl   （决策账本，append-only）`);
-console.log(`  ${existsSync(path.join(cwd, 'docs/ssot/changelog.jsonl')) ? '✓' : '✗'} docs/ssot/changelog.jsonl   （变更账本，append-only）`);
-console.log(`  ${existsSync(path.join(cwd, 'docs/ssot/openapi')) ? '✓' : '✗'} docs/ssot/openapi/          （契约 SSoT 铁律链次层）`);
+console.log('  [SSoT 真相 — 入 git，append-only，经专用 bin 追加]');
+console.log(`  ${existsSync(path.join(cwd, 'docs/specs')) ? '✓' : '✗'} docs/specs/                 （设计 spec 集合，brainstorming 产物）`);
+console.log(`  ${existsSync(path.join(cwd, '.ddt/decisions.jsonl')) ? '✓' : '✗'} .ddt/decisions.jsonl        （决策账本，append-only，入 git 白名单）`);
+console.log(`  ${existsSync(path.join(cwd, '.ddt/changelog.jsonl')) ? '✓' : '✗'} .ddt/changelog.jsonl        （变更账本，append-only，入 git 白名单）`);
 console.log('');
-console.log('  [衍生制品 — 多文件，按切片/任务展开]');
+console.log('  [派生制品 — 多文件，按切片/任务展开]');
 console.log(`  ${existsSync(path.join(cwd, 'docs/plans')) ? '✓' : '✗'} docs/plans/                 （切片 plan 目录）`);
 console.log(`  ${existsSync(path.join(cwd, 'docs/reviews')) ? '✓' : '✗'} docs/reviews/               （reviewer 输出，IL-5 校验对象）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/api')) ? '✓' : '✗'} docs/api/                   （契约，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/data')) ? '✓' : '✗'} docs/data/                  （数据设计，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/design')) ? '✓' : '✗'} docs/design/                （架构/设计，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/requirements')) ? '✓' : '✗'} docs/requirements/          （大需求切片，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/briefs')) ? '✓' : '✗'} docs/briefs/                （需求 brief，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/verification')) ? '✓' : '✗'} docs/verification/          （验收记录，按需）`);
+console.log(`  ${existsSync(path.join(cwd, 'docs/delivery')) ? '✓' : '✗'} docs/delivery/              （交付包，按需）`);
 console.log('');
 console.log('  [transient 工作态 — 不入 git，每次覆盖]');
 console.log(`  ${existsSync(path.join(cwd, '.ddt/state/current.json')) ? '✓' : '✗'} .ddt/state/current.json     （command→hook 字段桥）`);
@@ -81,9 +87,19 @@ console.log(`  ${existsSync(path.join(cwd, '.ddt/metrics')) ? '✓' : '✗'} .dd
 console.log('');
 console.log('  [多人协作支持]');
 const gaPath = path.join(cwd, '.gitattributes');
-let hasUnionMerge = false;
-try { hasUnionMerge = readFileSync(gaPath, 'utf8').includes('merge=union'); } catch { /* 文件不存在 */ }
-console.log(`  ${hasUnionMerge ? '✓' : '·'} .gitattributes union merge  ${hasUnionMerge ? '（jsonl 并发追加自动合并）' : '（缺失：建议从 plugin 复制模板。两人并发 append decisions/changelog 会撞 git conflict）'}`);
+let gaContent = '';
+try { gaContent = readFileSync(gaPath, 'utf8'); } catch { /* 文件不存在 */ }
+const hasDecisionsUnion = /\.ddt\/decisions\.jsonl[^\n]*merge=union/.test(gaContent);
+const hasChangelogUnion = /\.ddt\/changelog\.jsonl[^\n]*merge=union/.test(gaContent);
+const hasDdtUnionMerge = hasDecisionsUnion && hasChangelogUnion;
+console.log(`  ${hasDdtUnionMerge ? '✓' : '·'} .gitattributes .ddt/*.jsonl merge=union  ${hasDdtUnionMerge ? '（decisions + changelog 并发追加自动合并）' : '（缺失：建议从 plugin 复制模板。两人并发 append decisions/changelog 会撞 git conflict）'}`);
+console.log('');
+console.log('  [.gitignore 外科白名单]');
+const giPath = path.join(cwd, '.gitignore');
+let giContent = '';
+try { giContent = readFileSync(giPath, 'utf8'); } catch { /* 文件不存在 */ }
+const hasDdtWhitelist = giContent.includes('!.ddt/decisions.jsonl');
+console.log(`  ${hasDdtWhitelist ? '✓' : '·'} .gitignore !.ddt/decisions.jsonl 白名单  ${hasDdtWhitelist ? '（SSoT 入 git，transient 被 ignore）' : '（缺失：.ddt/ 整目录 ignore 但 decisions/changelog 未放行）'}`);
 console.log('');
 console.log('  [v0.x 残留检测（多插件污染防护）]');
 const hasV0Residual = existsSync(path.join(cwd, '.ddt/progress.json'));
@@ -106,7 +122,7 @@ try {
   metricsCount = entries.filter(f => f.endsWith('.jsonl')).length;
 } catch { /* 无 metrics 目录 */ }
 console.log(`  ${metricsCount > 0 ? '✓' : '·'} .ddt/metrics/*.jsonl     发现 ${metricsCount} 个文件 ${metricsCount > 0 ? '（PostToolUse / SessionEnd hook 已落盘，强制层在工作的硬证据之一）' : '（hook 未触发或本会话尚未产生工具调用）'}`);
-console.log('  ·  charter 已注入        = 如果你在 LLM 会话里读到本 doctor 是被路由到 /ddt 自检 触发的，说明 SessionStart hook (ddt:charter-inject) 一定在工作');
+console.log('  ·  using-ddt 已注入      = 如果你在 LLM 会话里读到本 doctor 是被路由到 /ddt 自检 触发的，说明 SessionStart hook (ddt:inject) 一定在工作');
 console.log('');
 
 // ============================================================================
@@ -114,10 +130,10 @@ console.log('');
 // ============================================================================
 console.log('## [C] LLM 必读：hook 工作状态判定');
 console.log('');
-console.log('  Iron Laws 是否降级，**只看 plugin 自身健康段 [A] 是否齐全**。');
+console.log('  强制层（L2）是否降级，**只看 plugin 自身健康段 [A] 是否齐全**。');
 console.log('');
-console.log('  ✓ 若 [A] 段全部 ✓ → 强制层 hook 已注册到 Claude Code runtime，Iron Laws 全效。');
-console.log('  ✗ 若 [A] 段任一 ✗ → 对应 IL 降级，按 charter 「hook 缺失降级声明」标注。');
+console.log('  ✓ 若 [A] 段全部 ✓ → 强制层 hook 已注册到 Claude Code runtime，IL-5 硬闸生效（L2 全效）。');
+console.log('  ✗ 若 [A] 段任一 ✗ → 纪律降级为建议级，参各 skill 底部「DDT 强制层声明」。');
 console.log('');
 console.log('  **绝不**通过看用户的 .claude/settings.local.json 是否有 hooks 段来判定！');
 console.log('  plugin hooks 注册在 plugin 自己的 hooks/hooks.json，不在用户 settings。');
@@ -129,7 +145,7 @@ console.log('  state 桥（命令→hook 字段桥）的跨进程行为只能在
 console.log('  1. 装本 plugin 到 Claude Code');
 console.log('  2. 启会话敲 /ddt 帮我做一个测试项目');
 console.log('  3. 看 .ddt/state/current.json 是否被 /ddt 写出');
-console.log('  4. 触发任一工具调用，看 hook 是否读 state 并 enforce IL');
+console.log('  4. 触发任一工具调用，看 hook 是否读 state 并 enforce IL-5');
 console.log('  5. 跑 ddt-doctor.mjs 复检健康，跑 ddt-report.mjs 看 ROI 报告');
 console.log('');
 console.log('如以上任一不通，参 plan4-activation 与 plan5-metrics-roi 实施计划排查。');

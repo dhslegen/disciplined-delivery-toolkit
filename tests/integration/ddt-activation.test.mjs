@@ -23,11 +23,12 @@ test('5 个 bin 承重件就位', () => {
   }
 });
 
-test('/ddt 命令含 state 桥与意图分类引用', () => {
+test('/ddt 命令为可选向导（给建议不拦截）', () => {
   const s = readFileSync(path.join(root, 'commands/ddt.md'), 'utf8');
-  assert.match(s, /\.ddt\/state\/current\.json/);
-  assert.match(s, /ddt-charter/);
-  assert.match(s, /意图/);
+  // 向导语义：含三种入口 + 建议/不拦截口吻，不含强制意图分类
+  assert.match(s, /三种入口|entry point/i);
+  assert.match(s, /建议|suggest|不拦截|可无视|直接动手/);
+  assert.doesNotMatch(s, /按宪法.*意图分类|5 站脊柱/);
 });
 
 test('/ddt-status 命令含 IL-7 反推语义', () => {
@@ -37,9 +38,10 @@ test('/ddt-status 命令含 IL-7 反推语义', () => {
   assert.match(s, /仅读不写|不推进、不改|绝不/);
 });
 
-test('ddt-design 契约 lint 引用 bin/ddt-contract-lint.mjs（已激活）', () => {
-  const s = readFileSync(path.join(root, 'skills/ddt-design/SKILL.md'), 'utf8');
-  assert.match(s, /ddt-contract-lint\.mjs/);
-  assert.match(s, /exit=0/);
+test('ddt-design-checkpoint 含七问 Design Checkpoint 且路径引用正确', () => {
+  const s = readFileSync(path.join(root, 'skills/ddt-design-checkpoint/SKILL.md'), 'utf8');
+  assert.match(s, /七问|Design Checkpoint/);
+  assert.match(s, /writing-plans/);
+  assert.match(s, /docs\/api/);
   assert.doesNotMatch(s, /待激活/);
 });

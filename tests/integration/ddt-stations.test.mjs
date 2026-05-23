@@ -5,10 +5,16 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const STATIONS = ['ddt-design', 'ddt-impl-spec', 'ddt-design-source', 'ddt-frontend-craft', 'ddt-deliver'];
 
-test('5 个 DDT 原生站 skill 平铺且 frontmatter 合法（name 匹配目录 + description 触发式 + 含降级声明）', () => {
-  for (const d of STATIONS) {
+// Phase D 重设计后：5 站脊柱概念已废。
+// DDT 原生 skill 组合为：using-ddt + ddt-design-checkpoint + ddt-deliver + ddt-design-source
+// 9 vendored skill 承载主要纪律，5 站测试改为按需 skill 组合测试。
+// using-ddt 在 ddt-activation.test.mjs 单独覆盖，此处仅测三个按需 DDT skill
+
+const DDT_NATIVE_SKILLS = ['ddt-design-checkpoint', 'ddt-deliver', 'ddt-design-source'];
+
+test('DDT 原生 skill（design-checkpoint/deliver/design-source）平铺且 frontmatter 合法', () => {
+  for (const d of DDT_NATIVE_SKILLS) {
     const f = path.join(root, 'skills', d, 'SKILL.md');
     assert.ok(existsSync(f), d + '/SKILL.md 缺失');
     const s = readFileSync(f, 'utf8');
@@ -20,50 +26,35 @@ test('5 个 DDT 原生站 skill 平铺且 frontmatter 合法（name 匹配目录
   }
 });
 
-test('ddt-design 含强制 Spec Reviewer + 契约 lint 硬门', () => {
-  const s = readFileSync(path.join(root, 'skills/ddt-design/SKILL.md'), 'utf8');
-  assert.match(s, /Spec Reviewer/);
-  assert.match(s, /契约 lint/);
-  assert.match(s, /ddt-contract-lint\.mjs/);
+test('ddt-design-checkpoint 含七问 Design Checkpoint', () => {
+  const s = readFileSync(path.join(root, 'skills/ddt-design-checkpoint/SKILL.md'), 'utf8');
+  assert.match(s, /七问 Design Checkpoint|Design Checkpoint/);
+  assert.match(s, /writing-plans/);
+  assert.match(s, /docs\/api/);
+  assert.match(s, /docs\/data/);
+  assert.match(s, /docs\/design/);
 });
 
-test('ddt-impl-spec 含 refine 子句 + IL-3 HARD-GATE 引用', () => {
-  const s = readFileSync(path.join(root, 'skills/ddt-impl-spec/SKILL.md'), 'utf8');
-  assert.match(s, /重构子句|refine 子句/);
-  assert.match(s, /绿灯前置/);
-  assert.match(s, /IL-3/);
+test('ddt-deliver 含按需收口语义', () => {
+  const s = readFileSync(path.join(root, 'skills/ddt-deliver/SKILL.md'), 'utf8');
+  assert.match(s, /按需|on demand/i);
+  assert.match(s, /docs\/verification|docs\/delivery/);
 });
 
-test('ddt-design-source 含外部收敛回路四步纪律', () => {
+test('ddt-design-source 含外部收敛回路四步', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-design-source/SKILL.md'), 'utf8');
   for (const step of ['Export', '外部回路', 'Ingest', 'Reconcile']) {
     assert.match(s, new RegExp(step), 'design-source 缺四步之 ' + step);
   }
 });
 
-test('ddt-frontend-craft 含四项纪律（契约绑定/状态完备/无障碍/反 AI 通用感）', () => {
-  const s = readFileSync(path.join(root, 'skills/ddt-frontend-craft/SKILL.md'), 'utf8');
-  for (const d of ['契约绑定', '状态完备', '无障碍', '反"AI 通用感"']) {
-    assert.match(s, new RegExp(d.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), 'frontend-craft 缺纪律之 ' + d);
+test('DDT 原生 skill 集合引用 vendored skill 名精确', () => {
+  const allText = DDT_NATIVE_SKILLS.map(d => readFileSync(path.join(root, 'skills', d, 'SKILL.md'), 'utf8')).join('\n---FILE---\n');
+  // 各 skill 引用的 vendored skill 名应精确存在
+  for (const ref of ['ddt-brainstorming', 'ddt-writing-plans']) {
+    assert.match(allText, new RegExp(ref), 'DDT 原生 skill 集合缺 ' + ref + ' 引用');
   }
-});
-
-test('ddt-deliver 含 IL-6 终极证据门 + ROI 报告 Plan 5 激活归属 + 降低保障级机制', () => {
-  const s = readFileSync(path.join(root, 'skills/ddt-deliver/SKILL.md'), 'utf8');
-  assert.match(s, /IL-6/);
-  assert.match(s, /Plan 5/);
-  assert.match(s, /降低保障级/);
-});
-
-test('5 站 skill 互引一致（命名引用未拼错）', () => {
-  const allText = STATIONS.map(d => readFileSync(path.join(root, 'skills', d, 'SKILL.md'), 'utf8')).join('\n---FILE---\n');
-  // 引用既有 vendored skill 名应精确
-  for (const ref of ['ddt-subagent-driven', 'ddt-writing-plans', 'ddt-brainstorming', 'ddt-requesting-review']) {
-    assert.match(allText, new RegExp(ref), '站 skill 集合缺 ' + ref + ' 引用');
-  }
-  // 站间互引
-  assert.match(allText, /ddt-design/);
-  assert.match(allText, /ddt-impl-spec/);
-  assert.match(allText, /ddt-design-source/);
-  assert.match(allText, /ddt-frontend-craft/);
+  // 无已删除 skill 的引用
+  assert.doesNotMatch(allText, /ddt-impl-spec/, 'DDT 原生 skill 集合不应引用已删除的 ddt-impl-spec');
+  assert.doesNotMatch(allText, /ddt-frontend-craft/, 'DDT 原生 skill 集合不应引用已删除的 ddt-frontend-craft');
 });

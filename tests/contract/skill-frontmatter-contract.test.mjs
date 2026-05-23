@@ -84,9 +84,13 @@ test('契约 skills/* · name 与目录名一致（如存在 name）', () => {
   }
 });
 
-test('契约 skills/* · 全部以 ddt- 前缀命名（plugin namespace 一致性）', () => {
+test('契约 skills/* · 全部以 ddt- 前缀或已知例外命名（plugin namespace 一致性）', () => {
+  // using-ddt 是取向 skill，不以 ddt- 前缀，是已知例外
+  const exceptions = new Set(['using-ddt']);
   for (const skill of allSkills()) {
-    assert.match(skill, /^ddt-/, `skills/${skill} 必须以 ddt- 前缀命名（避免与其它 plugin 冲突）`);
+    if (!exceptions.has(skill)) {
+      assert.match(skill, /^ddt-/, `skills/${skill} 必须以 ddt- 前缀命名（避免与其它 plugin 冲突）`);
+    }
   }
 });
 
@@ -101,7 +105,7 @@ test('契约 skills/* · description 总长 ≤ 1536 字符（Claude Code skill 
   }
 });
 
-test('契约 skills/* · 至少包含 ddt-charter（plugin 宪法必需）', () => {
+test('契约 skills/* · 至少包含 using-ddt（plugin 取向 skill 必需）', () => {
   const skills = allSkills();
-  assert.ok(skills.includes('ddt-charter'), 'plugin 必须含 ddt-charter skill');
+  assert.ok(skills.includes('using-ddt'), 'plugin 必须含 using-ddt skill');
 });

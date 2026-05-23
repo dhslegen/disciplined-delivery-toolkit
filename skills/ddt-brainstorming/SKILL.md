@@ -110,8 +110,8 @@ digraph brainstorming {
 
 - Write the validated design doc (spec) to `docs/specs/YYYY-MM-DD-<topic>-design.md`
   - 多次 brainstorm 产多份 spec 文件，平等组成"设计 spec 集合"
-  - amend 某份既有 spec 时，先在 docs/ssot/changelog.jsonl 追一条 escalation，再修订该 spec（不直接覆盖）
-  - 详见 charter §SSoT 路径硬清单
+  - amend 某份既有 spec 时，先在 .ddt/changelog.jsonl 追一条 escalation，再修订该 spec（不直接覆盖）
+  - 详见 using-ddt §路径即指令
 - Use elements-of-style:writing-clearly-and-concisely skill if available
 - Commit the design document to git
 

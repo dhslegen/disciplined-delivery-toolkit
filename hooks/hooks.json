@@ -2,13 +2,10 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
     "SessionStart": [
-      { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-charter-inject.mjs\"" } ], "description": "DDT 宪法注入", "id": "ddt:charter-inject" }
+      { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-inject.mjs\"" } ], "description": "DDT 取向注入（using-ddt）", "id": "ddt:inject" }
     ],
     "PreToolUse": [
       { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-enforce.mjs\"" } ], "description": "DDT 强制层 PreToolUse", "id": "ddt:enforce-pre" }
-    ],
-    "Stop": [
-      { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-enforce.mjs\"" } ], "description": "DDT 强制层 Stop（IL-1/IL-6）", "id": "ddt:enforce-stop" }
     ],
     "PostToolUse": [
       { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-metrics.mjs\"" } ], "description": "DDT 度量被动埋点（PostToolUse）", "id": "ddt:metrics-post" }
