@@ -1,6 +1,6 @@
 ---
 name: ddt-deliver
-description: Use on demand to close out delivery — produces verification/acceptance records (docs/verification/) and delivery packages (docs/delivery/) when work genuinely needs sign-off (multi-impl convergence, toB acceptance, deploy, data migration, API/data/design change, customer delivery docs, rollback/evidence). Small changes do not need it.
+description: Use on demand to close out delivery when work needs formal sign-off (toB acceptance, deploy, data migration, customer handoff, etc.) — produces verification and delivery artifacts. Small changes do not need it; see body for the full trigger list and what to produce.
 ---
 
 # ddt-deliver — 按需收口
