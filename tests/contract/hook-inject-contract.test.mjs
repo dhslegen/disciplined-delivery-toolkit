@@ -75,6 +75,10 @@ test('契约 SessionStart · additionalContext 含 skill 点火铁律（DDT 力�
   for (const trigger of ['ddt-brainstorming', 'ddt-systematic-debugging', 'ddt-tdd', 'ddt-verification']) {
     assert.ok(ac.includes(trigger), `点火触发清单须含 "${trigger}"`);
   }
+  // 高保真照搬 using-superpowers「Using Skills」机制：反驳armor + 优先级 + 两类
+  assert.match(ac, /简单问题/, '须含 Red Flags 反驳表（合理化armor，铁律的牙）');
+  assert.match(ac, /流程 skill 先|流程先于/, '须含 skill 优先级（流程先于实现）');
+  assert.match(ac, /刚性|柔性/, '须含 skill 两类（rigid / flexible）');
 });
 
 test('契约 SessionStart · 不输出顶层 decision（SessionStart 不能阻断）', () => {

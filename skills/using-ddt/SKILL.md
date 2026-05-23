@@ -61,13 +61,33 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 
 ## 如何用 skill（DDT 力量的来源，最高优先级）
 
-DDT 的纪律不靠 hook，靠**让正确的 skill 真的被 invoke**。规则照搬 superpowers：
+DDT 的纪律不靠 hook，靠**让正确的 skill 真的被 invoke**。整套机制照搬 superpowers：
 
-**只要有 1% 可能某个 skill 适用于你手上的事，就绝对必须先 invoke 它。这不是可选项，你没有选择权，也不能合理化绕过。** invoke 后发现不适用，再放弃即可。
+### 铁律
 
-优先级：**用户显式指令 > skill / 本取向 > 默认行为**。
+**任何回应或动作之前，先 invoke 相关或被点名的 skill。哪怕只有 1% 可能某 skill 适用，你就绝对必须先 invoke 它检查一下。** invoke 后发现不适用，再放弃即可。这不是可选项，你没有选择权，也不能合理化绕过。
 
-最常踩空的触发点（中招即停，先 invoke 再动手）：
+优先级：**用户显式指令 > skill / 本取向 > 默认行为**。但用户指令说的是 **WHAT，不是 HOW**——"加个 X""修个 Y" 不等于"跳过工作流"；只有用户**显式**说"别用 TDD"之类才算豁免。
+
+### 决策流
+
+```dot
+digraph skill_flow {
+  "收到用户消息" -> "可能有 skill 适用？";
+  "准备进 plan mode？" -> "已 brainstorm 过？";
+  "已 brainstorm 过？" -> "invoke ddt-brainstorming" [label="否"];
+  "已 brainstorm 过？" -> "可能有 skill 适用？" [label="是"];
+  "可能有 skill 适用？" -> "invoke skill" [label="是，哪怕 1%"];
+  "可能有 skill 适用？" -> "直接回应" [label="确定没有"];
+  "invoke skill" -> "报一句：Using <skill> to <目的>";
+  "报一句：Using <skill> to <目的>" -> "有 checklist？";
+  "有 checklist？" -> "每条建一个 TodoWrite" [label="有"];
+  "有 checklist？" -> "严格照 skill 执行" [label="无"];
+  "每条建一个 TodoWrite" -> "严格照 skill 执行";
+}
+```
+
+### DDT 最常踩空的触发点（中招即停，先 invoke 再动手）
 
 - 要"造东西"（建功能 / 加能力 / 改行为 / 起项目）→ 先 `ddt-brainstorming`
 - 撞上 bug / 测试失败 / 异常行为 → 先 `ddt-systematic-debugging`
@@ -77,6 +97,37 @@ DDT 的纪律不靠 hook，靠**让正确的 skill 真的被 invoke**。规则�
 - 收 / 发 review → `ddt-receiving-review` / `ddt-requesting-review`
 
 进入某 skill 后，按它结尾指示**接力 invoke 下一个**——`brainstorming → writing-plans → 实现 → review` 就是这样自动串起来的。
+
+### 别给自己找借口（Red Flags）
+
+下面这些念头一冒出来 = 你正在合理化"跳过 skill"，立刻停：
+
+| 念头 | 现实 |
+|---|---|
+| "这只是个简单问题" | 问题也是任务，先 check skill |
+| "我得先补点上下文" | skill check 在澄清提问之前 |
+| "我先探一下代码库" | skill 会告诉你怎么探，先 check |
+| "我快速看下 git / 文件" | 文件没有对话上下文，先 check skill |
+| "我先收集点信息" | skill 会告诉你怎么收集 |
+| "这个不至于动用正式 skill" | 有对应 skill 就用 |
+| "我记得这 skill 讲啥" | skill 会演进，invoke 读当前版 |
+| "这不算一个任务" | 动作 = 任务，check skill |
+| "这 skill 杀鸡用牛刀" | 简单会变复杂，用它 |
+| "我就先做这一件事" | 做任何事之前先 check |
+| "这感觉挺有产出的" | 无纪律的瞎忙浪费时间 |
+| "我知道这词什么意思" | 懂概念 ≠ 用了 skill，invoke 它 |
+
+### skill 优先级
+
+多个 skill 都可能适用时：① **流程 skill 先**（brainstorming、debugging——决定怎么入手）；② **实现 skill 后**（执行）。
+"建 X" → 先 `ddt-brainstorming`，再实现 skill。"修 bug" → 先 `ddt-systematic-debugging`，再领域 skill。
+
+### skill 两类
+
+- **刚性**（TDD、debugging）：严格照做，别把纪律适配没了。
+- **柔性**（模式类）：按情境调整原则。
+
+skill 自己会告诉你它属哪类。
 
 **唯一不可商量的硬骨头**：reviewer 写 `docs/reviews/<task-id>-<role>.json`（role ∈ `spec|quality|final`）时，结构须为
 
