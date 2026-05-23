@@ -19,8 +19,8 @@ description: Use after brainstorming and before writing-plans — the design-tid
 2. **影响 `docs/api/`？** 是否需要新增或修订 API 契约（OpenAPI / RPC schema 等）？
 3. **影响 `docs/data/`？** 是否需要新增或修订数据模型、迁移说明？
 4. **影响 `docs/design/`？** 是否需要记录架构决策（ADR）或重要设计说明？
-5. **需写 `.ddt/decisions.jsonl`？** 是否有需要持久化的决策条目（经 `bin/ddt-decisions-append.mjs` 追加）？
-6. **需写 `.ddt/changelog.jsonl`？** 是否有显著变更需要入账（经 `bin/ddt-changelog-append.mjs` 追加）？
+5. **需写 `.ddt/decisions.jsonl`？** 是否有需要持久化的决策条目（经 `ddt-decisions-append.mjs` 追加）？
+6. **需写 `.ddt/changelog.jsonl`？** 是否有显著变更需要入账（经 `ddt-changelog-append.mjs` 追加）？
 7. **有未解决冲突/开放问题？** 如果有，是否阻断进入 writing-plans，还是可以带着已知开放项继续？
 
 ## 最小留痕就近原则
@@ -30,7 +30,7 @@ description: Use after brainstorming and before writing-plans — the design-tid
   - API 契约变更 → 落 `docs/api/`
   - 数据模型变更 → 落 `docs/data/`
   - 架构/设计决策 → 落 `docs/design/`
-  - 重要决策 → 经 `bin/ddt-decisions-append.mjs` 追加 `.ddt/decisions.jsonl`
+  - 重要决策 → 经 `ddt-decisions-append.mjs` 追加 `.ddt/decisions.jsonl`
 
 路径没有固定命名规范——按内容含义取有意义的文件名即可。
 
@@ -46,7 +46,7 @@ description: Use after brainstorming and before writing-plans — the design-tid
 
 - 上游：`ddt-brainstorming`（产设计 spec）
 - 下游：`ddt-writing-plans`（Checkpoint 后进入）
-- 留痕工具：`bin/ddt-decisions-append.mjs`、`bin/ddt-changelog-append.mjs`
+- 留痕工具：`ddt-decisions-append.mjs`、`ddt-changelog-append.mjs`
 - 路径权威：`ddt-doctor.mjs` [B] 段——路径不确定时跑 doctor 查
 
 ---

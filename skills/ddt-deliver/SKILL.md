@@ -40,12 +40,12 @@ description: Use on demand to close out delivery when work needs formal sign-off
 
 ### AI 效能 ROI 报告（按需）
 
-由 `bin/ddt-report.mjs` 产出，读 `.ddt/metrics/*.jsonl` 与 `.ddt/decisions.jsonl`，渲染 `docs/efficiency-report.md`。需要度量数据时按需运行：`node bin/ddt-report.mjs`。
+由 `ddt-report.mjs` 产出，读 `.ddt/metrics/*.jsonl` 与 `.ddt/decisions.jsonl`，渲染 `docs/efficiency-report.md`。需要度量数据时按需运行：`ddt-report.mjs`。
 
 ## 降低保障级交付
 
 断网/受限基建下若完整验收未跑通：
-- `.ddt/decisions.jsonl` 记一条**署名 waiver**（含基建原因，经 `bin/ddt-decisions-append.mjs` 追加）
+- `.ddt/decisions.jsonl` 记一条**署名 waiver**（含基建原因，经 `ddt-decisions-append.mjs` 追加）
 - 交付文档**显式标注"本交付为降低保障级"**并列明哪些证据缺失
 - 接收方须知情接受
 
@@ -54,8 +54,8 @@ description: Use on demand to close out delivery when work needs formal sign-off
 ## 与其他 skill 的关系
 
 - 上游：`ddt-verification`（验证证据）、`ddt-requesting-review` / `ddt-receiving-review`（评审证据）
-- 度量：`bin/ddt-report.mjs`（被动采集，按需产报告）
-- 留痕：`bin/ddt-decisions-append.mjs`、`bin/ddt-changelog-append.mjs`
+- 度量：`ddt-report.mjs`（被动采集，按需产报告）
+- 留痕：`ddt-decisions-append.mjs`、`ddt-changelog-append.mjs`
 
 ---
 

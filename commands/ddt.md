@@ -20,11 +20,10 @@ description: DDT 可选向导。无文本：读 repo 状态给进度建议。有
 
 ### 无自由文本（纯 `/ddt`）
 
-调用 `bin/ddt-status.mjs` 读取 repo 事实（pending decisions、spec/plan 文件、`slice/*` branch）并输出进度摘要。
+调用 `ddt-status.mjs`（裸名，plugin bin 由 Claude Code 自动加入 PATH；勿加 `node`/`bin/` 前缀）读取 repo 事实（pending decisions、spec/plan 文件、`slice/*` branch）并输出进度摘要。
 
 ```bash
-ddt-status.mjs 2>/dev/null \
-  || node "${CLAUDE_PLUGIN_ROOT:?需 plugin 环境}/bin/ddt-status.mjs"
+ddt-status.mjs
 ```
 
 输出"在哪 / 下一步建议 / 待决条目"摘要。如果 bin 找不到，告诉用户检查 DDT plugin 安装。

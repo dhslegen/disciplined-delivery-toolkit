@@ -59,6 +59,8 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 
 不确定写哪里：跑 `ddt-doctor.mjs` 看 [B] 段——doctor 是真相。
 
+> **bin 脚本怎么跑**：`ddt-doctor.mjs` / `ddt-status.mjs` / `ddt-decisions-append.mjs` / `ddt-changelog-append.mjs` / `ddt-report.mjs` 等由 Claude Code 自动加入 PATH，**一律裸名直接执行**（cwd 无关）。别加 `node` 前缀、别加 `bin/` 路径、别用 `${CLAUDE_PLUGIN_ROOT}`（它不在 Bash 环境里）。
+
 ## 如何用 skill（DDT 力量的来源，最高优先级）
 
 DDT 的纪律不靠 hook，靠**让正确的 skill 真的被 invoke**。整套机制照搬 superpowers：

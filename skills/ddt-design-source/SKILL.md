@@ -36,8 +36,8 @@ description: Use on demand for a frontend slice whose convergence target is judg
 
 收敛结果（代码导出 / 分享 URL / figma 文件）作为 spec 输入摄取：
 - 落到 `docs/design/<slice>/` 或就近有意义的路径
-- provenance 记到 `.ddt/changelog.jsonl`（经 `bin/ddt-changelog-append.mjs`）：`{kind:"design-ingest", slice, tool:"v0|figma|claude-design", by:"<人名>", at:"<ISO8601>", source:"<URL/路径>"}`
-- 重要决策经 `bin/ddt-decisions-append.mjs` 追加 `.ddt/decisions.jsonl`
+- provenance 记到 `.ddt/changelog.jsonl`（经 `ddt-changelog-append.mjs`）：`{kind:"design-ingest", slice, tool:"v0|figma|claude-design", by:"<人名>", at:"<ISO8601>", source:"<URL/路径>"}`
+- 重要决策经 `ddt-decisions-append.mjs` 追加 `.ddt/decisions.jsonl`
 
 ### 4. Reconcile（与已有契约对齐）
 

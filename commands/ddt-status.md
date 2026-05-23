@@ -8,14 +8,12 @@ description: DDT 只读重算。从 repo 事实（git 历史+decisions+文件存
 
 ## 1. 重算事实
 
-**调 plugin 内置 `ddt-status.mjs`**（DDT 把 `bin/` 自动加入 Bash PATH，并设置 `$CLAUDE_PLUGIN_ROOT`）。
+**调 plugin 内置 `ddt-status.mjs`**——Claude Code 自动把每个 plugin 的 `bin/` 注入 Bash PATH，所以**用裸名直接跑**（cwd 无关）。**别加 `node` 前缀、别加路径前缀、别用 `${CLAUDE_PLUGIN_ROOT}`**——后者不在 Bash 环境里，相对路径在用户 cwd 里也不存在。
 
-按以下优先级用 Bash 工具执行（哪个跑通用哪个）：
+用 Bash 工具执行：
 
 ```bash
-# 优先：plugin bin 已注入 PATH，直接调用
-ddt-status.mjs 2>/dev/null \
-  || node "${CLAUDE_PLUGIN_ROOT:?需 plugin 环境}/bin/ddt-status.mjs"
+ddt-status.mjs
 ```
 
 输出 JSON 结构：
