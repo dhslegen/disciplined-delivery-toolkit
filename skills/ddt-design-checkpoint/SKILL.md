@@ -23,13 +23,9 @@ description: Use after brainstorming and before writing-plans — the design-tid
 6. **需写 `.ddt/changelog.jsonl`？** 是否有显著变更需要入账（经 `ddt-changelog-append.mjs` 追加）？
 7. **有未解决冲突/开放问题？** 如果有，是否阻断进入 writing-plans，还是可以带着已知开放项继续？
 
-## 前端分流（整盘 bundle 优先）
+## 前端分流
 
-含前端的切片——**先看有没有整盘设计 bundle**（`ddt-design-source` 产出）：
-
-- **无**（且已到前端阶段）→ 先走 `ddt-design-source` **整盘一次**出 bundle（批量物料 → 外部工具 → bundle → brainstorming 落前端 spec）。**别每切片各自外部设计**（会拼凑、不一致），**别默认选个组件库就码**——审美收敛是感知问题，整盘出一次才一致。
-- **有** bundle → 按其对应页面 + 共享设计系统实现，切片阶段不再外部设计；bundle 缺该页面才回 `ddt-design-source` 增量补一批。
-- **仅** trivial contract-driven 页面（纯表单/表格/CRUD/后台）用设计系统标准组件即可，不必精雕。
+含前端的切片：有无整体设计产物（`ddt-design-source` 出的 bundle）？无（已到前端阶段）→ 先外部**整体**设计一次（别每切片各设计、别拿组件库糊弄；粒度按项目判断）；有 → 按其实现，不再外部设计。详见 `ddt-design-source`。
 
 ## 最小留痕就近原则
 
