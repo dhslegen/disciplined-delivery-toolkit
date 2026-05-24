@@ -64,7 +64,7 @@ test('契约 PreToolUse · allow 路径输出严格合法', () => {
   const out = run({
     hook_event_name: 'PreToolUse',
     tool_name: 'Write',
-    tool_input: { file_path: 'src/foo.ts' }
+    tool_input: { file_path: '/repo/src/foo.ts' }
   });
   assertSchemaValid(out, 'PreToolUse');
   // 必须用 hookSpecificOutput.permissionDecision 而非顶层 decision
@@ -77,7 +77,7 @@ test('契约 PreToolUse · deny 路径输出严格合法（IL-5 PASS 无 cited_e
     hook_event_name: 'PreToolUse',
     tool_name: 'Write',
     tool_input: {
-      file_path: 'docs/reviews/T1-spec.json',
+      file_path: '/repo/docs/reviews/T1-spec.json',
       content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":[],"ts":"2026-05-20T00:00:00Z"}'
     }
   });
@@ -91,8 +91,8 @@ test('契约 · 不输出非法 "allow" 顶层 decision 值', () => {
   // 这是 v1.0 之前的 bug：return { decision: 'allow' } 不被 Claude Code 接受。
   // 反向测：扫描多种 allow 场景，确认无一返回 { decision: 'allow' }。
   const cases = [
-    { hook_event_name: 'PreToolUse', tool_name: 'Read', tool_input: { file_path: 'x' } },
-    { hook_event_name: 'PreToolUse', tool_name: 'Write', tool_input: { file_path: 'normal/file.ts' } }
+    { hook_event_name: 'PreToolUse', tool_name: 'Read', tool_input: { file_path: '/repo/x' } },
+    { hook_event_name: 'PreToolUse', tool_name: 'Write', tool_input: { file_path: '/repo/normal/file.ts' } }
   ];
   for (const ev of cases) {
     const out = run(ev);

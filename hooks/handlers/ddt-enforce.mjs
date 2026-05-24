@@ -28,7 +28,10 @@ export function formatOutput(ev, decided) {
 export function decide(ev) {
   if (ev.hook_event_name === 'PreToolUse' && ['Edit','Write','MultiEdit','NotebookEdit'].includes(ev.tool_name)) {
     const fp = ev.tool_input && typeof ev.tool_input.file_path === 'string' ? ev.tool_input.file_path : '';
-    if (/^docs\/reviews\/.+\.json$/.test(fp)) {
+    // Claude Code 的 Write/Edit 工具按协议传【绝对路径】（/Users/.../docs/reviews/x.json），
+    // 极少数情况才是相对路径。故必须用 (^|/) 同时匹配「相对开头」与「绝对路径中的 /docs/reviews/ 段」，
+    // 否则 ^docs/reviews/ 永不匹配绝对路径 → IL-5 恒放行（曾发生：冒烟测试逮到的真 bug）。
+    if (/(^|\/)docs\/reviews\/.+\.json$/.test(fp)) {
       const raw = ev.tool_input && typeof ev.tool_input.content === 'string' ? ev.tool_input.content : '';
       let parsed = null;
       try { parsed = JSON.parse(raw); } catch { return block(`IL-5 违规：reviewer 输出 ${fp} 非合法 JSON。`); }
