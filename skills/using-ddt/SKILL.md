@@ -42,7 +42,7 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 6. 需写 `.ddt/changelog.jsonl`？
 7. 有未解决冲突/开放问题？
 
-> 含前端？→ 查 `docs/design/frontend/` 非空否（+ 有无 opt-out）；空且无 opt-out 则先 `ddt-design-source` 外部整体设计（见该 skill），别每切片各设计。
+> 含前端？→ 看 `docs/design/frontend/`（非空 + 有无 opt-out）；空且无 opt-out 则先 `ddt-design-source` 外部整体设计一次（见该 skill）。
 
 简单工作几行写进 spec 末尾即可；复杂工作交 `ddt-design-checkpoint` 整理并按需落 `docs/api,data,design`。**已完成 Checkpoint 就不必为调而调。**
 
@@ -96,7 +96,7 @@ digraph skill_flow {
 
 - 要"造东西"（建功能 / 加能力 / 改行为 / 起项目）→ 先 `ddt-brainstorming`
 - 撞上 bug / 测试失败 / 异常行为 → 先 `ddt-systematic-debugging`
-- **进入前端实现前** → 先用 `ddt-design-source` 把前端审美在外部工具**整体设计出一次**（产物当 spec 输入、切片消费、不重复设计；粒度按项目判断），别选个组件库就码
+- **进入前端实现前** → 先用 `ddt-design-source` 把整盘前端审美在外部工具设计成 bundle（落 `docs/design/frontend/`，切片直接消费；粒度按项目判断）
 - 写实现代码前 → `ddt-tdd`
 - 有 spec / 计划要拆 → `ddt-writing-plans`；执行计划 → `ddt-subagent-driven` 或 `ddt-executing-plans`
 - 要声明"完成 / 通过 / 修好了" → 先 `ddt-verification`（证据先于断言）
