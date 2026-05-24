@@ -60,6 +60,9 @@ test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + CRUD 
   assert.match(ds, /contract-driven/, 'design-source 应说明 contract-driven 页面处理');
   assert.match(ds, /全部前端|连.*也|不回退/, 'design-source 应说明全部前端（含 CRUD）都走外部设计系统');
   assert.doesNotMatch(ds, /标准组件即可|不必精雕/, 'design-source 不应给 CRUD 开「用标准组件即可」逃逸口');
+  // ⑤ 前端设计不吃契约——契约在 brief 的 Design Checkpoint 才出、Reconcile 才对齐
+  //    （防回归到"Export 吃契约"的假前提：契约在大需求阶段并不存在）。
+  assert.match(ds, /不依赖契约/, 'design-source 应说明前端设计不依赖契约（契约 Reconcile 时才对齐）');
   for (const f of ['skills/using-ddt/SKILL.md', 'skills/ddt-design-checkpoint/SKILL.md']) {
     const s = readFileSync(path.join(root, f), 'utf8');
     assert.match(s, /ddt-design-source/, f + ' 应把前端路由到 ddt-design-source');

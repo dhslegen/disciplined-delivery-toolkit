@@ -20,10 +20,10 @@ description: Use for the project's user-facing frontend — converge the aesthet
 
 ## 大致回路（不是死仪式，按所用工具调整）
 
-1. **Export**：把这批前端物料一次性投给外部工具——页面清单 + `docs/api/` 契约 + design tokens/品牌 + 状态规范（loading/empty/error/success、响应式、无障碍）。
+1. **Export**：把这批前端物料一次性投给外部工具——页面清单 + 各页功能意图（来自 requirements/briefs）+ design tokens/品牌 + 状态规范（loading/empty/error/success、响应式、无障碍）。**设计不依赖契约**——契约（`docs/api`/`docs/data`）在各 brief 的 Design Checkpoint 才收敛，此时多半还没有；字段/状态的对齐留到 Reconcile。
 2. **外部回路**：人在工具里迭代到满意。DDT 不替代它。
 3. **Ingest**：产物（代码/URL/figma）落 `docs/design/`（前端设计依据），在 `.ddt/changelog.jsonl` 记一条来源（工具/来源/人/时间），再走 `ddt-brainstorming` 把它落成前端 design spec。
-4. **Reconcile**：与 `docs/api/` 契约对齐（设计字段/状态是否都在契约里）；不一致就更新契约或调设计。
+4. **Reconcile**：等各 brief 的 Design Checkpoint 产出 `docs/api`/`docs/data` 契约后，与设计的字段/状态对齐（都在契约里吗）；不一致就更新契约或调设计。
 
 ## 关系
 
