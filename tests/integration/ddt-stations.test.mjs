@@ -48,14 +48,18 @@ test('ddt-design-source 含外部收敛回路四步', () => {
   }
 });
 
-test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + using-ddt/checkpoint 路由（防孤儿/防碎片化/防钦定粒度）', () => {
-  // 三重防回归：① design-source 曾是零触发器孤儿；② per-slice 各自外部设计=碎片化（须整体出一次）；
-  // ③ 别把粒度（整盘/按域/系统先行）钦定进通用 skill——留给项目判断。
+test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + CRUD 无逃逸口 + using-ddt/checkpoint 路由（防孤儿/防碎片化/防钦定粒度/防 CRUD 逃逸口）', () => {
+  // 四重防回归：① design-source 曾是零触发器孤儿；② per-slice 各自外部设计=碎片化（须整体出一次）；
+  // ③ 别把粒度（整盘/按域/系统先行）钦定进通用 skill——留给项目判断；
+  // ④ contract-driven/CRUD 也必须走外部设计系统——不得开「用标准组件即可」逃逸口
+  //    （用户明确：统一走外部设计；设计系统常为竞争力定制原生风格，off-the-shelf 组件会不一致）。
   const ds = readFileSync(path.join(root, 'skills/ddt-design-source/SKILL.md'), 'utf8');
   assert.match(ds, /整体|成批/, 'design-source 应是整体/成批出（求一致）');
   assert.match(ds, /消费/, 'design-source 应说明切片消费、不重复设计');
   assert.match(ds, /粒度/, 'design-source 应把粒度作为判断（不钦定整盘）');
   assert.match(ds, /contract-driven/, 'design-source 应说明 contract-driven 页面处理');
+  assert.match(ds, /全部前端|连.*也|不回退/, 'design-source 应说明全部前端（含 CRUD）都走外部设计系统');
+  assert.doesNotMatch(ds, /标准组件即可|不必精雕/, 'design-source 不应给 CRUD 开「用标准组件即可」逃逸口');
   for (const f of ['skills/using-ddt/SKILL.md', 'skills/ddt-design-checkpoint/SKILL.md']) {
     const s = readFileSync(path.join(root, f), 'utf8');
     assert.match(s, /ddt-design-source/, f + ' 应把前端路由到 ddt-design-source');
