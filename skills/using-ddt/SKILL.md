@@ -42,7 +42,7 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 6. 需写 `.ddt/changelog.jsonl`？
 7. 有未解决冲突/开放问题？
 
-> **前端分流（默认外部）**：本切片含用户可见前端？→ **默认先走 `ddt-design-source` 外部设计回路**（v0/figma/claude-design 求审美收敛），仅明确 trivial contract-driven（纯表单/表格/CRUD/后台）才 opt-out 直接实现。
+> **前端分流（整盘 bundle 优先）**：含前端的切片——**是否已有整盘设计 bundle？** 无（且已到前端阶段）→ 先 `ddt-design-source` **整盘一次**出 bundle（批量物料→外部工具→bundle，不是每切片各设计）；有 → 按 bundle 对应页面 + 共享设计系统实现，不再外部设计。
 
 简单工作几行写进 spec 末尾即可；复杂工作交 `ddt-design-checkpoint` 整理并按需落 `docs/api,data,design`。**已完成 Checkpoint 就不必为调而调。**
 
@@ -95,7 +95,7 @@ digraph skill_flow {
 
 - 要"造东西"（建功能 / 加能力 / 改行为 / 起项目）→ 先 `ddt-brainstorming`
 - 撞上 bug / 测试失败 / 异常行为 → 先 `ddt-systematic-debugging`
-- **写用户可见前端前** → 默认先 `ddt-design-source`（外部 AI 设计工具 v0/figma/claude-design 求审美收敛），别直接选组件库码；仅 trivial contract-driven（纯表单/表格/CRUD/后台）才 opt-out 直接实现
+- **进入前端实现阶段前（整盘一次）** → 先用 `ddt-design-source` 整盘出设计 bundle（批量物料 → 外部工具 → bundle → brainstorming 落前端 spec）；之后各前端切片**消费 bundle** 实现，不再每切片单独外部设计。别让模型选个组件库就码
 - 写实现代码前 → `ddt-tdd`
 - 有 spec / 计划要拆 → `ddt-writing-plans`；执行计划 → `ddt-subagent-driven` 或 `ddt-executing-plans`
 - 要声明"完成 / 通过 / 修好了" → 先 `ddt-verification`（证据先于断言）

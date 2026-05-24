@@ -48,16 +48,19 @@ test('ddt-design-source 含外部收敛回路四步', () => {
   }
 });
 
-test('前端默认外部：design-source 默认 stance + using-ddt/checkpoint 路由到它（防孤儿回归）', () => {
-  // 接缝防回归：design-source 曾是零触发器孤儿（前端切片永远轮不到它）。
-  // 现取向=前端默认走外部设计，仅 trivial contract-driven opt-out；且 using-ddt 触发点 + Checkpoint 都要路由到它。
+test('前端整盘设计：design-source 整盘一次出 bundle + 切片消费 + using-ddt/checkpoint 路由（防孤儿/防碎片化）', () => {
+  // 双重防回归：① design-source 曾是零触发器孤儿（前端切片永远轮不到它）；
+  // ② 设计必须整盘出一次（per-slice 各自外部设计 = 拼凑、视觉不一致）。
   const ds = readFileSync(path.join(root, 'skills/ddt-design-source/SKILL.md'), 'utf8');
-  assert.match(ds, /默认/, 'design-source 应是「默认外部」stance');
-  assert.match(ds, /opt-out|contract-driven/, 'design-source 应保留 trivial contract-driven opt-out 例外');
+  assert.match(ds, /整盘/, 'design-source 应是整盘一次出 bundle stance（非 per-slice）');
+  assert.match(ds, /bundle/, 'design-source 应产 bundle');
+  assert.match(ds, /消费|不重新设计|不再单独外部设计/, 'design-source 应说明切片消费 bundle、不重新设计');
+  assert.match(ds, /opt-out|contract-driven/, 'design-source 应保留 trivial contract-driven opt-out');
   for (const f of ['skills/using-ddt/SKILL.md', 'skills/ddt-design-checkpoint/SKILL.md']) {
     const s = readFileSync(path.join(root, f), 'utf8');
     assert.match(s, /ddt-design-source/, f + ' 应把前端路由到 ddt-design-source');
     assert.match(s, /前端/, f + ' 应含前端分流');
+    assert.match(s, /整盘|bundle/, f + ' 前端分流应是整盘 bundle 模型');
   }
 });
 

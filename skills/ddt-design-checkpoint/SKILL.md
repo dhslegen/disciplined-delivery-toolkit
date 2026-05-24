@@ -23,9 +23,13 @@ description: Use after brainstorming and before writing-plans — the design-tid
 6. **需写 `.ddt/changelog.jsonl`？** 是否有显著变更需要入账（经 `ddt-changelog-append.mjs` 追加）？
 7. **有未解决冲突/开放问题？** 如果有，是否阻断进入 writing-plans，还是可以带着已知开放项继续？
 
-## 前端分流（默认外部）
+## 前端分流（整盘 bundle 优先）
 
-本切片含用户可见前端？→ **默认先走 `ddt-design-source` 外部设计回路**（v0/figma/claude-design 求审美/感知收敛），外部产出经其 Ingest/Reconcile 摄回作 spec 输入。**仅明确 trivial contract-driven**（纯表单/表格/CRUD/内部后台、无审美/品牌/首屏/关键交互诉求）才 opt-out 直接实现（如 Ant Design Pro）。**别默认选个组件库就码**——审美收敛是感知问题，外部 AI 设计工具是正确模态。
+含前端的切片——**先看有没有整盘设计 bundle**（`ddt-design-source` 产出）：
+
+- **无**（且已到前端阶段）→ 先走 `ddt-design-source` **整盘一次**出 bundle（批量物料 → 外部工具 → bundle → brainstorming 落前端 spec）。**别每切片各自外部设计**（会拼凑、不一致），**别默认选个组件库就码**——审美收敛是感知问题，整盘出一次才一致。
+- **有** bundle → 按其对应页面 + 共享设计系统实现，切片阶段不再外部设计；bundle 缺该页面才回 `ddt-design-source` 增量补一批。
+- **仅** trivial contract-driven 页面（纯表单/表格/CRUD/后台）用设计系统标准组件即可，不必精雕。
 
 ## 最小留痕就近原则
 
