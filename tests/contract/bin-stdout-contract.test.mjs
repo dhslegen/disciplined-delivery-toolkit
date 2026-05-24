@@ -102,25 +102,6 @@ test('契约 bin/ddt-changelog-append.mjs · 协议同 decisions-append', () => 
   assert.equal(r.status, 0);
 });
 
-// === resolve-tech-stack.mjs：单点写入约束 ===
-
-test('契约 bin/resolve-tech-stack.mjs · 缺必填字段 → exit !=0', () => {
-  const r = spawnSync('node', [bin('resolve-tech-stack.mjs')], {
-    input: JSON.stringify({ preset: 'foo' }), // 缺 frontend/backend
-    cwd: freshDir(),
-    encoding: 'utf8'
-  });
-  assert.notEqual(r.status, 0);
-});
-
-// === ddt-contract-lint.mjs：lint 协议 ===
-
-test('契约 bin/ddt-contract-lint.mjs · 缺文件 → exit !=0 + stderr 含说明', () => {
-  const r = spawnSync('node', [bin('ddt-contract-lint.mjs')], { cwd: freshDir(), encoding: 'utf8' });
-  assert.notEqual(r.status, 0);
-  assert.ok(r.stderr.length > 0, 'lint 失败必须有 stderr 解释');
-});
-
 // === ddt-hook-preflight.mjs：preflight 协议 ===
 
 test('契约 bin/ddt-hook-preflight.mjs · plugin 仓内跑应 exit 0（所有 hook 注册）', () => {

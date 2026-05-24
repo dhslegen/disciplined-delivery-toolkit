@@ -26,7 +26,7 @@ test('ddt-doctor：列出 4 个关键 hook id 注册状态（Stop 已删除）',
 
 test('ddt-doctor：列出关键 bin 文件就位状态', () => {
   const r = spawnSync('node', [script], { cwd: root, encoding: 'utf8' });
-  for (const b of ['ddt-status.mjs', 'ddt-contract-lint.mjs', 'ddt-report.mjs', 'ddt-decisions-append.mjs', 'resolve-tech-stack.mjs']) {
+  for (const b of ['ddt-status.mjs', 'ddt-report.mjs', 'ddt-decisions-append.mjs', 'ddt-changelog-append.mjs']) {
     assert.match(r.stdout, new RegExp(b));
   }
 });
@@ -49,7 +49,7 @@ test('ddt-doctor 在非 plugin root 跑：plugin 自身健康段 [A] 应全 ✓'
       assert.match(r.stdout, new RegExp(`✓ ${id}`), `[A] 段应识别 ${id}（不受 cwd 影响）`);
     }
     // plugin bin 全部 ✓
-    for (const b of ['ddt-status.mjs', 'ddt-contract-lint.mjs', 'ddt-report.mjs']) {
+    for (const b of ['ddt-status.mjs', 'ddt-report.mjs', 'ddt-changelog-append.mjs']) {
       assert.match(r.stdout, new RegExp(`✓ bin/${b}`), `[A] 段应识别 bin/${b}（不受 cwd 影响）`);
     }
   } finally {
