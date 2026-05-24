@@ -16,7 +16,7 @@ description: Use for the project's user-facing frontend — converge the aesthet
 
 ## 何时
 
-`大需求变小`产出 requirements/briefs（页面清晰）后、对应前端切片实现前，做一次（一批）整体前端设计；后续缺页面再增量补一批。**全部前端都走这套外部设计——连纯 contract-driven 页面（表单/表格/CRUD/后台）也从 bundle 的设计系统装配**：设计系统常为竞争力定制了原生风格，off-the-shelf 标准组件会与它不一致，所以连最简单的页面都不回退到现成组件库。感知型页面（大屏/动态可视化/首屏）做 bespoke 逐页设计，contract-driven 页面用设计系统装配（不必逐页精雕），但二者同出一套外部设计语言。
+`大需求变小`产出 requirements/briefs（页面清晰）后、对应前端切片实现前，做一次（一批）整体前端设计；后续缺页面再增量补一批。**前提**：这批页面的 `docs/api`+`docs/data` 契约已成型（Export 要吃它）；故大需求拆解时设计层先行，详见 `ddt-brainstorming` 大需求入口分流。**全部前端都走这套外部设计——连纯 contract-driven 页面（表单/表格/CRUD/后台）也从 bundle 的设计系统装配**：设计系统常为竞争力定制了原生风格，off-the-shelf 标准组件会与它不一致，所以连最简单的页面都不回退到现成组件库。感知型页面（大屏/动态可视化/首屏）做 bespoke 逐页设计，contract-driven 页面用设计系统装配（不必逐页精雕），但二者同出一套外部设计语言。
 
 ## 大致回路（不是死仪式，按所用工具调整）
 

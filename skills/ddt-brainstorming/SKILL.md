@@ -28,6 +28,8 @@ Every project goes through this process. A todo list, a single-function utility,
 
 做法：用本 skill 的对话能力**理解大需求 + 切片思路**，把「写出 requirements/briefs」当作 implementation 对象（文档资产——可走 writing-plans→实现→review 链路产出）。**不要**给整个大需求写一份大 design spec，也**不要**急着给每个子模块写 spec——**先出 briefs**。之后**逐个 brief** 再回到本 skill 走下面的标准流程（那时才产 design spec → writing-plans → 实现）。
 
+**含前端时的切片排序**（最薄两层，别瀑布）：前端整体设计（`ddt-design-source` 的 Export）吃的是**契约**（`docs/api`+`docs/data`，是设计产物、不是建好的后端）。所以排 briefs 时把**设计层**放前——先出跨域契约 + 前端整体 bundle，**再**排实现切片。**别纯按业务竖切**（每域自带前端、各设计各的）：既凑不齐跨域物料做整盘前端设计，又把前端设计碎片化。实现切片（后端实现 + 前端实现）在设计层定稿后才按业务竖切、并行。
+
 **若是局部需求**（单功能 / bug / 重构 / 一个 brief）：直接照下面的标准流程走，产 design spec → writing-plans。
 
 > 即：下面的 Checklist / Process / After the Design 是**局部需求 / 单 brief 的标准流程**。大需求入口请先产 requirements/briefs，再对单个 brief 套用它们。
