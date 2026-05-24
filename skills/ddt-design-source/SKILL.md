@@ -1,23 +1,21 @@
 ---
 name: ddt-design-source
-description: Use on demand for a frontend slice whose convergence target is judged perceptually by a human — routes the perceptual problem to an external AI design tool (v0/figma/claude-design) and ingests the result. Optional enhancement, not a pipeline stage.
+description: Use BY DEFAULT for any user-facing frontend slice — route the aesthetic/perceptual design to an external AI design tool (v0/figma/claude-design) and ingest the result, instead of just picking a component library and coding. Opt out only for explicitly trivial contract-driven UI (plain forms/tables/CRUD/internal admin).
 ---
 
-# ddt-design-source — 外部收敛回路（按需可选增强）
+# ddt-design-source — 外部收敛回路（用户可见前端默认走）
 
 ## 第一性原理
 
 审美/UX 收敛是**感知-交互问题**，不是文本推理问题。LLM 在文本里推理；"这界面我满不满意"由人在感知反馈回路里判定（实时渲染、局部微调、无盲盒）。现代在线 AI 设计工具是这类子问题的**正确模态**。
 
-这是一个**按需可选增强**，不是实现流水线的固定站点。
+## 何时启用（默认启用，反向 opt-out）
 
-## 何时启用
+**默认**：任何用户可见前端切片都先走本回路求审美/感知收敛——这是感知-交互问题，不是文本推理，外部 AI 设计工具（v0/figma/claude-design）是正确模态。**别默认选个组件库（如 Ant Design Pro）就码。**
 
-由切片 spec 的收敛判据决定：
+**仅在明确判定为 trivial contract-driven 时 opt-out 直接实现**：纯表单 / 表格 / CRUD / 内部后台，且无审美 / 品牌 / 首屏 / 关键交互诉求。opt-out 是有意识的判断，不是默认。
 
-- 收敛目标由人**感知/经验**判定（非文本推理）→ 启用（UI 美学、品牌敏感页、首屏视觉、关键交互）
-- 客户强制 Figma / 已有设计师交付物 → 摄取为 spec 输入
-- 内部管理后台、纯表单页、数据展示页等 contract-driven 场景 → **直接走实现，无需本 skill**
+客户强制 Figma / 已有设计师交付物 → 摄取为 spec 输入（同样走本回路的 Ingest / Reconcile）。
 
 ## 四步操作
 

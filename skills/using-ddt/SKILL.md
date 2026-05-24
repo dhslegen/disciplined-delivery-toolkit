@@ -42,6 +42,8 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 6. 需写 `.ddt/changelog.jsonl`？
 7. 有未解决冲突/开放问题？
 
+> **前端分流（默认外部）**：本切片含用户可见前端？→ **默认先走 `ddt-design-source` 外部设计回路**（v0/figma/claude-design 求审美收敛），仅明确 trivial contract-driven（纯表单/表格/CRUD/后台）才 opt-out 直接实现。
+
 简单工作几行写进 spec 末尾即可；复杂工作交 `ddt-design-checkpoint` 整理并按需落 `docs/api,data,design`。**已完成 Checkpoint 就不必为调而调。**
 
 ## 路径即指令（唯一权威位置，勿自由发挥）
@@ -93,6 +95,7 @@ digraph skill_flow {
 
 - 要"造东西"（建功能 / 加能力 / 改行为 / 起项目）→ 先 `ddt-brainstorming`
 - 撞上 bug / 测试失败 / 异常行为 → 先 `ddt-systematic-debugging`
+- **写用户可见前端前** → 默认先 `ddt-design-source`（外部 AI 设计工具 v0/figma/claude-design 求审美收敛），别直接选组件库码；仅 trivial contract-driven（纯表单/表格/CRUD/后台）才 opt-out 直接实现
 - 写实现代码前 → `ddt-tdd`
 - 有 spec / 计划要拆 → `ddt-writing-plans`；执行计划 → `ddt-subagent-driven` 或 `ddt-executing-plans`
 - 要声明"完成 / 通过 / 修好了" → 先 `ddt-verification`（证据先于断言）
