@@ -71,6 +71,9 @@ test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + CRUD 
   //    防回归到"bundle 转译成文字 design spec 再消费"的自毁式读法（丢视觉保真）。
   assert.match(ds, /直接消费/, 'design-source 应说明 bundle 被直接消费（视觉真相，非转译成文字 spec）');
   assert.match(ds, /引用/, 'design-source 应说明 brief 的 spec 引用 bundle（非替代/转译）');
+  // ⑧ 外部工具是审美保真的推荐、非强制；bundle 谁做都行（外部或 LLM 自做整盘）——
+  //    防回归到"必须外部工具"，也防"LLM 自己处理"退化成每切片抓组件库（红线仍在 ④）。
+  assert.match(ds, /谁设计的不重要/, 'design-source 应说明 bundle 谁设计的不重要（外部是推荐非强制、LLM 自做也算）');
   for (const f of ['skills/using-ddt/SKILL.md', 'skills/ddt-design-checkpoint/SKILL.md']) {
     const s = readFileSync(path.join(root, f), 'utf8');
     assert.match(s, /ddt-design-source/, f + ' 应把前端路由到 ddt-design-source');
