@@ -33,6 +33,8 @@ test('ddt-design-checkpoint 含七问 Design Checkpoint', () => {
   assert.match(s, /docs\/api/);
   assert.match(s, /docs\/data/);
   assert.match(s, /docs\/design/);
+  // checkpoint 粒度不限：可在大需求级运行（条件触发，只落全局层，不预支各 brief 的 checkpoint）。
+  assert.match(s, /大需求级|逐片深做|粒度不限/, 'design-checkpoint 应点明可在大需求级运行（条件触发）');
 });
 
 test('ddt-deliver 含按需收口语义', () => {

@@ -32,9 +32,9 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 
 ## Design Checkpoint（七问习惯，无固定模板/文件名）
 
-任何 design spec 进 `writing-plans` 前，留下最小判断：
+任何设计进下一落地阶段前（brief 的 `writing-plans` / 大需求逐片深做前），留下最小判断：
 
-1. 是否允许进入 writing-plans？
+1. 是否可进下一阶段？
 2. 影响 `docs/api/`？
 3. 影响 `docs/data/`？
 4. 影响 `docs/design/`？
