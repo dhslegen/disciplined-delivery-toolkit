@@ -17,6 +17,21 @@ Do NOT invoke any implementation skill, write any code, scaffold any project, or
 
 Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.
 
+## DDT 大需求入口分流（最先判断，覆盖下面的标准流程）
+
+先判断本次是否 DDT「大需求」入口：需求模糊 / 跨模块 / 规模大 / 多人协作（典型信号：用户说「这是个大需求」、或前置资料是整包功能清单 / 会议纪要 / API 文档）。
+
+**若是大需求**：本 skill 的产出**不是单一 design spec**，而是把需求「变小」——
+
+- `docs/requirements/`：大需求受理（范围、模块清单、明确非范围）
+- `docs/briefs/`：一组 **bite-size** 切片 brief，每个 brief ≈ 一个可独立走「brainstorming→writing-plans→实现→review」的小问题
+
+做法：用本 skill 的对话能力**理解大需求 + 切片思路**，把「写出 requirements/briefs」当作 implementation 对象（文档资产——可走 writing-plans→实现→review 链路产出）。**不要**给整个大需求写一份大 design spec，也**不要**急着给每个子模块写 spec——**先出 briefs**。之后**逐个 brief** 再回到本 skill 走下面的标准流程（那时才产 design spec → writing-plans → 实现）。
+
+**若是局部需求**（单功能 / bug / 重构 / 一个 brief）：直接照下面的标准流程走，产 design spec → writing-plans。
+
+> 即：下面的 Checklist / Process / After the Design 是**局部需求 / 单 brief 的标准流程**。大需求入口请先产 requirements/briefs，再对单个 brief 套用它们。
+
 ## Checklist
 
 You MUST create a task for each of these items and complete them in order:

@@ -24,6 +24,15 @@ test('using-ddt skill 含取向核心内容', () => {
   assert.match(s, /三种入口/, 'using-ddt 缺「三种入口」段');
   assert.match(s, /Design Checkpoint/, 'using-ddt 缺 Design Checkpoint 段');
 });
+test('ddt-brainstorming 含大需求入口分流（产 requirements/briefs 而非单一 design spec）', () => {
+  // 接缝防回归：vendored brainstorming 原生终点是 design spec，但 DDT 大需求入口要先产
+  // requirements/briefs。此引导若被删/上游覆盖，大需求会被写成一份大 spec（没"变小"）。
+  const s = readFileSync(path.join(root, 'skills/ddt-brainstorming/SKILL.md'), 'utf8');
+  assert.match(s, /大需求入口分流|大需求/, 'ddt-brainstorming 缺大需求入口分流段');
+  assert.match(s, /docs\/requirements\//, '大需求分流须指向 docs/requirements/');
+  assert.match(s, /docs\/briefs\//, '大需求分流须指向 docs/briefs/');
+  assert.match(s, /bite-size/, '大需求分流须要求 briefs 为 bite-size');
+});
 test('skill 未嵌套 _vendored（决策#7）', () => {
   assert.ok(!existsSync(path.join(root, 'skills/_vendored')));
 });
