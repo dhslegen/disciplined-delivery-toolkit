@@ -17,8 +17,8 @@ test('2 个命令文件就位且 frontmatter 合法', () => {
   }
 });
 
-test('5 个 bin 承重件就位', () => {
-  for (const b of ['ddt-status.mjs', 'ddt-decisions-append.mjs', 'ddt-changelog-append.mjs', 'resolve-tech-stack.mjs', 'ddt-contract-lint.mjs']) {
+test('3 个 bin 承重件就位', () => {
+  for (const b of ['ddt-status.mjs', 'ddt-decisions-append.mjs', 'ddt-changelog-append.mjs']) {
     assert.ok(existsSync(path.join(root, 'bin', b)), 'bin/' + b + ' 缺失');
   }
 });

@@ -209,8 +209,6 @@ disciplined-delivery-toolkit/
 │   ├── ddt-status.mjs       ← /ddt-status 数据源
 │   ├── ddt-decisions-append.mjs
 │   ├── ddt-changelog-append.mjs
-│   ├── resolve-tech-stack.mjs
-│   ├── ddt-contract-lint.mjs
 │   ├── ddt-hook-preflight.mjs
 │   ├── ddt-report.mjs       ← ROI 报告生成
 │   └── ddt-doctor.mjs       ← 健康检查
@@ -310,7 +308,6 @@ git push -u origin slice/us-3    # push 让团队看见 = claim
 诚实声明，避免"形似神异"：
 
 - ⚠️ **`.ddt/state/current.json` 跨进程一致性未做真实环境验收**：在并发会话场景（两个 Claude Code 同时开）可能存在 race condition。当前实现是 last-write-wins。
-- ⚠️ **`ddt-contract-lint` 对 YAML OpenAPI 仅做 scan，未做 schema 全验证**：JSON 是完整 lint，YAML 走的是简化路径。
 - ⚠️ **Baseline 导入工具未做**：从历史项目导入 baseline 工时还需要手工编辑 `.ddt/metrics/`。
 - ⚠️ **TDD-for-skills 对抗测试未做**：vendoring 的 9 个 superpowers skill 在 DDT 环境下的实际效果还需要 dogfood 验证。
 - ⚠️ **多 harness 适配未做**：当前只验证过 Claude Code。Codex / Cursor / Gemini CLI 适配未做。
