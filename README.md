@@ -261,15 +261,6 @@ disciplined-delivery-toolkit/
 
 ## 配置与扩展
 
-### 项目级技术栈
-
-第一次跑时 DDT 会询问技术栈预设，写入 `.ddt/tech-stack.json`。后续直接复用。手动重置：
-
-```bash
-rm .ddt/tech-stack.json
-# 下次 /ddt 会重新询问
-```
-
 ### 多人协作
 
 DDT 用 **git native 能力** + 2 个轻约定支持团队多人协作，**不自创新机制**：
