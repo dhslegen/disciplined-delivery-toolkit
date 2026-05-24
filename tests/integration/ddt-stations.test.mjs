@@ -67,6 +67,10 @@ test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + CRUD 
   //    （防回归到"眼看 docs/design/ 有没有东西"的不稳定判断 + opt-out 缺失）。
   assert.match(ds, /docs\/design\/frontend/, 'design-source 须把 bundle 位置钉死到 docs/design/frontend/（可机判存在）');
   assert.match(ds, /opt-out|不外部设计/, 'design-source 须支持 opt-out（不需外部时的正式态，闸不反复触发）');
+  // ⑦ 消费的是 bundle（视觉真相、直接消费），brief 的 spec 只是引用它的"建什么"计划——
+  //    防回归到"bundle 转译成文字 design spec 再消费"的自毁式读法（丢视觉保真）。
+  assert.match(ds, /直接消费/, 'design-source 应说明 bundle 被直接消费（视觉真相，非转译成文字 spec）');
+  assert.match(ds, /引用/, 'design-source 应说明 brief 的 spec 引用 bundle（非替代/转译）');
   for (const f of ['skills/using-ddt/SKILL.md', 'skills/ddt-design-checkpoint/SKILL.md']) {
     const s = readFileSync(path.join(root, f), 'utf8');
     assert.match(s, /ddt-design-source/, f + ' 应把前端路由到 ddt-design-source');
