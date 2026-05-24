@@ -21,13 +21,13 @@ LLM 自做也行——前提是**认真做一次整盘**（一套统一语言、
 
 1. **Export** — 把整盘物料一次投给外部工具：页面清单 + 各页意图（来自 requirements/briefs）+ 品牌 / design tokens + 状态规范（loading/empty/error/success、响应式、无障碍）。设计只依赖这些，**不依赖契约**——契约（`docs/api`/`docs/data`）在各 brief 的 Design Checkpoint 才出，留到 Reconcile。
 2. **外部回路** — 人在工具里渲染、迭代到满意（LLM 自做时：LLM 整盘生成、你 review 到满意）。DDT 不替代这一步。
-3. **Ingest** — 产物（代码 / URL / figma）落 `docs/design/frontend/`，`.ddt/changelog.jsonl` 记一条来源（工具 / 来源 / 人 / 时间）。
-4. **Reconcile** — 落地时把设计的字段 / 状态与该切片 Design Checkpoint 产出的契约对齐；不一致就改契约或调设计。
+3. **Ingest** — 产物（代码 / URL / figma）落 `docs/design/frontend/`，同目录写一份 `SOURCE.md` 当消费入口：声明这是全平台视觉真相、来源（工具 / 人 / 时间）、各文件对应哪些切片消费、怎么落地。`.ddt/changelog.jsonl` 记一条来源。
+4. **Reconcile** — 把定稿与它牵动的两头对齐。**向上**：外部回路常改掉 Export 时的假设（这正是让人判定的价值）；凡推翻了上游前提（受理书的范式 / 范围假设等），记一条带 `supersedes` 的 decision 写明覆盖了什么——不私改上游文档（IL-4），账本即真相。**向下**：各切片落地时把设计的字段 / 状态与该切片 Design Checkpoint 产出的 `docs/api`/`docs/data` 契约对齐，不一致就改契约或调设计。
 
 ## bundle 是前端的视觉真相
 
 - **位置** `docs/design/frontend/`：目录固定，内部文件自由命名；非空即"有 bundle"（可机判，不靠眼看 `docs/design/`）。
-- **消费**：各前端切片直接消费 bundle 实现（来 `docs/design/frontend/` 读、照着做）。切片的 design spec 是"建什么"的计划——**引用** bundle、补数据 / 状态 / 集成，不替代也不转译它（转成文字就丢了视觉）。
+- **消费**：各前端切片直接消费 bundle 实现（来 `docs/design/frontend/` 读、入口 `SOURCE.md`、照着做）。切片的 design spec 是"建什么"的计划——**引用** bundle、补数据 / 状态 / 集成，不替代也不转译它（转成文字就丢了视觉）。
 - **opt-out**：没有前端 / 前端极简到不值得整盘设计时，记一条 decision 说明本期不做整盘设计。据此判定：目录空且无此 decision = 走本回路（外部或 LLM 自做）；非空 = 消费；有此 decision = 用设计系统直接实现。（"没有外部工具" 不属 opt-out——LLM 自做整盘即可。）
 
 ## 在 DDT 里的位置

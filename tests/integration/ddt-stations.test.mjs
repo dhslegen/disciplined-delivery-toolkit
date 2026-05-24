@@ -76,6 +76,10 @@ test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + CRUD 
   // ⑧ 外部工具是审美保真的推荐、非强制；bundle 谁做都行（外部或 LLM 自做整盘）——
   //    防回归到"必须外部工具"，也防"LLM 自己处理"退化成每切片抓组件库（红线仍在 ④）。
   assert.match(ds, /谁设计的不重要/, 'design-source 应说明 bundle 谁设计的不重要（外部是推荐非强制、LLM 自做也算）');
+  // ⑨ Ingest 产出 SOURCE.md 消费入口、Reconcile 在推翻上游假设时记 supersede 决策——
+  //    把这两个曾靠模型悟性补出的好模式钉成 skill 保证（不私改上游，账本即真相）。
+  assert.match(ds, /SOURCE\.md/, 'design-source Ingest 应产出 SOURCE.md 消费入口');
+  assert.match(ds, /supersedes/, 'design-source Reconcile 应在推翻上游假设时记 supersede 决策');
   for (const f of ['skills/using-ddt/SKILL.md', 'skills/ddt-design-checkpoint/SKILL.md']) {
     const s = readFileSync(path.join(root, f), 'utf8');
     assert.match(s, /ddt-design-source/, f + ' 应把前端路由到 ddt-design-source');
