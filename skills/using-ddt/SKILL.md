@@ -131,7 +131,7 @@ digraph skill_flow {
 
 skill 自己会告诉你它属哪类。
 
-**唯一不可商量的硬骨头**：reviewer 写 `docs/reviews/<task-id>-<role>.json`（role ∈ `spec|quality|final`）时，结构须为
+**唯一不可商量的硬骨头**：reviewer **用 Write 整份写** `docs/reviews/<task-id>-<role>.json`（role ∈ `spec|quality|final`；勿用 Edit 增量改——hook 只校验完整 content）时，结构须为
 
 ```json
 { "task_id": "...", "reviewer_role": "spec|quality|final", "verdict": "PASS|FAIL",

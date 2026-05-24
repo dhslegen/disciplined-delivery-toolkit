@@ -100,15 +100,19 @@ test('IL-5：非 JSON 内容 → block', () => {
   assert.match(r.reason(), /IL-5/);
 });
 
-test('IL-5 加固：MultiEdit/NotebookEdit 写 reviews PASS 无 cited 同样 block', () => {
-  for (const tool of ['MultiEdit', 'NotebookEdit']) {
-    const r = run({
-      hook_event_name: 'PreToolUse',
-      tool_name: tool,
-      tool_input: { file_path: '/repo/docs/reviews/T1-spec.json', content: '{"task_id":"T1","reviewer_role":"spec","verdict":"PASS","cited_evidence":[],"ts":"2026-05-20T00:00:00Z"}' }
-    });
-    assert.ok(r.isBlock(), `${tool} 应被 block`);
-    assert.match(r.reason(), /IL-5/);
+test('IL-5 回归（冒烟逮到）：Edit/MultiEdit/NotebookEdit 改 reviewer 文件 → block 且要求用 Write', () => {
+  // 真实 tool_input 形态：Edit 有 old/new_string、MultiEdit 有 edits[]、NotebookEdit 有 new_source——
+  // 都没有完整 content。曾因强行 JSON.parse(content) 误报「非合法 JSON」。reviewer 输出须 Write 整份提交。
+  const cases = [
+    { tool_name: 'Edit', tool_input: { file_path: '/repo/docs/reviews/T1-spec.json', old_string: 'a', new_string: 'b' } },
+    { tool_name: 'MultiEdit', tool_input: { file_path: '/repo/docs/reviews/T1-spec.json', edits: [{ old_string: 'a', new_string: 'b' }] } },
+    { tool_name: 'NotebookEdit', tool_input: { file_path: '/repo/docs/reviews/T1-spec.json', new_source: 'x' } }
+  ];
+  for (const c of cases) {
+    const r = run({ hook_event_name: 'PreToolUse', ...c });
+    assert.ok(r.isBlock(), `${c.tool_name} 改 reviewer 文件应被 block`);
+    assert.match(r.reason(), /Write|整份/, `${c.tool_name} block 理由应指明用 Write 整份`);
+    assert.doesNotMatch(r.reason(), /非合法 JSON/, `${c.tool_name} 不应误报「非合法 JSON」`);
   }
 });
 
