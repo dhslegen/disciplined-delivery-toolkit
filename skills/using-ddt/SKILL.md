@@ -42,7 +42,7 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 6. 需写 `.ddt/changelog.jsonl`？
 7. 有未解决冲突/开放问题？
 
-> 含前端？→ 看有无整体设计产物；无（已到前端阶段）则先 `ddt-design-source` 外部整体设计（见该 skill），别每切片各设计。
+> 含前端？→ 查 `docs/design/frontend/` 非空否（+ 有无 opt-out）；空且无 opt-out 则先 `ddt-design-source` 外部整体设计（见该 skill），别每切片各设计。
 
 简单工作几行写进 spec 末尾即可；复杂工作交 `ddt-design-checkpoint` 整理并按需落 `docs/api,data,design`。**已完成 Checkpoint 就不必为调而调。**
 
@@ -55,6 +55,7 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 | reviewer 证据 | `docs/reviews/*.json` | IL-5 校验对象 |
 | 大需求 / 切片输入 | `docs/requirements/`、`docs/briefs/` | 按需 |
 | 契约 / 数据 / 设计 | `docs/api/`、`docs/data/`、`docs/design/` | 按需 |
+| 前端设计 bundle | `docs/design/frontend/` | 锚点：非空=有 bundle、消费端读这、opt-out 记 decision |
 | 验收 / 交付 | `docs/verification/`、`docs/delivery/` | 按需 |
 | 决策 / 变更账本 | `.ddt/decisions.jsonl`、`.ddt/changelog.jsonl` | 入 git，仅经 append bin 追加 |
 | 状态 / 度量 | `.ddt/state/`、`.ddt/metrics/` | transient，不入 git |

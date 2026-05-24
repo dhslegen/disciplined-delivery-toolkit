@@ -25,7 +25,12 @@ description: Use after brainstorming and before writing-plans — the design-tid
 
 ## 前端分流
 
-含前端的切片：有无整体设计产物（`ddt-design-source` 出的 bundle）？无（已到前端阶段）→ 先外部**整体**设计一次（别每切片各设计、别拿组件库糊弄；粒度按项目判断）；有 → 按其实现，不再外部设计。详见 `ddt-design-source`。
+含前端的切片：查 `docs/design/frontend/` 是否非空（确定性，别眼看 `docs/design/`）+ 有无 opt-out decision——
+- **空且无 opt-out** → 先 `ddt-design-source` 外部**整体**设计一次（别每切片各设计、别拿组件库糊弄；粒度按项目判断）；
+- **非空** → 按 bundle 实现，不再外部设计；
+- **有 opt-out** → 用设计系统直接实现。
+
+详见 `ddt-design-source`。
 
 ## 最小留痕就近原则
 

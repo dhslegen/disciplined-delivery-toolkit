@@ -63,11 +63,17 @@ test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + CRUD 
   // ⑤ 前端设计不吃契约——契约在 brief 的 Design Checkpoint 才出、Reconcile 才对齐
   //    （防回归到"Export 吃契约"的假前提：契约在大需求阶段并不存在）。
   assert.match(ds, /不依赖契约/, 'design-source 应说明前端设计不依赖契约（契约 Reconcile 时才对齐）');
+  // ⑥ bundle 的存在/位置/opt-out 钉成单一真相：位置 docs/design/frontend/（test -e 可机判）、支持 opt-out
+  //    （防回归到"眼看 docs/design/ 有没有东西"的不稳定判断 + opt-out 缺失）。
+  assert.match(ds, /docs\/design\/frontend/, 'design-source 须把 bundle 位置钉死到 docs/design/frontend/（可机判存在）');
+  assert.match(ds, /opt-out|不外部设计/, 'design-source 须支持 opt-out（不需外部时的正式态，闸不反复触发）');
   for (const f of ['skills/using-ddt/SKILL.md', 'skills/ddt-design-checkpoint/SKILL.md']) {
     const s = readFileSync(path.join(root, f), 'utf8');
     assert.match(s, /ddt-design-source/, f + ' 应把前端路由到 ddt-design-source');
     assert.match(s, /前端/, f + ' 应含前端分流');
   }
+  const cp = readFileSync(path.join(root, 'skills/ddt-design-checkpoint/SKILL.md'), 'utf8');
+  assert.match(cp, /docs\/design\/frontend/, 'design-checkpoint 前端分流须按 docs/design/frontend/ 判断触发（确定性，非眼看）');
 });
 
 test('DDT 原生 skill 集合引用 vendored skill 名精确', () => {
