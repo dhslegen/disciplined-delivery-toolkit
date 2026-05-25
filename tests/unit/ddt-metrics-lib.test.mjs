@@ -42,13 +42,3 @@ test('aggregate：session 事件计数与平均时长', () => {
   assert.equal(a.total_session_ms, 4000);
   assert.equal(a.avg_session_ms, 2000);
 });
-
-test('aggregate：IL block 分类（按 reason 含 IL-N 计数）', () => {
-  const events = [
-    { kind: 'tool', decision: 'block', reason: 'IL-1 违规：...' },
-    { kind: 'tool', decision: 'block', reason: 'IL-4 违规：...' },
-    { kind: 'tool', decision: 'block', reason: 'IL-1 违规：...' }
-  ];
-  const a = aggregate(events);
-  assert.deepEqual(a.il_block_counts, { 'IL-1': 2, 'IL-4': 1 });
-});

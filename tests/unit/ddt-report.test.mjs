@@ -37,8 +37,8 @@ test('ddt-report：聚合 metrics 渲染指标段', () => {
   const md = readFileSync(path.join(dir, 'docs/efficiency-report.md'), 'utf8');
   assert.match(md, /工具调用：2/);
   assert.match(md, /拦截：1/);
-  assert.match(md, /IL-4/);
   assert.match(md, /会话数：1/);
+  assert.doesNotMatch(md, /Iron Law|IL-\d/, '报告不应再有 Iron Law/IL 拦截分布段（强制层已拔除）');
 });
 
 test('ddt-report：含降低保障级 waiver 清单段', () => {

@@ -16,7 +16,6 @@ export function aggregate(events) {
     blocked_count: 0,
     auto_pass_count: 0,
     tool_breakdown: {},
-    il_block_counts: {},
     sessions: 0,
     total_session_ms: 0,
     avg_session_ms: 0
@@ -27,10 +26,6 @@ export function aggregate(events) {
       out.total_tool_calls++;
       if (e.decision === 'block') {
         out.blocked_count++;
-        if (typeof e.reason === 'string') {
-          const m = /^(IL-\d+)/.exec(e.reason);
-          if (m) out.il_block_counts[m[1]] = (out.il_block_counts[m[1]] || 0) + 1;
-        }
       } else {
         out.auto_pass_count++;
       }
