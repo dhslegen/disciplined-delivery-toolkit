@@ -6,7 +6,7 @@
 |--------|-------|------|
 | **tests/unit/** | "我们写的代码内部逻辑对" | `decide(ev)` 函数返回 `{decision: 'block'}` 时输入是对的 |
 | **tests/contract/** | "我们的输出符合外部协议" | hook stdout 严格符合 [Claude Code hook schema](https://code.claude.com/docs/en/hooks) |
-| **tests/integration/** | "几个组件协同 OK" | charter 文本含 IL-3/4/5 反驳条目 |
+| **tests/integration/** | "几个组件协同 OK" | using-ddt 含四北极星；design-source 前端回路接线正确 |
 
 ## 为什么必须分开
 
@@ -23,7 +23,6 @@ assert.equal(out.decision, 'block');  // 我们自己定义的字段
 
 | 文件 | 覆盖对象 | 协议来源 |
 |------|---------|---------|
-| `hook-enforce-contract.test.mjs` | `hooks/handlers/ddt-enforce.mjs` 的 PreToolUse 输出（仅 IL-5） | Claude Code hook schema |
 | `hook-inject-contract.test.mjs` | `hooks/handlers/ddt-inject.mjs` 的 SessionStart 输出 | Claude Code hook schema |
 | `hook-metrics-contract.test.mjs` | `hooks/handlers/ddt-metrics.mjs` 的 PostToolUse + SessionEnd 行为（静默 exit 0） | Claude Code hook schema |
 | `bin-stdout-contract.test.mjs` | 7 个 bin CLI 工具的 stdout/stderr/exit code | DDT 内部约定 |

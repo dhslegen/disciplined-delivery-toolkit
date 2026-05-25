@@ -19,11 +19,10 @@ test('metrics 两个新 hook id 已注册', () => {
   assert.ok(s.has('ddt:metrics-end'));
 });
 
-test('既有 hook id 未被破坏（Stop 已删除，4 hooks）', () => {
+test('既有 hook id 未被破坏（无强制层，3 hooks）', () => {
   const s = ids();
-  for (const id of ['ddt:inject', 'ddt:enforce-pre']) {
-    assert.ok(s.has(id), id + ' 不应被删');
-  }
+  assert.ok(s.has('ddt:inject'), 'ddt:inject 不应被删');
+  assert.ok(!s.has('ddt:enforce-pre'), 'ddt:enforce-pre 已拔除（IL-5 强制层移除）');
   assert.ok(!s.has('ddt:enforce-stop'), 'ddt:enforce-stop 应已删除');
-  assert.equal(s.size, 4, '应恰好有 4 个 hook id');
+  assert.equal(s.size, 3, '应恰好有 3 个 hook id');
 });

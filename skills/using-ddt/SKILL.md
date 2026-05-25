@@ -52,7 +52,6 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 |---|---|---|
 | design spec | `docs/specs/` | 主链路常用 |
 | plan | `docs/plans/` | 主链路常用 |
-| reviewer 证据 | `docs/reviews/*.json` | IL-5 校验对象 |
 | 大需求 / 切片输入 | `docs/requirements/`、`docs/briefs/` | 按需 |
 | 契约 / 数据 / 设计 | `docs/api/`、`docs/data/`、`docs/design/` | 按需 |
 | 前端设计 bundle | `docs/design/frontend/` | 锚点：非空=有 bundle、消费端读这、opt-out 记 decision |
@@ -134,17 +133,6 @@ digraph skill_flow {
 - **柔性**（模式类）：按情境调整原则。
 
 skill 自己会告诉你它属哪类。
-
-**唯一不可商量的硬骨头**：reviewer **用 Write 整份写** `docs/reviews/<task-id>-<role>.json`（role ∈ `spec|quality|final`；勿用 Edit 增量改——hook 只校验完整 content）时，结构须为
-
-```json
-{ "task_id": "...", "reviewer_role": "spec|quality|final", "verdict": "PASS|FAIL",
-  "cited_evidence": ["文件:行 / 命令输出 / 测试名，PASS 时 ≥1 条"],
-  "issues": [{ "severity": "critical|important|minor", "where": "文件:行", "note": "..." }],
-  "ts": "ISO8601" }
-```
-
-`verdict=PASS` 时 `cited_evidence` 必须非空，否则 PreToolUse hook 拦截。其余都是原则，不是闸机。
 
 ## 按需协作 & 收口
 

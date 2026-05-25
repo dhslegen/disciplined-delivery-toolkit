@@ -17,11 +17,10 @@ function runWith(hooksJson) {
 }
 
 test('hook 已注册 → exit 0', () => {
-  // preflight 检查全部 4 个 hook id（与 hooks/hooks.json 注册一致，Stop 已删除）
+  // preflight 检查 3 个 hook id（与 hooks/hooks.json 一致，无强制层：注入 + 被动度量）
   const r = runWith(JSON.stringify({
     hooks: {
       SessionStart: [{ id: 'ddt:inject' }],
-      PreToolUse: [{ id: 'ddt:enforce-pre' }],
       PostToolUse: [{ id: 'ddt:metrics-post' }],
       SessionEnd: [{ id: 'ddt:metrics-end' }]
     }

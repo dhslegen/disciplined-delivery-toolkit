@@ -65,7 +65,3 @@ description: Use after brainstorming and before writing-plans — the design-tid
 - 下游：`ddt-writing-plans`（Checkpoint 后进入）
 - 留痕工具：`ddt-decisions-append.mjs`、`ddt-changelog-append.mjs`
 - 路径权威：`ddt-doctor.mjs` [B] 段——路径不确定时跑 doctor 查
-
----
-
-> **DDT 强制层声明**：若 DDT 强制层 hook 未注册/未运行，本 skill 纪律降级为建议级。完成/通过声明须显式标注「未受强制层校验」。

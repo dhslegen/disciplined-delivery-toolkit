@@ -33,7 +33,3 @@ LLM 自做也行——前提是**认真做一次整盘**（一套统一语言、
 ## 在 DDT 里的位置
 
 `大需求变小` 给出页面清单 → 本回路出 bundle 落 `docs/design/frontend/`（视觉真相）→ 各前端 brief 的 `ddt-brainstorming` 引用 bundle 出该切片 spec → `ddt-writing-plans` / `ddt-subagent-driven` 直接消费 bundle 实现 → `ddt-requesting-review`。
-
----
-
-> **DDT 强制层声明**：若 DDT 强制层 hook 未注册/未运行，本 skill 纪律降级为建议级。完成/通过声明须显式标注「未受强制层校验」。

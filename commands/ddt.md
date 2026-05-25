@@ -46,7 +46,6 @@ ddt-status.mjs
 |------|------|
 | design spec | `docs/specs/` |
 | plan | `docs/plans/` |
-| reviewer 证据 | `docs/reviews/` |
 | 大需求 / 切片输入 | `docs/requirements/`、`docs/briefs/` |
 | 决策账本 | `.ddt/decisions.jsonl` |
 | 状态 / 度量（transient） | `.ddt/state/`、`.ddt/metrics/` |

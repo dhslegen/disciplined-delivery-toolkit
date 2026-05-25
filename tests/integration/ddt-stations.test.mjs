@@ -22,7 +22,7 @@ test('DDT 原生 skill（design-checkpoint/deliver/design-source）平铺且 fro
     assert.ok(m, d + ' 无 frontmatter');
     assert.match(m[1], new RegExp('name:\\s*' + d + '\\b'), d + ' name 不匹配目录');
     assert.match(m[1], /description:\s*Use /, d + ' description 须以 "Use" 起首（CSO 触发式）');
-    assert.match(s, /DDT 强制层声明/, d + ' 缺降级声明');
+    assert.doesNotMatch(s, /强制层/, d + ' 不应再含强制层措辞（IL-5 强制层已拔除）');
   }
 });
 

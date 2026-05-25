@@ -56,7 +56,3 @@ description: Use on demand to close out delivery when work needs formal sign-off
 - 上游：`ddt-verification`（验证证据）、`ddt-requesting-review` / `ddt-receiving-review`（评审证据）
 - 度量：`ddt-report.mjs`（被动采集，按需产报告）
 - 留痕：`ddt-decisions-append.mjs`、`ddt-changelog-append.mjs`
-
----
-
-> **DDT 强制层声明**：若 DDT 强制层 hook 未注册/未运行，本 skill 纪律降级为建议级。完成/通过声明须显式标注「未受强制层校验」。

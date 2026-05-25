@@ -4,7 +4,7 @@
 // 但它们曾长期游离在所有扫描之外（5 站固定链 / subagent 三角 / Iron Law 文件事实强制 /
 // 唯一真相源 等旧架构陈述一直残留）。本测试把 manifest 描述纳入"无旧概念"守卫，防回退。
 //
-// 当前权威心智模型：四句北极星 + 三种入口 + 强制层 L2（唯一 IL-5 硬闸）+ Design Checkpoint。
+// 当前权威心智模型：四句北极星 + 三种入口 + Design Checkpoint。无强制层、无拦截 hook，纪律靠 skill 被 invoke（同 superpowers）。
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -35,7 +35,8 @@ const STALE = [
   { re: /唯一真相源/, why: '旧 SSoT 铁律「唯一真相源」' },
   { re: /文件事实强制/, why: '旧「Iron Law 文件事实强制」' },
   { re: /契约站|需求站|验证站|交付站/, why: '旧 5 站站点概念' },
-  { re: /ddt-charter|ddt-impl-spec|ddt-frontend-craft|charter-inject|enforce-stop/, why: '已删除的 skill/hook 名' },
+  { re: /ddt-charter|ddt-impl-spec|ddt-frontend-craft|charter-inject|enforce-stop|enforce-pre/, why: '已删除的 skill/hook 名' },
+  { re: /IL-?5|强制层|硬闸|无引证不得 PASS/, why: '已拔除的 IL-5 强制层' },
   { re: /docs\/ssot|docs\/architecture/, why: '旧 SSoT 路径' },
   { re: /\bPRD\b/, why: '已撤回的 PRD 概念' },
 ];

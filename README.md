@@ -29,7 +29,7 @@ DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，在 **[obra
 
 - ✅ **政企/B 端交付团队**：客户多角色、需求易变、要求过程可审计、强调质量门禁。
 - ✅ **小到 10 人内、大到几十人协作的开发者**：需要让"AI 写的代码"和"人写的代码"接受同一套纪律。
-- ✅ **想用 AI 提效但不愿牺牲工程质量的工程师**：想要 LLM 速度，但需要 hook 文件事实强制兜底。
+- ✅ **想用 AI 提效但不愿牺牲工程质量的工程师**：想要 LLM 速度，但需要明确的工程纪律取向（靠 skill 被 invoke，不靠拦截）。
 - ⚠️ **不适合**：一次性脚本、个人玩具项目（用 superpowers 即可，DDT 的治理外壳是过度工程）。
 
 ---
@@ -42,10 +42,10 @@ DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，在 **[obra
 | 团队协作 | 无规约 | 弱（个人开发友好） | **决策/变更账本 + 多切片协作** |
 | 决策可追溯 | 散落在对话里 | 部分 | **`.ddt/decisions.jsonl` + `.ddt/changelog.jsonl`** |
 | 设计进计划前 | 无门控 | 无 | **Design Checkpoint（七问习惯）** |
-| 评审引证强制 | 无 | 弱告警 | **IL-5：PreToolUse hook 真的拦下** |
+| 评审要证据 | 无 | 弱告警 | **verification / review skill 要求引证（行为约束）** |
 | 收口证据 | 无 | 无 | **`ddt-deliver`（按需）ROI 报告** |
 
-**DDT ≠ superpowers + 一堆 agents**。v1.0 是最薄治理外壳：2 个命令、13 个 skill（9 个直接 vendoring superpowers）、4 个 hook、所有"做事"委托给 skill。
+**DDT ≠ superpowers + 一堆 agents**。v1.0 是最薄治理外壳：2 个命令、13 个 skill（9 个直接 vendoring superpowers）、3 个 hook（全被动/注入、不拦截）、所有"做事"委托给 skill。
 
 ---
 
@@ -94,7 +94,7 @@ gh api repos/dhslegen/disciplined-delivery-toolkit/commits/main --jq .sha[0:7]
 /reload-plugins
 ```
 
-> alpha 阶段高频更新。如发现 hook 报错或 IL-5 失效，先 `/plugin marketplace update` + `/reload-plugins` 再排查。stable 发布时切回语义版本（`1.0.0`、`1.0.1`...），届时 bump 才意味着新版。
+> alpha 阶段高频更新。如发现 hook 报错，先 `/plugin marketplace update` + `/reload-plugins` 再排查。stable 发布时切回语义版本（`1.0.0`、`1.0.1`...），届时 bump 才意味着新版。
 
 ---
 
@@ -120,7 +120,6 @@ DDT 会根据当前项目状态**向导**：
 → 当前阶段：实现
 → 进行中任务：3/8
 → 待决策：1 条（pending）
-→ IL-5 hook 状态：✅ 已注册
 ```
 
 ---
@@ -163,33 +162,17 @@ DDT 会根据当前项目状态**向导**：
 - `ddt-requesting-review` ← requesting-code-review
 - `ddt-receiving-review` ← receiving-code-review
 
-> Vendoring 而非依赖：用户只装 DDT 一个 plugin 就能用全套，不需要先装 superpowers。每个 vendored skill 顶部都加了"DDT 强制层声明"段落，说明 hook 缺席时如何降级。原文照搬，授权保留（见 [LICENSE](./LICENSE) Third-Party Notices）。
+> Vendoring 而非依赖：用户只装 DDT 一个 plugin 就能用全套，不需要先装 superpowers。9 个 skill 原文照搬（仅 name 加 `ddt-` 前缀以防命名冲突），授权保留（见 [LICENSE](./LICENSE) Third-Party Notices）。
 
-### Hooks（4 个，L2 强制层）
+### Hooks（3 个，全被动/注入，无强制层）
 
 | Hook ID | 触发时机 | 作用 |
 |---------|---------|------|
 | `ddt:inject` | SessionStart | 把 `using-ddt` 注入会话（取向、路径规约） |
-| `ddt:enforce-pre` | PreToolUse `*` | **唯一硬闸**：IL-5 reviewer 输出须含引证才能通过 |
 | `ddt:metrics-post` | PostToolUse `*` | 被动埋点（工具调用计数、耗时、文件改动） |
 | `ddt:metrics-end` | SessionEnd | 落 `.ddt/metrics/YYYY-MM-DD.jsonl` |
 
-**强制层定位（L2）**：行为为主 + 唯一 IL-5 牙。纪律主要由 vendored skill 内容承载；IL-5 是唯一 hook 硬拦的规则（reviewer PASS 必须有 cited_evidence）。其余原则由 skill 原文和 using-ddt 约束，不靠闸机强制。
-
----
-
-## 唯一引证规则（IL-5）
-
-reviewer（spec / quality / final）写 `docs/reviews/<task-id>-<role>.json` 时，结构须为：
-
-```json
-{ "task_id": "...", "reviewer_role": "spec|quality|final", "verdict": "PASS|FAIL",
-  "cited_evidence": ["文件:行 / 命令输出 / 测试名，PASS 时 ≥1 条"],
-  "issues": [{ "severity": "critical|important|minor", "where": "文件:行", "note": "..." }],
-  "ts": "ISO8601" }
-```
-
-`verdict=PASS` 时 `cited_evidence` 必须非空，否则 PreToolUse hook 拦截写入。其余都是原则，不是闸机。
+**无强制层、不拦截任何工具调用**。DDT 的纪律和 superpowers 完全一样，靠"1% 也要 invoke 相关 skill"的行为约束承载（见 `using-ddt`），不靠 hook 闸机。这 3 个 hook 只做 using-ddt 注入与被动度量，不改 superpowers 原生体验。
 
 ---
 
@@ -203,7 +186,7 @@ disciplined-delivery-toolkit/
 ├── commands/                ← /ddt, /ddt-status
 ├── skills/                  ← 13 个 SKILL.md（4 原生 + 9 vendoring）
 ├── hooks/
-│   ├── hooks.json           ← 注册 4 个 hook
+│   ├── hooks.json           ← 注册 3 个 hook（注入 + 被动度量）
 │   └── handlers/            ← *.mjs handler 实现
 ├── bin/                     ← 承重 CLI 工具（零依赖）
 │   ├── ddt-status.mjs       ← /ddt-status 数据源
@@ -233,7 +216,6 @@ disciplined-delivery-toolkit/
 │   ├── briefs/              ← 切片 brief（按需）
 │   ├── specs/               ← design spec
 │   ├── plans/               ← writing-plans 产出
-│   ├── reviews/             ← reviewer 证据（IL-5 校验对象）
 │   ├── api/                 ← OpenAPI / 契约（按需）
 │   ├── data/                ← data model（按需）
 │   ├── design/              ← UI/架构设计（按需）
@@ -251,7 +233,7 @@ disciplined-delivery-toolkit/
 ## 技术原则
 
 1. **零依赖**：`bin/`、`hooks/handlers/` 只用 Node 内置模块（`node:fs`、`node:path`、`node:child_process`）。`package.json` `dependencies: {}` `devDependencies: {}`。
-2. **零网络**：DDT 运行时不联网。所有强制和决策来自本地文件。
+2. **零网络**：DDT 运行时不联网。所有判定和决策来自本地文件。
 3. **ESM `.mjs`**：所有脚本 ECMAScript Modules，Node ≥ 22。
 4. **测试用 `node --test`**：不引第三方测试框架。
 5. **Hook 只读文件、不读对话**：判定不可被对话上下文影响。

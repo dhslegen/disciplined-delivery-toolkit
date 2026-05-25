@@ -17,11 +17,12 @@ test('ddt-doctor：仓内运行 exit 0 + 输出 doctor 标题', () => {
   assert.match(r.stdout, /bin\//);
 });
 
-test('ddt-doctor：列出 4 个关键 hook id 注册状态（Stop 已删除）', () => {
+test('ddt-doctor：列出 3 个关键 hook id 注册状态（无强制层，仅注入+被动度量）', () => {
   const r = spawnSync('node', [script], { cwd: root, encoding: 'utf8' });
-  for (const id of ['ddt:inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end']) {
+  for (const id of ['ddt:inject', 'ddt:metrics-post', 'ddt:metrics-end']) {
     assert.match(r.stdout, new RegExp(id));
   }
+  assert.doesNotMatch(r.stdout, /ddt:enforce-pre/, 'enforce-pre 已拔除，doctor 不应再列');
 });
 
 test('ddt-doctor：列出关键 bin 文件就位状态', () => {
@@ -44,8 +45,8 @@ test('ddt-doctor 在非 plugin root 跑：plugin 自身健康段 [A] 应全 ✓'
   try {
     const r = spawnSync('node', [script], { cwd: tmp, encoding: 'utf8' });
     assert.equal(r.status, 0);
-    // plugin 自身 4 个 hook id 仍应被识别（路径解析靠 __dirname 而非 cwd，Stop 已删除）
-    for (const id of ['ddt:inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end']) {
+    // plugin 自身 3 个 hook id 仍应被识别（路径解析靠 __dirname 而非 cwd）
+    for (const id of ['ddt:inject', 'ddt:metrics-post', 'ddt:metrics-end']) {
       assert.match(r.stdout, new RegExp(`✓ ${id}`), `[A] 段应识别 ${id}（不受 cwd 影响）`);
     }
     // plugin bin 全部 ✓
@@ -98,12 +99,10 @@ test('ddt-doctor .gitattributes union merge 检查：decisions + changelog 均�
   }
 });
 
-test('ddt-doctor 输出 LLM 必读段，明确禁止看 settings.local.json 判定降级', () => {
-  // 防 v1.1 dogfood 回归：LLM 误把 .claude/settings.local.json 当作 hook 注册位置
+test('ddt-doctor 输出 DDT 纪律取向段（无强制层）', () => {
   const r = spawnSync('node', [script], { cwd: root, encoding: 'utf8' });
-  assert.match(r.stdout, /LLM 必读/);
-  assert.match(r.stdout, /settings\.local\.json/, '必须显式提到 settings.local.json 警告');
-  assert.match(r.stdout, /误报|看错位置/, '必须明确这是误报路径');
+  assert.match(r.stdout, /纪律取向|无强制层/);
+  assert.doesNotMatch(r.stdout, /IL-5|强制层 hook|降级/, '已拔除强制层，doctor 不应再提 IL-5/降级');
 });
 
 test('ddt-doctor 输出 node 版本与 plugin/cwd 路径（便于 dogfood 排查）', () => {
