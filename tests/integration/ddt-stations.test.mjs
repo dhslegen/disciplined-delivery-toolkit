@@ -80,6 +80,9 @@ test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + CRUD 
   //    把这两个曾靠模型悟性补出的好模式钉成 skill 保证（不私改上游，账本即真相）。
   assert.match(ds, /SOURCE\.md/, 'design-source Ingest 应产出 SOURCE.md 消费入口');
   assert.match(ds, /supersedes/, 'design-source Reconcile 应在推翻上游假设时记 supersede 决策');
+  // ⑩ Export 给约束别给解法、留白给外部工具发挥——防 over-fill 在文字里把设计做完、封顶竞争力/辨识度。
+  //    留白只碰"视觉身份+签名页布局"，绝不碰一致性（色彩/菜单/组件仍是一套系统覆盖全部表面含 CRUD）。
+  assert.match(ds, /留白/, 'design-source Export 应留白：给约束别给解法，别在文字里把设计做完');
   for (const f of ['skills/using-ddt/SKILL.md', 'skills/ddt-design-checkpoint/SKILL.md']) {
     const s = readFileSync(path.join(root, f), 'utf8');
     assert.match(s, /ddt-design-source/, f + ' 应把前端路由到 ddt-design-source');
