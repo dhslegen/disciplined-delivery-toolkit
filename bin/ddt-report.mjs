@@ -28,9 +28,6 @@ const passRate = agg.total_tool_calls > 0
   ? ((agg.auto_pass_count / agg.total_tool_calls) * 100).toFixed(1) + '%'
   : 'n/a';
 
-const ilBreakdown = Object.entries(agg.il_block_counts)
-  .map(([il, n]) => `  - ${il}：${n} 次`).join('\n') || '  - 无 IL 拦截';
-
 const toolBreakdown = Object.entries(agg.tool_breakdown)
   .map(([t, n]) => `  - ${t}：${n} 次`).join('\n') || '  - 无工具调用';
 
@@ -64,11 +61,7 @@ ${noDataNote}
 工具分布：
 ${toolBreakdown}
 
-## Iron Law 拦截分布
-
-${ilBreakdown}
-
-## 降低保障级交付（IL waiver 汇总）
+## 降低保障级交付（waiver 汇总）
 
 ${waiversSection}
 
