@@ -303,7 +303,3 @@ From debugging sessions:
 > - `root-cause: <一句话归因>` —— 简单 bug 内联归因
 >
 > 缺则 ddt-requesting-review 会在 review 时标记警告，视为未完成根因调查。该约定为 skill-level 纪律（DDT 当前无对应 hook，spec §8.3 判据表诚实不含该项——见 Plan 2 设计说明）。
-
----
-
-> **DDT 强制层声明**：若 DDT 强制层 hook 未注册/未运行，本 skill 纪律降级为建议级（spec 洞4）。完成/通过声明须显式标注「未受强制层校验」。

@@ -7,7 +7,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-const REQUIRED_HOOKS = ['ddt:inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end'];
+const REQUIRED_HOOKS = ['ddt:inject', 'ddt:metrics-post', 'ddt:metrics-end'];
 const REQUIRED_BINS = ['ddt-status.mjs', 'ddt-report.mjs', 'ddt-decisions-append.mjs', 'ddt-changelog-append.mjs', 'ddt-hook-preflight.mjs'];
 const KEY_SKILLS = ['using-ddt', 'ddt-brainstorming', 'ddt-design-checkpoint', 'ddt-deliver', 'ddt-design-source'];
 
@@ -72,7 +72,6 @@ console.log(`  ${existsSync(path.join(cwd, '.ddt/changelog.jsonl')) ? '✓' : '�
 console.log('');
 console.log('  [派生制品 — 多文件，按切片/任务展开]');
 console.log(`  ${existsSync(path.join(cwd, 'docs/plans')) ? '✓' : '✗'} docs/plans/                 （切片 plan 目录）`);
-console.log(`  ${existsSync(path.join(cwd, 'docs/reviews')) ? '✓' : '✗'} docs/reviews/               （reviewer 输出，IL-5 校验对象）`);
 console.log(`  ${existsSync(path.join(cwd, 'docs/api')) ? '✓' : '✗'} docs/api/                   （契约，按需）`);
 console.log(`  ${existsSync(path.join(cwd, 'docs/data')) ? '✓' : '✗'} docs/data/                  （数据设计，按需）`);
 console.log(`  ${existsSync(path.join(cwd, 'docs/design')) ? '✓' : '✗'} docs/design/                （架构/设计，按需）`);
@@ -121,32 +120,25 @@ try {
   const entries = fs.readdirSync(path.join(cwd, '.ddt/metrics'));
   metricsCount = entries.filter(f => f.endsWith('.jsonl')).length;
 } catch { /* 无 metrics 目录 */ }
-console.log(`  ${metricsCount > 0 ? '✓' : '·'} .ddt/metrics/*.jsonl     发现 ${metricsCount} 个文件 ${metricsCount > 0 ? '（PostToolUse / SessionEnd hook 已落盘，强制层在工作的硬证据之一）' : '（hook 未触发或本会话尚未产生工具调用）'}`);
+console.log(`  ${metricsCount > 0 ? '✓' : '·'} .ddt/metrics/*.jsonl     发现 ${metricsCount} 个文件 ${metricsCount > 0 ? '（PostToolUse / SessionEnd 被动度量 hook 已落盘的硬证据）' : '（hook 未触发或本会话尚未产生工具调用）'}`);
 console.log('  ·  using-ddt 已注入      = 如果你在 LLM 会话里读到本 doctor 是被路由到 /ddt 自检 触发的，说明 SessionStart hook (ddt:inject) 一定在工作');
 console.log('');
 
 // ============================================================================
-// [C] 结论与降级判定（LLM 必读，防止误报）
+// [C] DDT 纪律取向
 // ============================================================================
-console.log('## [C] LLM 必读：hook 工作状态判定');
+console.log('## [C] DDT 纪律取向');
 console.log('');
-console.log('  强制层（L2）是否降级，**只看 plugin 自身健康段 [A] 是否齐全**。');
-console.log('');
-console.log('  ✓ 若 [A] 段全部 ✓ → 强制层 hook 已注册到 Claude Code runtime，IL-5 硬闸生效（L2 全效）。');
-console.log('  ✗ 若 [A] 段任一 ✗ → 纪律降级为建议级，参各 skill 底部「DDT 强制层声明」。');
-console.log('');
-console.log('  **绝不**通过看用户的 .claude/settings.local.json 是否有 hooks 段来判定！');
-console.log('  plugin hooks 注册在 plugin 自己的 hooks/hooks.json，不在用户 settings。');
-console.log('  看错位置 = 误报降级 = 鼓励本不该发生的合理化绕过。');
+console.log('  DDT 无强制层、不拦截任何工具调用。纪律和 superpowers 一样靠');
+console.log('  「1% 也要 invoke 相关 skill」的行为约束（见 using-ddt）。');
+console.log('  [A] 段是 plugin 自身健康；3 个 hook 仅做 using-ddt 注入与被动度量，不改原生体验。');
 console.log('');
 
 console.log('## [D] 真实环境验收提示');
-console.log('  state 桥（命令→hook 字段桥）的跨进程行为只能在真实 Claude Code 下手验：');
-console.log('  1. 装本 plugin 到 Claude Code');
-console.log('  2. 启会话敲 /ddt 帮我做一个测试项目');
-console.log('  3. 看 .ddt/state/current.json 是否被 /ddt 写出');
-console.log('  4. 触发任一工具调用，看 hook 是否读 state 并 enforce IL-5');
-console.log('  5. 跑 ddt-doctor.mjs 复检健康，跑 ddt-report.mjs 看 ROI 报告');
+console.log('  在真实 Claude Code 下手验：');
+console.log('  1. 装本 plugin 到 Claude Code 并启会话');
+console.log('  2. 看会话首条是否注入 using-ddt（SessionStart hook ddt:inject 在工作）');
+console.log('  3. 触发若干工具调用后，看 .ddt/metrics/*.jsonl 是否增长（被动度量 hook 在工作）');
+console.log('  4. 跑 ddt-doctor.mjs 复检健康，跑 ddt-report.mjs 看 ROI 报告');
 console.log('');
-console.log('如以上任一不通，参 plan4-activation 与 plan5-metrics-roi 实施计划排查。');
 process.exit(0);

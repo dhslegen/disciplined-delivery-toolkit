@@ -75,8 +75,8 @@ test('契约 metrics · 未知事件名也 exit 0（不阻断未来扩展）', (
 });
 
 test('契约 metrics · 不输出非法 decision="allow" 顶层字段', () => {
-  // 反向回归：v1.0 之前 ddt-enforce 用 {decision:"allow"} 被丢弃；
-  // 确保 metrics 不会同样犯错
+  // 反向回归：早期某 hook 曾输出协议非法的 {decision:"allow"} 被 Claude Code 丢弃；
+  // 确保 metrics（被动埋点）不会同样犯错
   const { stdout } = run({ hook_event_name: 'PostToolUse', tool_name: 'X', tool_input: {} });
   if (stdout && stdout.trim()) {
     try {

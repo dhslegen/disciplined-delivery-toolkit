@@ -4,9 +4,6 @@
     "SessionStart": [
       { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-inject.mjs\"" } ], "description": "DDT 取向注入（using-ddt）", "id": "ddt:inject" }
     ],
-    "PreToolUse": [
-      { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-enforce.mjs\"" } ], "description": "DDT 强制层 PreToolUse", "id": "ddt:enforce-pre" }
-    ],
     "PostToolUse": [
       { "matcher": "*", "hooks": [ { "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/handlers/ddt-metrics.mjs\"" } ], "description": "DDT 度量被动埋点（PostToolUse）", "id": "ddt:metrics-post" }
     ],

@@ -50,10 +50,9 @@ and contributors:
 Adaptation summary:
   - Renamed (slug prefix `ddt-`) to avoid command/skill namespace collisions
     when both plugins are installed.
-  - Added a short "DDT 强制层声明" clause at the top describing how the skill
-    is wrapped by DDT's Iron Law enforcement (hook layer) and downgrade
-    semantics when DDT hooks are absent.
-  - Original method/checklist/red-flag content is preserved verbatim.
+  - Some skills carry small DDT-context additions in the body (e.g. the
+    big-requirement entry split in ddt-brainstorming). Original
+    method/checklist/red-flag content is preserved verbatim.
 
 Original license:
 

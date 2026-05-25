@@ -50,7 +50,7 @@ test('契约 bin/ddt-doctor.mjs · 三段标题结构稳定', () => {
   assert.match(r.stdout, /DDT doctor/);
   assert.match(r.stdout, /\[A\] plugin 自身健康/);
   assert.match(r.stdout, /\[B\] 当前项目 DDT 状态/);
-  assert.match(r.stdout, /\[C\] LLM 必读/);
+  assert.match(r.stdout, /\[C\] DDT 纪律取向/);
 });
 
 // === ddt-report.mjs：写文件 + 退出码 ===

@@ -35,11 +35,12 @@ test('spec §3.2 含第四类 transient 工作态文件区分', () => {
   assert.match(s, /\.ddt\/metrics.*Plan 5 引入/);
 });
 
-test('ddt-doctor 输出可解析的健康报告（5 关键 hook）', () => {
+test('ddt-doctor 输出可解析的健康报告（3 关键 hook，无强制层）', () => {
   const r = spawnSync('node', [path.join(root, 'bin/ddt-doctor.mjs')], { cwd: root, encoding: 'utf8' });
   assert.equal(r.status, 0);
   assert.match(r.stdout, /DDT doctor/);
-  for (const id of ['ddt:inject', 'ddt:enforce-pre', 'ddt:metrics-post', 'ddt:metrics-end']) {
+  for (const id of ['ddt:inject', 'ddt:metrics-post', 'ddt:metrics-end']) {
     assert.match(r.stdout, new RegExp(id));
   }
+  assert.doesNotMatch(r.stdout, /ddt:enforce-pre/, 'enforce-pre 已拔除');
 });
