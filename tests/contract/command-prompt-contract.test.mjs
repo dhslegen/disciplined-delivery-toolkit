@@ -63,10 +63,10 @@ test('契约 commands/ddt.md · 必须含向导建议语义（不拦截）', () 
     '/ddt 必须明示这是建议而非强制拦截');
 });
 
-test('契约 commands/ddt.md · 必须指向 superpowers 原生链路', () => {
+test('契约 commands/ddt.md · 必须指向 DDT vendored 链路（命名空间统一后 ddt- 前缀）', () => {
   const md = readCmd('ddt');
-  assert.match(md, /superpowers|原生链路|systematic-debugging/,
-    '/ddt 向导应指引开发者使用 superpowers 原生链路');
+  assert.match(md, /ddt-systematic-debugging|ddt-brainstorming|原生链路/,
+    '/ddt 向导应指引开发者使用 DDT vendored 链路（含具体 ddt- skill 名引用）');
 });
 
 test('契约 commands/ddt.md · 不得含强制意图分类路由口吻', () => {
