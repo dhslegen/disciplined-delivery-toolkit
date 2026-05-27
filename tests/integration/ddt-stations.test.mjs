@@ -8,7 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 
 // Phase D 重设计后：5 站脊柱概念已废。
 // DDT 原生 skill 组合为：using-ddt + ddt-design-checkpoint + ddt-deliver + ddt-design-source
-// 9 vendored skill 承载主要纪律，5 站测试改为按需 skill 组合测试。
+// 13 vendored skill 承载主要纪律，5 站测试改为按需 skill 组合测试。
 // using-ddt 在 ddt-activation.test.mjs 单独覆盖，此处仅测三个按需 DDT skill
 
 const DDT_NATIVE_SKILLS = ['ddt-design-checkpoint', 'ddt-deliver', 'ddt-design-source'];

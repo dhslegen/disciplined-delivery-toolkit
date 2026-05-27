@@ -11,7 +11,7 @@
     {
       "name": "disciplined-delivery-toolkit",
       "source": "./",
-      "description": "在 superpowers 纪律基底旁加四项轻量 toB 交付治理增强（大需求变小 / 小问题用 superpowers 做深 / 设计进计划前过闸 / 按需收口）。13 skill（9 vendoring superpowers）+ 2 命令（/ddt 可选向导、/ddt-status 只读重算）+ 3 hook（using-ddt 注入 + 被动度量，不拦截任何工具调用）。纪律靠 skill 被 invoke，同 superpowers。不替代 superpowers、不垄断入口。alpha 阶段不设语义版本，commit SHA 即版本。",
+      "description": "在 superpowers 纪律基底旁加四项轻量 toB 交付治理增强（大需求变小 / 小问题用 superpowers 做深 / 设计进计划前过闸 / 按需收口）。17 skill（13 vendoring superpowers）+ 2 命令（/ddt 可选向导、/ddt-status 只读重算）+ 3 hook（using-ddt 注入 + 被动度量，不拦截任何工具调用）。纪律靠 skill 被 invoke，同 superpowers。不替代 superpowers、不垄断入口。alpha 阶段不设语义版本，commit SHA 即版本。",
       "author": {
         "name": "赵文昊",
         "email": "dhslegle@gmail.com"
