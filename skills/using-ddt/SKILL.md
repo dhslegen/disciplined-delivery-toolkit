@@ -1,25 +1,31 @@
 ---
 name: using-ddt
-description: Use at the start of every DDT session — orients you to DDT's place beside superpowers (four lightweight enhancements, three entry points, the docs/.ddt convention). DDT does not replace superpowers or monopolize entry.
+description: Use at the start of every DDT session — establishes how to find and use the ddt-* skill family, requiring Skill tool invocation before ANY response including clarifying questions.
 ---
+
+<SUBAGENT-STOP>
+If you were dispatched as a subagent to execute a specific task, skip this skill.
+</SUBAGENT-STOP>
 
 # using-ddt（DDT 取向）
 
-DDT 在 superpowers 边上：不替代它、不垄断入口、不发明第二套项目管理。
-superpowers 的 `brainstorming → writing-plans → implementation → review` 是微观主链路。你能读到这段话 = DDT 的 SessionStart inject 在工作。
+DDT = superpowers 工程纪律基底 + 四项治理增强。vendoring 同款 skill（命名 `ddt-*`），独立运行，无需另装 superpowers——**DDT 与 superpowers 二选一**。
+微观主链路：`ddt-brainstorming → ddt-writing-plans → implementation → review`。你能读到这段话 = DDT 的 SessionStart inject 在主 agent 上下文工作（subagent 上下文不接收 inject，需主 agent 在 dispatch prompt 里传递关键纪律——清单参见 `ddt-subagent-driven`）。
+
+> **命名空间裁决**：本会话装的是 DDT。所有 skill invoke 一律走 `disciplined-delivery-toolkit:ddt-*`——即便用户口语提到"superpowers 流程"也指本套 vendored `ddt-*` skill，不是要切换命名空间。
 
 ## 四句北极星
 
 - 大需求先变小。
-- 小问题用 superpowers 做深。
+- 小问题用主链路做深。
 - 设计进计划前过闸。
 - 需要交付时再收口。
 
 ## 三种入口（解释，不是强制路由）
 
-1. **开发者局部想法** → 直接 superpowers 原生链路。bug / 重构 / 测试补强 / 性能 / 探索都走这条。
-2. **大需求** → 先跑一条 superpowers 链路把它当**文档资产**实现，产 `docs/requirements/` + `docs/briefs/`，再逐个处理。
-3. **brief 驱动** → brief → brainstorming → Design Checkpoint → writing-plans → implementation → review。
+1. **开发者局部想法** → 直接走主链路（bug 用 `ddt-systematic-debugging`、其他用 `ddt-brainstorming` 起头）。重构 / 测试补强 / 性能 / 探索都走这条。
+2. **大需求** → 先跑一条主链路把它当**文档资产**实现，产 `docs/requirements/` + `docs/briefs/`，再逐个处理。
+3. **brief 驱动** → brief → `ddt-brainstorming` → Design Checkpoint → `ddt-writing-plans` → implementation → review。
 
 不是所有工作都要 requirements/briefs，也不是所有工作都要 verification/delivery。右尺寸。
 
@@ -65,11 +71,19 @@ superpowers 的 `brainstorming → writing-plans → implementation → review` 
 
 ## 如何用 skill（DDT 力量的来源，最高优先级）
 
-DDT 的纪律不靠 hook，靠**让正确的 skill 真的被 invoke**。整套机制照搬 superpowers：
+DDT 的纪律不靠 hook，靠**让正确的 skill 真的被 invoke**：
 
 ### 铁律
 
-**任何回应或动作之前，先 invoke 相关或被点名的 skill。哪怕只有 1% 可能某 skill 适用，你就绝对必须先 invoke 它检查一下。** invoke 后发现不适用，再放弃即可。这不是可选项，你没有选择权，也不能合理化绕过。
+<EXTREMELY-IMPORTANT>
+
+任何回应或动作之前，先 invoke 相关或被点名的 skill。哪怕只有 1% 可能某 skill 适用，你就绝对必须先 invoke 它检查一下。
+
+如果有 skill 适用你的任务，**你没有选择权，必须用它**。
+
+这不是可商量、可选项，不能合理化绕过。
+
+</EXTREMELY-IMPORTANT>
 
 优先级：**用户显式指令 > skill / 本取向 > 默认行为**。但用户指令说的是 **WHAT，不是 HOW**——"加个 X""修个 Y" 不等于"跳过工作流"；只有用户**显式**说"别用 TDD"之类才算豁免。
 
@@ -101,7 +115,7 @@ digraph skill_flow {
 - 要声明"完成 / 通过 / 修好了" → 先 `ddt-verification`（证据先于断言）
 - 收 / 发 review → `ddt-receiving-review` / `ddt-requesting-review`
 
-进入某 skill 后，按它结尾指示**接力 invoke 下一个**——`brainstorming → writing-plans → 实现 → review` 就是这样自动串起来的。
+进入某 skill 后，按它结尾指示**接力 invoke 下一个**——`ddt-brainstorming → ddt-writing-plans → 实现 → review` 就是这样自动串起来的。
 
 ### 别给自己找借口（Red Flags）
 
@@ -124,7 +138,7 @@ digraph skill_flow {
 
 ### skill 优先级
 
-多个 skill 都可能适用时：① **流程 skill 先**（brainstorming、debugging——决定怎么入手）；② **实现 skill 后**（执行）。
+多个 skill 都可能适用时：① **流程 skill 先**（`ddt-brainstorming`、`ddt-systematic-debugging`——决定怎么入手）；② **实现 skill 后**（执行）。
 "建 X" → 先 `ddt-brainstorming`，再实现 skill。"修 bug" → 先 `ddt-systematic-debugging`，再领域 skill。
 
 ### skill 两类
@@ -139,3 +153,4 @@ skill 自己会告诉你它属哪类。
 - **多人/多切片**：每切片在 `slice/<id>` branch 开发并 `git push -u`，`/ddt-status` 跑 `git for-each-ref` 反推「在做谁」。git branch 是 ground truth，非强制。
 - `.ddt/decisions.jsonl`、`.ddt/changelog.jsonl`、`.ddt/metrics/*.jsonl` 已配 `.gitattributes merge=union` 自动合并并发追加。
 - **收口**（`ddt-deliver`）只在需要时：多实现汇合、toB 验收、部署、数据迁移、API/data/design 变更、客户交付说明、回滚/交付证据。小修小改不强制。
+- **收口前回望**：留给后续切片的接口/扩展点，下游有人消费吗？没把握就记笔决策。
