@@ -1,21 +1,21 @@
 ---
 name: ddt-design-checkpoint
-description: Use after brainstorming and before writing-plans — the design-tidy / Design Checkpoint gate. Runs the seven-question checkpoint, and on demand lands important design into docs/api, docs/data, docs/design. Not a design generator and not a brainstorming replacement; skip it if the Checkpoint is already done.
+description: Use after ddt-brainstorming and before ddt-writing-plans — the design-tidy / Design Checkpoint gate. Runs the seven-question checkpoint, and on demand lands important design into docs/api, docs/data, docs/design. Not a design generator and not a ddt-brainstorming replacement; skip it if the Checkpoint is already done.
 ---
 
-# ddt-design-checkpoint — 设计闸（brainstorming 后、推进到下一阶段前）
+# ddt-design-checkpoint — 设计闸（ddt-brainstorming 后、推进到下一阶段前）
 
-**它不是设计生成器**——设计本身在 brainstorming/spec 阶段已产出。
-**它不是 brainstorming 替代**——brainstorming 才是探索、发散、产 spec 的场所。
+**它不是设计生成器**——设计本身在 ddt-brainstorming/spec 阶段已产出。
+**它不是 ddt-brainstorming 替代**——ddt-brainstorming 才是探索、发散、产 spec 的场所。
 **它不强制生成 API 文档或固定文件**——不是流水线的一个必经站点。
 
-它是一道快速判断门：一份设计准备**推进到下一落地阶段**之前，问七个问题，留下最小判断记录，让设计资产以对的形态就位。下一阶段对单个 brief 是 `writing-plans`，对大需求是逐片深做（见「在什么粒度运行」）。
+它是一道快速判断门：一份设计准备**推进到下一落地阶段**之前，问七个问题，留下最小判断记录，让设计资产以对的形态就位。下一阶段对单个 brief 是 `ddt-writing-plans`，对大需求是逐片深做（见「在什么粒度运行」）。
 
 ## 七问 Design Checkpoint
 
 任何设计推进到下一落地阶段前，留下最小判断：
 
-1. **是否可推进到下一阶段？**（brief 的 `writing-plans` / 大需求的逐片深做）设计是否足够清晰、风险是否已识别？
+1. **是否可推进到下一阶段？**（brief 的 `ddt-writing-plans` / 大需求的逐片深做）设计是否足够清晰、风险是否已识别？
 2. **影响 `docs/api/`？** 是否需要新增或修订 API 契约（OpenAPI / RPC schema 等）？
 3. **影响 `docs/data/`？** 是否需要新增或修订数据模型、迁移说明？
 4. **影响 `docs/design/`？** 是否需要记录架构决策（ADR）或重要设计说明？
@@ -27,8 +27,8 @@ description: Use after brainstorming and before writing-plans — the design-tid
 
 七问对"任何推进到下一落地阶段的设计"都适用，**粒度不限**：
 
-- **单 brief（默认）**：一份 design spec 进 `writing-plans` 前过。
-- **大需求级**：brainstorming 把大需求拆成架构 + 切片方案后、逐片深做之前过——**仅当**有跨切片、无单 brief 归属的全局决策（总体架构、技术栈、实时通道选型等）时才过，且**只落全局层**（架构落 `docs/design/`、全局决策落账）。api/data 契约与各切片的局部判断**留给各 brief 自己的 Checkpoint**，不在此预支。
+- **单 brief（默认）**：一份 design spec 进 `ddt-writing-plans` 前过。
+- **大需求级**：ddt-brainstorming 把大需求拆成架构 + 切片方案后、逐片深做之前过——**仅当**有跨切片、无单 brief 归属的全局决策（总体架构、技术栈、实时通道选型等）时才过，且**只落全局层**（架构落 `docs/design/`、全局决策落账）。api/data 契约与各切片的局部判断**留给各 brief 自己的 Checkpoint**，不在此预支。
 
 ## 前端分流
 
@@ -53,9 +53,9 @@ description: Use after brainstorming and before writing-plans — the design-tid
 
 ## 何时可跳过
 
-- **已完成 Checkpoint**：若 spec 本身已包含七问的判断（如 brainstorming 产出的 spec 已明确说明影响面和决策），不必为了形式再走一遍。
-- **局部小改**（单函数改动、文档修订、配置调整）：直接进 writing-plans，无需 Checkpoint。
-- **探索/原型工作**：优先用 brainstorming，Checkpoint 在确定要实现时再用。
+- **已完成 Checkpoint**：若 spec 本身已包含七问的判断（如 ddt-brainstorming 产出的 spec 已明确说明影响面和决策），不必为了形式再走一遍。
+- **局部小改**（单函数改动、文档修订、配置调整）：直接进 ddt-writing-plans，无需 Checkpoint。
+- **探索/原型工作**：优先用 ddt-brainstorming，Checkpoint 在确定要实现时再用。
 
 判据是**有无实质判断需要留痕**，不是是否走了流程。
 

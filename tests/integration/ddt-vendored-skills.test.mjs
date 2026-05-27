@@ -5,9 +5,9 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const V = ['ddt-brainstorming','ddt-writing-plans','ddt-subagent-driven','ddt-executing-plans','ddt-tdd','ddt-systematic-debugging','ddt-verification','ddt-requesting-review','ddt-receiving-review'];
+const V = ['ddt-brainstorming','ddt-writing-plans','ddt-subagent-driven','ddt-executing-plans','ddt-tdd','ddt-systematic-debugging','ddt-verification','ddt-requesting-review','ddt-receiving-review','ddt-dispatching-parallel-agents','ddt-finishing-a-development-branch','ddt-using-git-worktrees','ddt-writing-skills'];
 
-test('9 vendored skill 平铺且 Claude 可发现（SKILL.md + name 匹配目录）', () => {
+test('13 vendored skill 平铺且 Claude 可发现（SKILL.md + name 匹配目录）', () => {
   for (const d of V) {
     const f = path.join(root, 'skills', d, 'SKILL.md');
     assert.ok(existsSync(f), d + '/SKILL.md 缺失');

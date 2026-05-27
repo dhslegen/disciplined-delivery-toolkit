@@ -37,15 +37,19 @@ The following skills under skills/ are derivative works adapted from the
 "superpowers" Claude Code plugin (v5.1.0), originally authored by Jesse Vincent
 and contributors:
 
-    skills/ddt-brainstorming/         (← superpowers/brainstorming)
-    skills/ddt-writing-plans/         (← superpowers/writing-plans)
-    skills/ddt-subagent-driven/       (← superpowers/subagent-driven-development)
-    skills/ddt-executing-plans/       (← superpowers/executing-plans)
-    skills/ddt-tdd/                   (← superpowers/test-driven-development)
-    skills/ddt-systematic-debugging/  (← superpowers/systematic-debugging)
-    skills/ddt-verification/          (← superpowers/verification-before-completion)
-    skills/ddt-requesting-review/     (← superpowers/requesting-code-review)
-    skills/ddt-receiving-review/      (← superpowers/receiving-code-review)
+    skills/ddt-brainstorming/                  (← superpowers/brainstorming)
+    skills/ddt-writing-plans/                  (← superpowers/writing-plans)
+    skills/ddt-subagent-driven/                (← superpowers/subagent-driven-development)
+    skills/ddt-executing-plans/                (← superpowers/executing-plans)
+    skills/ddt-tdd/                            (← superpowers/test-driven-development)
+    skills/ddt-systematic-debugging/           (← superpowers/systematic-debugging)
+    skills/ddt-verification/                   (← superpowers/verification-before-completion)
+    skills/ddt-requesting-review/              (← superpowers/requesting-code-review)
+    skills/ddt-receiving-review/               (← superpowers/receiving-code-review)
+    skills/ddt-dispatching-parallel-agents/    (← superpowers/dispatching-parallel-agents)
+    skills/ddt-finishing-a-development-branch/ (← superpowers/finishing-a-development-branch)
+    skills/ddt-using-git-worktrees/            (← superpowers/using-git-worktrees)
+    skills/ddt-writing-skills/                 (← superpowers/writing-skills)
 
 Adaptation summary:
   - Renamed (slug prefix `ddt-`) to avoid command/skill namespace collisions

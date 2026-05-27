@@ -1,6 +1,6 @@
 {
   "name": "disciplined-delivery-toolkit",
-  "description": "DDT — Disciplined Delivery Toolkit。在 superpowers 工程纪律基底旁加四项轻量 toB 交付治理增强：大需求先变小 · 小问题用 superpowers 做深 · 设计进计划前过闸 · 需要交付时再收口。13 skill（9 vendoring superpowers）+ 2 命令 + 3 hook（using-ddt 注入 + 被动度量，不拦截任何工具调用）。纪律和 superpowers 一样靠 skill 被 invoke。不替代 superpowers、不垄断入口。",
+  "description": "DDT — Disciplined Delivery Toolkit。在 superpowers 工程纪律基底旁加四项轻量 toB 交付治理增强：大需求先变小 · 小问题用 superpowers 做深 · 设计进计划前过闸 · 需要交付时再收口。17 skill（13 vendoring superpowers）+ 2 命令 + 3 hook（using-ddt 注入 + 被动度量，不拦截任何工具调用）。纪律和 superpowers 一样靠 skill 被 invoke。不替代 superpowers、不垄断入口。",
   "author": {
     "name": "赵文昊"
   },

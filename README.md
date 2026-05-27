@@ -45,7 +45,7 @@ DDT 是一个 [Claude Code](https://claude.com/claude-code) 插件，在 **[obra
 | 评审要证据 | 无 | 弱告警 | **verification / review skill 要求引证（行为约束）** |
 | 收口证据 | 无 | 无 | **`ddt-deliver`（按需）ROI 报告** |
 
-**DDT ≠ superpowers + 一堆 agents**。v1.0 是最薄治理外壳：2 个命令、13 个 skill（9 个直接 vendoring superpowers）、3 个 hook（全被动/注入、不拦截）、所有"做事"委托给 skill。
+**DDT ≠ superpowers + 一堆 agents**。v1.0 是最薄治理外壳：2 个命令、17 个 skill（13 个直接 vendoring superpowers）、3 个 hook（全被动/注入、不拦截）、所有"做事"委托给 skill。
 
 ---
 
@@ -184,7 +184,7 @@ disciplined-delivery-toolkit/
 │   ├── marketplace.json     ← marketplace 注册
 │   └── plugin.json          ← plugin 元数据
 ├── commands/                ← /ddt, /ddt-status
-├── skills/                  ← 13 个 SKILL.md（4 原生 + 9 vendoring）
+├── skills/                  ← 17 个 SKILL.md（4 原生 + 13 vendoring）
 ├── hooks/
 │   ├── hooks.json           ← 注册 3 个 hook（注入 + 被动度量）
 │   └── handlers/            ← *.mjs handler 实现
