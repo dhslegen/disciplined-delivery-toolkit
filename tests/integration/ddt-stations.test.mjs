@@ -26,9 +26,9 @@ test('DDT 原生 skill（design-checkpoint/deliver/design-source）平铺且 fro
   }
 });
 
-test('ddt-design-checkpoint 含七问 Design Checkpoint', () => {
+test('ddt-design-checkpoint 含七问 Checkpoint 概念', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-design-checkpoint/SKILL.md'), 'utf8');
-  assert.match(s, /七问 Design Checkpoint|Design Checkpoint/);
+  assert.match(s, /七问.*[Cc]heckpoint|[Cc]heckpoint.*七问|landing gate|Design Checkpoint/);
   assert.match(s, /writing-plans/);
   assert.match(s, /docs\/api/);
   assert.match(s, /docs\/data/);

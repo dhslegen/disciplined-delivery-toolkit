@@ -10,7 +10,7 @@ If you were dispatched as a subagent to execute a specific task, skip this skill
 # using-ddt（DDT 取向）
 
 DDT = superpowers 工程纪律基底 + 四项治理增强。vendoring 同款 skill（命名 `ddt-*`），独立运行，无需另装 superpowers——**DDT 与 superpowers 二选一**。
-微观主链路：`ddt-brainstorming → ddt-writing-plans → implementation → review`。你能读到这段话 = DDT 的 SessionStart inject 在主 agent 上下文工作（subagent 上下文不接收 inject，需主 agent 在 dispatch prompt 里传递关键纪律——清单参见 `ddt-subagent-driven`）。
+微观主链路：`ddt-brainstorming → ddt-design-checkpoint → ddt-writing-plans → implementation → review`。你能读到这段话 = DDT 的 SessionStart inject 在主 agent 上下文工作（subagent 上下文不接收 inject，需主 agent 在 dispatch prompt 里传递关键纪律——清单参见 `ddt-subagent-driven`）。
 
 > **命名空间裁决**：本会话装的是 DDT。所有 skill invoke 一律走 `disciplined-delivery-toolkit:ddt-*`——即便用户口语提到"superpowers 流程"也指本套 vendored `ddt-*` skill，不是要切换命名空间。
 
@@ -25,7 +25,7 @@ DDT = superpowers 工程纪律基底 + 四项治理增强。vendoring 同款 ski
 
 1. **开发者局部想法** → 直接走主链路（bug 用 `ddt-systematic-debugging`、其他用 `ddt-brainstorming` 起头）。重构 / 测试补强 / 性能 / 探索都走这条。
 2. **大需求** → 先跑一条主链路把它当**文档资产**实现，产 `docs/requirements/` + `docs/briefs/`，再逐个处理。
-3. **brief 驱动** → brief → `ddt-brainstorming` → Design Checkpoint → `ddt-writing-plans` → implementation → review。
+3. **brief 驱动** → brief → `ddt-brainstorming` → `ddt-design-checkpoint` → `ddt-writing-plans` → implementation → review。
 
 不是所有工作都要 requirements/briefs，也不是所有工作都要 verification/delivery。右尺寸。
 
@@ -36,21 +36,20 @@ DDT = superpowers 工程纪律基底 + 四项治理增强。vendoring 同款 ski
 - **设计进计划前过闸**：`ddt-design-checkpoint`。
 - **需要交付时再收口**：`ddt-deliver`（按需）。
 
-## Design Checkpoint（七问习惯，无固定模板/文件名）
+## Design Checkpoint（spec → writing-plans 之间过一闸）
 
-任何设计进下一落地阶段前（brief 的 `writing-plans` / 大需求逐片深做前），留下最小判断：
+spec 落档要进 `ddt-writing-plans`，先过一遍 `ddt-design-checkpoint`。
+七问内容在那个 skill 里展开，charter 不复制——免得 LLM 在 spec 抄一张表自我认证。
 
-1. 是否可进下一阶段？
-2. 影响 `docs/api/`？
-3. 影响 `docs/data/`？
-4. 影响 `docs/design/`？
-5. 需写 `.ddt/decisions.jsonl`？
-6. 需写 `.ddt/changelog.jsonl`？
-7. 有未解决冲突/开放问题？
+<EXTREMELY-IMPORTANT>
+
+invoke `ddt-design-checkpoint` 才算过闸。spec 里写一张七问表不算。
+
+答 ✅ 产 `docs/api/` / `docs/data/` / `docs/design/` 的，writing-plans 前真产，不塞下游 task。
+
+</EXTREMELY-IMPORTANT>
 
 > 含前端？→ 看 `docs/design/frontend/`（非空 + 有无 opt-out）；空且无 opt-out 则先 `ddt-design-source` 外部整体设计一次（见该 skill）。
-
-简单工作几行写进 spec 末尾即可；复杂工作交 `ddt-design-checkpoint` 整理并按需落 `docs/api,data,design`。**已完成 Checkpoint 就不必为调而调。**
 
 ## 路径即指令（唯一权威位置，勿自由发挥）
 
@@ -112,10 +111,11 @@ digraph skill_flow {
 - **进入前端实现前** → 先用 `ddt-design-source` 把整盘前端审美在外部工具设计成 bundle（落 `docs/design/frontend/`，切片直接消费；粒度按项目判断）
 - 写实现代码前 → `ddt-tdd`
 - 有 spec / 计划要拆 → `ddt-writing-plans`；执行计划 → `ddt-subagent-driven` 或 `ddt-executing-plans`
+- spec 要进 `ddt-writing-plans` → 先过 `ddt-design-checkpoint`（写七问表 ≠ invoke skill）
 - 要声明"完成 / 通过 / 修好了" → 先 `ddt-verification`（证据先于断言）
 - 收 / 发 review → `ddt-receiving-review` / `ddt-requesting-review`
 
-进入某 skill 后，按它结尾指示**接力 invoke 下一个**——`ddt-brainstorming → ddt-writing-plans → 实现 → review` 就是这样自动串起来的。
+进入某 skill 后，按它结尾指示**接力 invoke 下一个**——`ddt-brainstorming → ddt-design-checkpoint → ddt-writing-plans → 实现 → review` 就是这样自动串起来的。
 
 ### 别给自己找借口（Red Flags）
 
@@ -135,6 +135,8 @@ digraph skill_flow {
 | "我就先做这一件事" | 做任何事之前先 check |
 | "这感觉挺有产出的" | 无纪律的瞎忙浪费时间 |
 | "我知道这词什么意思" | 懂概念 ≠ 用了 skill，invoke 它 |
+| "spec 里答完了七问" | 答完 ≠ invoke 过 `ddt-design-checkpoint` |
+| "checkpoint 答 ✅ 就够了" | ✅ 是承诺，不是产出 |
 
 ### skill 优先级
 
