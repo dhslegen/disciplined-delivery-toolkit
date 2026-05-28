@@ -50,7 +50,8 @@ DDT 没有拦截 hook、没有强制层；纪律完全靠**让正确的 skill �
 
 ### DDT 最常踩空的触发点（中招即停，先 invoke 再动手）
 
-- 想"造东西"（建功能 / 加能力 / 改行为 / 起项目 / 起切片）→ 先 `ddt-brainstorming`
+- 收到"一整包"需求（多模块 / 跨人 / 整包资料 PRD-会议纪要-批量 API 文档 / 用户显式说"大需求"）→ 先 `ddt-large-requirement` 把需求变小，再对每个 brief 走 `ddt-brainstorming`
+- 想"造东西"（建功能 / 加能力 / 改行为 / 起项目 / 起切片，**输入是单 brief 尺寸**）→ 先 `ddt-brainstorming`
 - 撞上 bug / 测试失败 / 异常行为 → 先 `ddt-systematic-debugging`
 - 进入前端实现前 → 先 `ddt-design-source` 在外部 AI 设计工具里整盘审美收敛成 bundle（落 `docs/design/frontend/`；粒度按项目判断）
 - 写实现代码前 → `ddt-tdd`
@@ -109,7 +110,7 @@ digraph skill_flow {
 ## 三种入口（解释，不是强制路由）
 
 1. **开发者局部想法** → 走主链路：想做 X 用 `ddt-brainstorming` 起头，撞 bug 用 `ddt-systematic-debugging`。重构 / 测试补强 / 性能 / 探索都走这条。
-2. **大需求** → 先跑一条主链路把需求当**文档资产**实现，产 `docs/requirements/` + `docs/briefs/`，再逐个处理。implementation 的对象可以是文档/契约/设计/测试资产，不必是代码。
+2. **大需求** → 先 `ddt-large-requirement` 把大需求变小（产 `docs/requirements/` + `docs/briefs/` + 全局层设计留痕落 `docs/design/`，涵盖架构 / 跨切片业务流程 / 跨切片时序 / 难点算法 / 选型 ADR 等），过完大需求级 checkpoint 后，再对每个 brief 启动 `ddt-brainstorming` 子链路。implementation 对象可以是文档/契约/设计/测试资产，不必是代码。
 3. **brief 驱动** → brief → brainstorm → checkpoint → writing-plans → 实现 → review。
 
 不是所有工作都要 requirements/briefs，也不是所有工作都要 verification/delivery。**右尺寸是给精力分配的**——选用哪些环节、产物深到哪一层；**不是给 skill 纪律开洞**——开了的环节就 invoke 对应 skill。
@@ -145,7 +146,7 @@ invoke `ddt-design-checkpoint` 才算过闸。spec 里写一张七问表不算�
 | design spec | `docs/specs/` | 主链路常用 |
 | plan | `docs/plans/` | 主链路常用 |
 | 大需求 / 切片输入 | `docs/requirements/`、`docs/briefs/` | 按需 |
-| 契约 / 数据 / 设计 | `docs/api/`、`docs/data/`、`docs/design/` | 按需 |
+| 契约 / 数据 / 设计留痕 | `docs/api/`（接口契约）、`docs/data/`（数据模型）、`docs/design/`（架构 / 业务流程 / 时序图 / 难点算法 / 复杂功能设计 / 选型 ADR 等——凡阅读代码读不出来的设计意图） | 按需 |
 | 前端设计 bundle | `docs/design/frontend/` | 非空=有 bundle、消费端读这、opt-out 记 decision |
 | 验收 / 交付 | `docs/verification/`、`docs/delivery/` | 按需 |
 | 决策 / 变更账本 | `.ddt/decisions.jsonl`、`.ddt/changelog.jsonl` | 入 git，仅经 append bin 追加 |
@@ -157,7 +158,7 @@ invoke `ddt-design-checkpoint` 才算过闸。spec 里写一张七问表不算�
 
 ## 四项治理增强（按需用，不是强制路由）
 
-- **大需求变小**：跑现有 vendored 链路产 requirements/briefs，implementation 对象是文档/契约/设计/测试资产。无需专门 skill。
+- **大需求变小**：`ddt-large-requirement` 把大需求拆成 `docs/requirements/` + `docs/briefs/` + 全局层设计留痕（架构 / 流程 / 时序 / 算法 / 选型 ADR 落 `docs/design/`），再对每个 brief 走子链路。implementation 对象是文档/契约/设计/测试资产，不必是代码。
 - **小问题做深**：直接主链路。
 - **设计进计划前过闸**：`ddt-design-checkpoint`。
 - **需要交付时再收口**：`ddt-deliver`（按需）。

@@ -184,7 +184,7 @@ disciplined-delivery-toolkit/
 │   ├── marketplace.json     ← marketplace 注册
 │   └── plugin.json          ← plugin 元数据
 ├── commands/                ← /ddt, /ddt-status
-├── skills/                  ← 17 个 SKILL.md（4 原生 + 13 vendoring）
+├── skills/                  ← 18 个 SKILL.md（4 原生 + 14 vendoring，其中 using-ddt 由 using-superpowers 改编）
 ├── hooks/
 │   ├── hooks.json           ← 注册 3 个 hook（注入 + 被动度量）
 │   └── handlers/            ← *.mjs handler 实现

@@ -17,41 +17,6 @@ Do NOT invoke any implementation skill, write any code, scaffold any project, or
 
 Every project goes through this process. A todo list, a single-function utility, a config change — all of them. "Simple" projects are where unexamined assumptions cause the most wasted work. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.
 
-## DDT 大需求入口分流（最先判断，覆盖下面的标准流程）
-
-先判断本次是否 DDT「大需求」入口：需求模糊 / 跨模块 / 规模大 / 多人协作（典型信号：用户说「这是个大需求」、或前置资料是整包功能清单 / 会议纪要 / API 文档）。
-
-**若是大需求**：本 skill 的产出**不是单一 design spec**，而是把需求「变小」+ 提炼跨切片的全局判断——产出对象是：
-
-- `docs/requirements/`：大需求受理（范围、模块清单、明确非范围）
-- `docs/briefs/`：一组 **bite-size** 切片 brief，每个 brief ≈ 一个可独立走子链路的小问题
-- `docs/design/<architecture>.md`：大需求级**架构 ADR**（总体架构、技术栈、模块边界、实时通道选型等跨切片决策的载体）
-- `.ddt/decisions.jsonl`：大需求级**全局决策**入账
-
-**大需求链路**（和单 brief 走同一道闸，只是 checkpoint 的落地范围不同）：
-
-```
-brainstorming（理解大需求 + 切片思路 + 架构判断）
-  → ddt-design-checkpoint（**仅过全局层**：架构 ADR + 跨切片决策；各切片局部 API/data 契约**不在此预支**）
-  → ddt-writing-plans（拆"产出 requirements/briefs"的计划）
-  → 实现（写出 docs/requirements/ + docs/briefs/）
-  → review
-```
-
-做法：用本 skill 的对话能力**理解大需求 + 提炼切片思路 + 凝练架构判断**。把"产出 requirements/briefs"当作 implementation 对象（文档资产——走 writing-plans → 实现 → review 链路）。**不要**给整个大需求写一份对子模块事无巨细的 spec，**也不要**急着给每个子模块写 spec——大需求级的 design 资产是**架构 ADR + 全局决策 + briefs**，不是一份巨型 spec。
-
-之后**逐个 brief** 各自走子链路（注意 checkpoint 在大需求级和 brief 级**各过一次**，分别落不同范围的资产）：
-
-```
-brainstorming（单 brief）
-  → ddt-design-checkpoint（过 brief 范围：API/data/局部架构）
-  → ddt-writing-plans → 实现 → review
-```
-
-**若是局部需求**（单功能 / bug / 重构 / 一个 brief）：跳过大需求段，直接照下面的标准流程走子链路。
-
-> 即：下面的 Checklist / Process / After the Design 是**单 brief 的标准流程**。大需求入口先把同一套流程套到"大需求级"（设计 = 架构 ADR + briefs；checkpoint 闸只过全局层），再对每个 brief 套用一次（设计 = brief spec；checkpoint 闸过 brief 范围）。
-
 ## Checklist
 
 You MUST create a task for each of these items and complete them in order:
@@ -61,7 +26,7 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc (spec)** — save to `docs/specs/YYYY-MM-DD-<topic>-design.md` and commit. 多次 brainstorm 产多份 spec 文件，平等组成"设计 spec 集合"。
+6. **Write design doc** — save to `docs/specs/YYYY-MM-DD-<topic>-design.md` and commit
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
 9. **Transition to design checkpoint** — invoke ddt-design-checkpoint skill to gate the spec before writing-plans
@@ -143,10 +108,8 @@ digraph brainstorming {
 
 **Documentation:**
 
-- Write the validated design doc (spec) to `docs/specs/YYYY-MM-DD-<topic>-design.md`
-  - 多次 brainstorm 产多份 spec 文件，平等组成"设计 spec 集合"
-  - amend 某份既有 spec 时，先在 .ddt/changelog.jsonl 追一条 escalation，再修订该 spec（不直接覆盖）
-  - 详见 using-ddt §路径即指令
+- Write the validated design (spec) to `docs/specs/YYYY-MM-DD-<topic>-design.md`
+  - (User preferences for spec location override this default)
 - Use elements-of-style:writing-clearly-and-concisely skill if available
 - Commit the design document to git
 
