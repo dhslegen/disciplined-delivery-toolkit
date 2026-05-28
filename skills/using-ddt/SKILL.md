@@ -137,7 +137,19 @@ invoke `ddt-design-checkpoint` 才算过闸。spec 里写一张七问表不算�
 
 </EXTREMELY-IMPORTANT>
 
-> 含前端？→ 看 `docs/design/frontend/`（非空 + 有无 opt-out）；空且无 opt-out 则先 `ddt-design-source` 外部整盘设计一次。
+> 含前端？详见下面 "前端落地纲领" 段——bundle handoff 是源权威，项目侧不造导览 markdown。
+
+## 前端落地纲领：bundle handoff = 源权威
+
+凡涉及前端的工作——含前端的 brief 起步 / 写 spec / 过 checkpoint / 写 plan / 实现 / review——都遵守以下两条**全局纲领**，跨 skill 跨阶段一致生效：
+
+1. **bundle 自带的 handoff 入口文件是源权威**。外部设计工具（v0 / figma export / claude-design / Locofy 等）在 bundle 内产的"给 coding agent 的协议说明"是切片消费**唯一入口**——进入实现前必读，再按它的指引消费源码（典型如：直接读 HTML/CSS、follow imports、不截图）。
+
+2. **项目侧不再封装一层 markdown 当导览**。任何项目自造的 `SOURCE.md` / `INDEX.md` / `OVERVIEW.md` 都是反模式——文件类型偏见：LLM 见 markdown 入口本能当 spec、停在转译层、不读真正的源码。bundle handoff 是源权威，项目侧再造的导览是冗余的伪权威。
+
+切片→源文件的"本切片消费哪几份"，写在该切片自己的 brief / spec 内文，**不专设映射文件**（无 `slice-map.json` 之类）。
+
+操作细节——bundle 何时空 / 走 `ddt-design-source` 整盘 / opt-out 怎么记 / checkpoint 怎么看——见 `ddt-design-source` 与 `ddt-design-checkpoint`，本段是**纲领**，它们是**落地**。
 
 ## 路径即指令（唯一权威位置，勿自由发挥）
 

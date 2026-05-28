@@ -44,13 +44,13 @@ LLM 自做也行——前提是**认真做一次整盘**（一套统一语言、
 
 1. **Export** — 给外部工具**问题与约束，不给解法**。给：页面清单 + 各页意图（来自 requirements/briefs）+ 状态规范（loading/empty/error/success、响应式、无障碍）+ 领域硬需求（如告警一眼可见、地图坐标系）+ 调性方向与**仅真正固定的**品牌锚点。**留白给它发挥**：解析后的色阶 / 字体 / 布局 / 组件样式是它的交付物，别在文字里先做完——那会把竞争力和辨识度封顶在你已想到的范围里。留白只碰两处、**绝不碰一致性**：签名页（大屏 / 首屏）给足意图、布局留空让它探索；CRUD 一句"套同一套系统的标准列表 / 表单 / 详情"即可。设计只依赖这些，**不依赖契约**——契约（`docs/api`/`docs/data`）在各 brief 的 Design Checkpoint 才出，留到 Reconcile。
 2. **外部回路** — 人在工具里渲染、迭代到满意（LLM 自做时：LLM 整盘生成、你 review 到满意）。DDT 不替代这一步。
-3. **Ingest** — 产物（代码 / URL / figma）落 `docs/design/frontend/`，同目录写一份 `SOURCE.md` 当消费入口：声明这是全平台视觉真相、来源（工具 / 人 / 时间）、各文件对应哪些切片消费、怎么落地。`.ddt/changelog.jsonl` 记一条来源。
+3. **Ingest** — 产物（代码 / URL / figma）原样落 `docs/design/frontend/<bundle-root>/`，**外部工具自带的 handoff 入口文件**（给 coding agent 的协议说明，告诉它这套 bundle 如何消费——典型指示如"直接读 HTML/CSS、follow imports、不截图"）**保留不动**——它是源权威。**不在 `docs/design/frontend/` 写项目侧导览 markdown**（不写 `SOURCE.md` / `INDEX.md` / `OVERVIEW.md` 等），原因与判据见 `using-ddt` 的"含前端的 brief：bundle 的 handoff 入口 = 唯一权威"段。如果外部工具没自带 handoff 入口文件（罕见），人工补一份**最小**的 README，第一行明示协议（直接读源码 / 不截图 / follow imports）。`.ddt/changelog.jsonl` 记一条 ingest 事件，含 bundle 根路径和 handoff 入口路径。
 4. **Reconcile** — 把定稿与它牵动的两头对齐。**向上**：外部回路常改掉 Export 时的假设（这正是让人判定的价值）；凡推翻了上游前提（受理书的范式 / 范围假设等），记一条带 `supersedes` 的 decision 写明覆盖了什么——不私改上游文档（IL-4），账本即真相。**向下**：各切片落地时把设计的字段 / 状态与该切片 Design Checkpoint 产出的 `docs/api`/`docs/data` 契约对齐，不一致就改契约或调设计。
 
 ## bundle 是前端的视觉真相
 
 - **位置** `docs/design/frontend/`：目录固定，内部文件自由命名；非空即"有 bundle"（可机判，不靠眼看 `docs/design/`）。
-- **消费**：各前端切片直接消费 bundle 实现（来 `docs/design/frontend/` 读、入口 `SOURCE.md`、照着做）。切片的 design spec 是"建什么"的计划——**引用** bundle、补数据 / 状态 / 集成，不替代也不转译它（转成文字就丢了视觉）。
+- **消费**：各前端切片直接消费 bundle 实现——**入口是 bundle 自带的 handoff 入口文件**（外部工具产的协议说明），不是项目侧再造的导览。切片进入实现前必读这份 handoff，再按它的指引自由消费源码（详见 `using-ddt`）。切片的 design spec 是"建什么"的计划——**引用** bundle 源码路径、补数据 / 状态 / 集成，不替代也不转译它（转成文字就丢了视觉）。
 - **opt-out（决策必须入账，不能只在脑子里 / spec 里）**：没有前端 / 前端极简到不值得整盘设计时，把一个 JSON 对象通过 stdin 喂给 `ddt-decisions-append.mjs`（脚本读 stdin、自动补 `ts`、append 到 `.ddt/decisions.jsonl`）：
 
   ```bash
@@ -78,10 +78,11 @@ LLM 自做也行——前提是**认真做一次整盘**（一套统一语言、
 | 让契约绑死设计（"先出 docs/api，再做设计"）| 契约（`docs/api` / `docs/data`）在各 brief Checkpoint 才出 | 设计阶段只依赖意图与状态规范，契约留 Reconcile 阶段对齐 |
 | 外部回路推翻上游假设但不入账 | 账本即真相，下游消费者拿到漂移的视觉 | 推翻上游前提时写一条带 `supersedes` 的 decision 显式覆盖 |
 | 创建空目录 `docs/design/frontend/` 占位 | 空目录也算"非空"，会误导下游切片去消费空 bundle | 真有 bundle 才落地；没做就保持目录不存在，让下游进入本回路 |
+| ingest 时在 `docs/design/frontend/` 写一份项目侧导览 markdown（`SOURCE.md` / `INDEX.md` / `OVERVIEW.md` 等）| 文件类型偏见：LLM 见项目自家 markdown 入口本能当 spec、停在转译层不读真正源码 | bundle 自带的 handoff 入口（外部工具产的）是唯一权威；项目侧不写任何导览 markdown 覆盖它（原理见 `using-ddt`）|
 
 ## 在 DDT 里的位置
 
 - **上游**：`大需求变小` 给出页面清单（来自 requirements/briefs）
-- **本回路**：出 bundle 落 `docs/design/frontend/`（视觉真相），SOURCE.md 当消费入口
-- **下游**：各前端 brief 的 `ddt-brainstorming` 引用 bundle 出该切片 spec → `ddt-design-checkpoint` 过闸 → `ddt-writing-plans` / `ddt-subagent-driven` 直接消费 bundle 实现 → `ddt-requesting-review`
-- **账本**：本回路完成后 `.ddt/changelog.jsonl` 记一条 `frontend-design-bundle-ingested`；opt-out 走 `.ddt/decisions.jsonl`
+- **本回路**：出 bundle 落 `docs/design/frontend/`（视觉真相），bundle 自带的 handoff 入口是切片消费唯一权威（不写项目侧导览，原理见 `using-ddt`）
+- **下游**：各前端 brief 的 `ddt-brainstorming` 引用 bundle handoff 入口与本切片相关源文件出该切片 spec → `ddt-design-checkpoint` 过闸 → `ddt-writing-plans` / `ddt-subagent-driven` 按协议读源码实现 → `ddt-requesting-review`
+- **账本**：本回路完成后 `.ddt/changelog.jsonl` 记一条 `frontend-design-bundle-ingested`（含 bundle 根 + handoff 入口路径）；opt-out 走 `.ddt/decisions.jsonl`

@@ -58,11 +58,11 @@ description: Use after ddt-brainstorming and before ddt-writing-plans — the de
 
 含前端的切片，先看 `docs/design/frontend/` 状态：
 
-- **空且无 opt-out decision** → 先 `ddt-design-source` 外部整体设计一次（粒度按项目判断）；
-- **非空** → 按 bundle 实现；
+- **空且无 opt-out decision** → 先 `ddt-design-source` 整体设计一次（粒度按项目判断）；
+- **非空** → 切片实现前必读 bundle 自带的 handoff 入口文件，按它指引消费源码；
 - **有 opt-out decision** → 用设计系统直接实现。
 
-详见 `ddt-design-source`。
+详见 `ddt-design-source`、原理与"不写项目侧导览 markdown"的纲领见 `using-ddt`。
 
 ## 通过自检
 
@@ -132,6 +132,7 @@ EOF
 | 自我授权"我已经做过 Checkpoint 了" | 没有客观证据 | 通过判据是文件存在 + deferral 入账，不是 LLM 主观判断 |
 | 把 ddt-brainstorming 输出的"影响面分析"段当成 Checkpoint 完成 | brainstorming 产的是设计 spec，不是落地资产 | spec 里的影响面分析是 Checkpoint 的**输入**，不是其**输出** |
 | "已在 spec 里答完七问，invoke 是复读 / 浪费 token" | spec 七问是 LLM 主观判断；checkpoint 是文件系统 + `.ddt/decisions.jsonl` 客观核验。**两件事，不重复** | 用 `ls` / `tail` / `ddt-doctor.mjs` 拿真实状态，不靠回放七问表 |
+| 看到项目侧 `SOURCE.md` / `INDEX.md` 就停下当 spec | 文件类型偏见——项目侧导览不是源权威，bundle 自带的 handoff 入口才是 | 切片进入前端实现前 Read bundle 自带 handoff 入口（原理见 `using-ddt`），按它指引读源码 |
 
 ## 与其他 skill 的关系
 
