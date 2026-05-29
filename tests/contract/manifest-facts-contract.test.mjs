@@ -4,7 +4,7 @@
 // 但它们曾长期游离在所有扫描之外（5 站固定链 / subagent 三角 / Iron Law 文件事实强制 /
 // 唯一真相源 等旧架构陈述一直残留）。本测试把 manifest 描述纳入"无旧概念"守卫，防回退。
 //
-// 当前权威心智模型：四句北极星 + 三种入口 + Design Checkpoint。无强制层、无拦截 hook，纪律靠 skill 被 invoke（同 superpowers）。
+// 当前权威心智模型：四项治理增强 + 三种入口 + 兑现守恒 Checkpoint。无强制层、无拦截 hook，纪律靠 skill 被 invoke（同 superpowers）。
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

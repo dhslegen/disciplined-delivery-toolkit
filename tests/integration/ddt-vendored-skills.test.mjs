@@ -20,9 +20,9 @@ test('13 vendored skill 平铺且 Claude 可发现（SKILL.md + name 匹配目�
 });
 test('using-ddt skill 含取向核心内容', () => {
   const s = readFileSync(path.join(root, 'skills/using-ddt/SKILL.md'), 'utf8');
-  assert.match(s, /北极星/, 'using-ddt 缺「北极星」段');
+  assert.match(s, /四项治理增强/, 'using-ddt 缺「四项治理增强」段');
   assert.match(s, /三种入口/, 'using-ddt 缺「三种入口」段');
-  assert.match(s, /Design Checkpoint/, 'using-ddt 缺 Design Checkpoint 段');
+  assert.match(s, /ddt-design-checkpoint/, 'using-ddt 缺 ddt-design-checkpoint 段');
 });
 test('ddt-large-requirement 承担大需求入口分流（产 requirements/briefs + 设计留痕 而非单一 design spec）', () => {
   // 接缝防回归：大需求入口要先产 requirements/briefs + 设计留痕，把巨型 spec 切小。

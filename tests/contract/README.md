@@ -6,7 +6,7 @@
 |--------|-------|------|
 | **tests/unit/** | "我们写的代码内部逻辑对" | `decide(ev)` 函数返回 `{decision: 'block'}` 时输入是对的 |
 | **tests/contract/** | "我们的输出符合外部协议" | hook stdout 严格符合 [Claude Code hook schema](https://code.claude.com/docs/en/hooks) |
-| **tests/integration/** | "几个组件协同 OK" | using-ddt 含四北极星；design-source 前端回路接线正确 |
+| **tests/integration/** | "几个组件协同 OK" | using-ddt 含四项治理增强；design-source 前端回路接线正确 |
 
 ## 为什么必须分开
 

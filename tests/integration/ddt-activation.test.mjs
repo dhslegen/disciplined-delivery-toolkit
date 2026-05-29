@@ -38,9 +38,14 @@ test('/ddt-status 命令含 IL-7 反推语义', () => {
   assert.match(s, /仅读不写|不推进、不改|绝不/);
 });
 
-test('ddt-design-checkpoint 含七问 Design Checkpoint 且路径引用正确', () => {
+test('ddt-design-checkpoint 含兑现守恒清单（消费契约 + 职责守恒）且路径引用正确', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-design-checkpoint/SKILL.md'), 'utf8');
-  assert.match(s, /七问|Design Checkpoint/);
+  assert.match(s, /兑现守恒|完成清单/);
+  // 两道核心闸的标记：消费契约（横向）+ 职责守恒（纵向）
+  assert.match(s, /消费契约/);
+  assert.match(s, /职责守恒/);
+  // consumer-pull 取舍语义（叶子内部 rationale 不强制）
+  assert.match(s, /consumer-pull/);
   assert.match(s, /writing-plans/);
   assert.match(s, /docs\/api/);
   assert.doesNotMatch(s, /待激活/);

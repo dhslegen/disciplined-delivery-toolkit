@@ -26,9 +26,9 @@ test('DDT 原生 skill（design-checkpoint/deliver/design-source）平铺且 fro
   }
 });
 
-test('ddt-design-checkpoint 含七问 Checkpoint 概念', () => {
+test('ddt-design-checkpoint 含兑现守恒 Checkpoint 概念', () => {
   const s = readFileSync(path.join(root, 'skills/ddt-design-checkpoint/SKILL.md'), 'utf8');
-  assert.match(s, /七问.*[Cc]heckpoint|[Cc]heckpoint.*七问|landing gate|Design Checkpoint/);
+  assert.match(s, /兑现守恒|完成清单|landing gate/);
   assert.match(s, /writing-plans/);
   assert.match(s, /docs\/api/);
   assert.match(s, /docs\/data/);
@@ -56,7 +56,7 @@ test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + CRUD 
   // ④ contract-driven/CRUD 也必须走外部设计系统——不得开「用标准组件即可」逃逸口
   //    （用户明确：统一走外部设计；设计系统常为竞争力定制原生风格，off-the-shelf 组件会不一致）。
   const ds = readFileSync(path.join(root, 'skills/ddt-design-source/SKILL.md'), 'utf8');
-  assert.match(ds, /整体|成批/, 'design-source 应是整体/成批出（求一致）');
+  assert.match(ds, /整盘|整体|成批/, 'design-source 应是整盘/整体出（求一致）');
   assert.match(ds, /消费/, 'design-source 应说明切片消费、不重复设计');
   assert.match(ds, /粒度/, 'design-source 应把粒度作为判断（不钦定整盘）');
   assert.match(ds, /contract-driven/, 'design-source 应说明 contract-driven 页面处理');
@@ -71,18 +71,23 @@ test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + CRUD 
   assert.match(ds, /opt-out|不外部设计/, 'design-source 须支持 opt-out（不需外部时的正式态，闸不反复触发）');
   // ⑦ 消费的是 bundle（视觉真相、直接消费），brief 的 spec 只是引用它的"建什么"计划——
   //    防回归到"bundle 转译成文字 design spec 再消费"的自毁式读法（丢视觉保真）。
-  assert.match(ds, /直接消费/, 'design-source 应说明 bundle 被直接消费（视觉真相，非转译成文字 spec）');
+  assert.match(ds, /不转译|直接消费/, 'design-source 应说明 bundle 被直接消费/不转译（视觉真相，非转译成文字 spec）');
   assert.match(ds, /引用/, 'design-source 应说明 brief 的 spec 引用 bundle（非替代/转译）');
   // ⑧ 外部工具是审美保真的推荐、非强制；bundle 谁做都行（外部或 LLM 自做整盘）——
   //    防回归到"必须外部工具"，也防"LLM 自己处理"退化成每切片抓组件库（红线仍在 ④）。
-  assert.match(ds, /谁设计的不重要/, 'design-source 应说明 bundle 谁设计的不重要（外部是推荐非强制、LLM 自做也算）');
-  // ⑨ Ingest 产出 SOURCE.md 消费入口、Reconcile 在推翻上游假设时记 supersede 决策——
-  //    把这两个曾靠模型悟性补出的好模式钉成 skill 保证（不私改上游，账本即真相）。
-  assert.match(ds, /SOURCE\.md/, 'design-source Ingest 应产出 SOURCE.md 消费入口');
+  assert.match(ds, /谁做不重要|谁设计的不重要/, 'design-source 应说明 bundle 谁做不重要（外部是推荐非强制、LLM 自做也算）');
+  // ⑨ Ingest 的消费入口是 bundle 自带的 handoff（源权威）、项目侧不写任何导览 md
+  //    （SOURCE.md/INDEX.md 等）——否则 LLM 停在转译层不读真源（兑现守恒①）；
+  //    Reconcile 在推翻上游假设时记 supersede 决策（不私改上游，账本即真相）。
+  //    注意：此处锁"禁止产出导览 md"的反向语义，不能锁 /SOURCE\.md/ 字面量——
+  //    它在禁令句里也出现，会假绿且把已根除的反模式当成正确行为。
+  assert.match(ds, /handoff/, 'design-source 消费入口须是 bundle 自带 handoff（源权威）');
+  assert.match(ds, /不写任何导览|不写.*导览 md/, 'design-source 须明令项目侧不写导览 md（SOURCE.md/INDEX.md），否则 LLM 停在转译层');
+  assert.doesNotMatch(ds, /产出.{0,4}SOURCE\.md|SOURCE\.md.{0,6}消费入口/, 'design-source 不得把 SOURCE.md 当产出的消费入口（防回归到项目侧造导览）');
   assert.match(ds, /supersedes/, 'design-source Reconcile 应在推翻上游假设时记 supersede 决策');
   // ⑩ Export 给约束别给解法、留白给外部工具发挥——防 over-fill 在文字里把设计做完、封顶竞争力/辨识度。
   //    留白只碰"视觉身份+签名页布局"，绝不碰一致性（色彩/菜单/组件仍是一套系统覆盖全部表面含 CRUD）。
-  assert.match(ds, /留白/, 'design-source Export 应留白：给约束别给解法，别在文字里把设计做完');
+  assert.match(ds, /不给解法|留白/, 'design-source Export 应给约束别给解法（留白给外部工具发挥），别在文字里把设计做完');
   for (const f of ['skills/using-ddt/SKILL.md', 'skills/ddt-design-checkpoint/SKILL.md']) {
     const s = readFileSync(path.join(root, f), 'utf8');
     assert.match(s, /ddt-design-source/, f + ' 应把前端路由到 ddt-design-source');

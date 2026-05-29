@@ -1,142 +1,79 @@
 ---
 name: ddt-design-checkpoint
-description: Use after ddt-brainstorming and before ddt-writing-plans — the design landing gate. Each "yes" in the seven-item checklist binds to a real artifact (a file under docs/api,data,design or a decisions.jsonl deferral entry) that MUST exist before ddt-writing-plans starts. Writing a Q&A table at the end of a spec is NOT passing this gate; the artifacts have to be on disk.
+description: Use after ddt-brainstorming and before ddt-writing-plans — the design landing gate. Trigger when a design spec is about to enter ddt-writing-plans, or when a large requirement has been split into slices and each slice is about to be deep-designed. Also trigger whenever about to advance a design by self-answering a yes/no checklist at the end of a spec — that does not pass this gate.
 ---
 
-# ddt-design-checkpoint — 设计落地闸（资产就位，不是答完表）
+# ddt-design-checkpoint — 设计落地闸
 
-**它不是设计生成器**——设计本身在 ddt-brainstorming/spec 阶段已产出。
-**它不是 ddt-brainstorming 替代**——发散与设计探索在 ddt-brainstorming 里做。
-**它不是判断题答卷**——七问每个"是"都必须有**对应的真实落地资产**就位，否则闸不算通过。
+设计本身在 brainstorming/spec 阶段已产出；这道闸只核「设计碰到的每种真相是否都锚在真实之物上」——不是设计生成器、不是判断题答卷。
 
-## 为什么这道闸必须真的落地
+## 守的是「兑现守恒」，不是「产物存在」
 
-`ddt-writing-plans` 的输入应该是**已锁定的设计**。若契约、数据模型、架构决策仅以"七问答表"形式停在 spec 末尾，会发生三件事：
+**存在 ≠ 兑现**：契约 doc 在盘上 ≠ 它和真 provider 一致；"前端走 bundle"答了"长什么样" ≠ 答了"谁写实现代码"。度量"存在"两头出病——给没人消费的内部细节堆文档（过产），又对消费的契约、继承的职责放任不核（欠产）。
 
-- plan 基于纸面承诺推任务（"实现 X 接口"，但 X 的契约根本不存在）；
-- 实现阶段在没有锁定契约的情况下自由发挥；
-- reviewer 阶段没有锁定的契约可依，**证据先于断言**的原则被破坏。
+闸核三种真相，每种锚到真实之物，不停在 spec 的自我声明：
 
-所以闸的判据不是"答完七问"，而是"资产真的存在或推迟决策真的入账"。
+- **我产出的** → 资产文件就位（Q1-5：契约/数据触及即强制，设计按 consumer-pull）
+- **我消费的** → 对真 provider 源/样本核过（Q6 · 消费契约纲领）
+- **我继承的** → 上游派的职责逐条有归属（Q7 · 职责守恒纲领）
 
-## 七问完成清单
+两条纲领见 `using-ddt`。
 
-设计推进到下一落地阶段（单 brief → `ddt-writing-plans`，或大需求 → 逐切片深做）之前，**逐条核对每条的状态**：
+## 完成清单
 
-1. **`docs/api/` 资产已就位？** 本次设计若新增或修订 API 契约（OpenAPI / RPC schema / 接口签名），对应文件已写入 `docs/api/<name>.{yaml,md}`，内容含调用方/被调方约定。
-2. **`docs/data/` 资产已就位？** 若涉及数据模型新增/修订/迁移，对应文件已写入 `docs/data/<name>.md`，内容含字段、约束、迁移路径。
-3. **`docs/design/` 资产已就位？** 凡本次涉及**非平凡设计**的——架构图 / 模块拓扑 / 业务流程 / 跨模块时序 / 难点算法（推导、复杂度、边界）/ 重点复杂功能（状态机、并发协议、事务模型、复杂条件分支）/ 数据流（"怎么流"，与 `docs/data/` 的"长什么样"互补）/ 选型 ADR / 跨模块边界决策——都已写入 `docs/design/<topic>.md`，内容含设计意图与理由。
-   - **"非平凡"判据**（任一命中即必须落地）：动了架构、模块边界、跨模块流程；新增 / 改了数据流；时序敏感的算法或并发协议；状态机或复杂条件分支；选了一个有替代的方案（选型）。
-   - **合法跳过的极少数情况**（清单之外都不算）：纯重构（不动架构 / 流程 / 算法）、纯依赖升级、纯测试补强、仅文档微调、仅 UI 文本 / 样式微调（且不触及交互流程）。
-   - `docs/design/` 不是 ADR 专属目录——ADR 只是一种形态。**阅读代码读不出来的设计意图，都属设计留痕**。
-4. **`.ddt/decisions.jsonl` 已追加？** 凡需要持久化为团队决策的条目，已经 `ddt-decisions-append.mjs` 追加（写在 spec 里不算）。
-5. **`.ddt/changelog.jsonl` 已追加？** 凡构成显著变更的事项，已经 `ddt-changelog-append.mjs` 入账。
-6. **开放问题已表态？** 未解决冲突 / 待协同确认项已写明（spec 内或 `docs/design/<topic>-open-questions.md`），且**显式判断为"放行（带已知开放项）"还是"阻断（暂不进 writing-plans）"**——含糊不算表态。
-7. **可推进闸：** 上面 1-5 每条为 ✅（已落地）/ ⏸（已记 deferral）/ ➖（不适用），且 Q6 表态为"放行"，方可进 `ddt-writing-plans`。
+> 留痕规则：`docs/api`/`docs/data` **触及即强制**——只要本切片新增/修订/触及接口契约或数据模型就必须落资产，**不论是否被别切片消费**（执行人/toB/评审都看）；资产可 amend 别切片的，前提是追加决策记录 + 同步代码级真相。**只有 `docs/design/` 按 consumer-pull**（Q3）。
 
-## 三种合法状态（其它状态都不通过）
+**簇一 · 我产出的资产**
+1. **`docs/api/`** — 触及 API 契约（OpenAPI/RPC schema/接口签名）→ 写入或 amend `docs/api/<name>.{yaml,md}`，含调用方/被调方约定。
+2. **`docs/data/`** — 数据模型新增/修订/迁移 → 写入或 amend `docs/data/<name>.md`，含字段/约束/迁移路径。
+3. **`docs/design/`（consumer-pull）** — 仅当**有下游切片/接手人/reviewer 会据此对齐、且代码里读不出来**才产：跨切片架构、跨模块流程/时序、复用的难点算法、影响多处的选型 ADR。只记"为什么"；纯本切片内部 rationale 不强制；代码读得出来的实现细节抄进来 = 会漂的废纸。（`docs/design/` 下还可能有 `docs/design/frontend/` 的前端 bundle——那是**视觉真相**，归"前端分流 / `ddt-design-source`"管，**不走** Q3 的 consumer-pull 取舍。）
+4. **`.ddt/decisions.jsonl`** — 需固化为团队决策的，经 `ddt-decisions-append.mjs` 追加（写 spec 里不算）。
+5. **`.ddt/changelog.jsonl`** — 显著变更经 `ddt-changelog-append.mjs` 入账。
 
-每条清单项**只能**处于以下三种状态之一：
+**簇二 · 我消费的 + 我继承的**
+6. **消费契约对真源核过？** 消费别切片/外部 provider 的接口/事件/数据 → 有一份从**真 provider 源或真样本**核出的 `observed` 契约（`docs/api/<x>-observed.md`，或 spec 内贴源码关键签名：路径/字段/帧 type/鉴权），且 mock 派生自它并标来源。脑补形状、漂移旧 doc、自写 stub 都不许。真 backend 跑不起 → 读 in-repo 源贴签名；连源都没有 → 记 deferral。
+7. **上游职责守恒？** 对着 brief 正文逐条勾，每条职责（含最常被静默丢的前端 UI / 登录 / 权限）都有归属：设计了 / 建 Task / 显式 deferral / 划给别切片。**静默丢 = 不通过**，别只盯后端。
+8. **开放问题已表态？** 未解冲突/待协同项写明，且**显式判"放行（带已知开放项）"或"阻断"**——含糊不算。
 
-- **✅ 已落地**：对应文件已存在并包含设计内容（不是空壳，不是占位）。
-- **⏸ 已推迟**：当下无法完整落地（需协同方确认 / 信息未齐），**已用 `ddt-decisions-append.mjs` 追加一条决策**，body 显式标 `deferral` + 推迟原因 + 何时/何条件下补。这条 decision 本身就是闸的证据。
-- **➖ 不适用**：本次设计**完全不触及**该方面。这个判定门槛**很高**——尤其对 `docs/design/`：只有清单第 3 问的"合法跳过极少数情况"才算，**不可类比其它问的不适用就给 `docs/design/` 也打 ➖**。"本次没有新架构决策"**不算**——业务流程 / 时序 / 算法 / 复杂功能 / 选型也算设计留痕。
-  - 类比示例（合法 ➖）：纯前端样式微调不动 `docs/api/` → ✅ 可 ➖；同一改动若**触及交互流程或状态机** → 不可 ➖，`docs/design/` 必须就位。
+**可推进**：Q1-7 每条 ✅/⏸/➖ 且 Q8 为"放行"，方进 `ddt-writing-plans`。
 
-**不允许的状态**：
-- 在 spec 末尾写"影响 docs/api：是"但 `docs/api/<name>` 不存在且无 deferral decision——这是**纸面承诺**，闸不通过。
-- 因为"本次没有 ADR"就给 `docs/design/` 打 ➖——`docs/design/` 不只装 ADR，业务流程 / 时序 / 算法 / 复杂功能设计都属设计留痕。
+## 三种状态（其它都不通过）
 
-判断现在是哪种状态，靠**查文件系统**（文件在不在、内容空不空）和**查 `.ddt/decisions.jsonl`**（deferral 条目在不在），不靠 LLM 主观回忆。
+- **✅ 已落地** — 证据已在：资产含真内容 / 决策已入账 / observed 契约已核且 mock 派生自它 / 职责有归属。非空壳、占位、脑补。
+- **⏸ 已推迟** — 暂无法落地（待协同确认 / 信息未齐 / 真源够不着），已用 `ddt-decisions-append.mjs` 追一条 `deferral`（原因 + 何时补）。这条 decision 即证据。
+- **➖ 不适用** — 门槛随问而异：Q1/Q2 看"触没触及"（触及就必须产，与是否被消费无关）；Q3 看"有没有下游要"；**Q6/Q7 门槛最高——"读过 doc 了""走 bundle 了"都不算 ➖**，必须对真源核、对 brief 勾。
 
-## 在什么粒度运行
+判状态靠**查文件系统 / 查 `.ddt/decisions.jsonl` / 对 brief 正文勾(Q7) / 对真 provider 源核(Q6)**，不靠回忆。
+
+## 粒度
 
 - **单 brief（默认）**：一份 design spec 进 `ddt-writing-plans` 前过。
-- **大需求级**：`ddt-large-requirement` 把大需求拆成架构 + 切片方案后、逐片深做之前过——**仅当**有跨切片、无单 brief 归属的全局判断（总体架构、技术栈、实时通道选型、跨切片业务流程、跨切片时序等）时才过，且**只落全局层**（全局架构图 / 跨切片流程图 / 跨切片时序 / 选型 ADR 落 `docs/design/`，全局决策落 `.ddt/decisions.jsonl`）。各切片的局部 API/data 契约与局部设计留痕**留给各 brief 自己的 Checkpoint**，不在此预支。
+- **大需求级**：`ddt-large-requirement` 拆出架构 + 切片方案后、逐片深做前过——**仅当**有跨切片、无单 brief 归属的全局判断（总体架构、技术栈、实时通道选型、跨切片流程/时序），且**只落全局层**（落 `docs/design/` + `.ddt/decisions.jsonl`）。各切片局部契约/设计留痕留给各自 Checkpoint，不在此预支。
 
 ## 前端分流
 
-含前端的切片，先看 `docs/design/frontend/` 状态：
+含前端的切片先看 `docs/design/frontend/`：**空且无 opt-out** → 先 `ddt-design-source` 整体设计一次；**非空** → 实现前必读 bundle 自带 handoff 入口、按它消费源码；**有 opt-out decision** → 用设计系统直接实现。bundle 解决"长什么样"不解决"谁写实现"——含前端仍要过 Q7。详见 `ddt-design-source`。
 
-- **空且无 opt-out decision** → 先 `ddt-design-source` 整体设计一次（粒度按项目判断）；
-- **非空** → 切片实现前必读 bundle 自带的 handoff 入口文件，按它指引消费源码；
-- **有 opt-out decision** → 用设计系统直接实现。
+## 自检 & deferral
 
-详见 `ddt-design-source`、原理与"不写项目侧导览 markdown"的纲领见 `using-ddt`。
-
-## 通过自检
-
-Checkpoint 通过**前**，跑一次 `ddt-doctor.mjs` 看 [B] 段——doctor 知道当前 repo 里哪些路径已就位。把七问清单的 ✅ 项对照 doctor 输出确认文件真的存在；把 ⏸ 项对照 `.ddt/decisions.jsonl` 末尾几条确认 deferral 真的入账。这是最后一道客观自检。
-
-路径按内容含义命名，没有固定模板，但**必须真的存在**且**内容非空**。
-
-## 闸口判定流（每条都过一遍）
-
-```dot
-digraph design_checkpoint_gate {
-    "spec 落档完成" [shape=box];
-    "对当前清单条目，本次设计触及？" [shape=diamond];
-    "标 ➖ 不适用" [shape=box];
-    "对应文件已存在且内容非空？" [shape=diamond];
-    "可推迟到下游补？" [shape=diamond];
-    "stdin 喂 deferral JSON 给 ddt-decisions-append.mjs" [shape=box];
-    "标 ⏸ 已推迟" [shape=box];
-    "标 ✅ 已落地" [shape=box];
-    "阻断：先产资产或推迟决策" [shape=doublecircle];
-    "Q6 开放问题已显式表态？" [shape=diamond];
-    "阻断：先表态" [shape=doublecircle];
-    "跑 ddt-doctor.mjs 对照 [B] 段" [shape=box];
-    "doctor 输出与清单一致？" [shape=diamond];
-    "阻断：清单与 repo 不一致，回头排查" [shape=doublecircle];
-    "通过：进入 ddt-writing-plans" [shape=doublecircle];
-
-    "spec 落档完成" -> "对当前清单条目，本次设计触及？";
-    "对当前清单条目，本次设计触及？" -> "标 ➖ 不适用" [label="否"];
-    "对当前清单条目，本次设计触及？" -> "对应文件已存在且内容非空？" [label="是"];
-    "对应文件已存在且内容非空？" -> "标 ✅ 已落地" [label="是"];
-    "对应文件已存在且内容非空？" -> "可推迟到下游补？" [label="否"];
-    "可推迟到下游补？" -> "stdin 喂 deferral JSON 给 ddt-decisions-append.mjs" [label="是"];
-    "可推迟到下游补？" -> "阻断：先产资产或推迟决策" [label="否"];
-    "stdin 喂 deferral JSON 给 ddt-decisions-append.mjs" -> "标 ⏸ 已推迟";
-    "标 ✅ 已落地" -> "Q6 开放问题已显式表态？";
-    "标 ⏸ 已推迟" -> "Q6 开放问题已显式表态？";
-    "标 ➖ 不适用" -> "Q6 开放问题已显式表态？";
-    "Q6 开放问题已显式表态？" -> "跑 ddt-doctor.mjs 对照 [B] 段" [label="放行"];
-    "Q6 开放问题已显式表态？" -> "阻断：先表态" [label="阻断或含糊"];
-    "跑 ddt-doctor.mjs 对照 [B] 段" -> "doctor 输出与清单一致？";
-    "doctor 输出与清单一致？" -> "通过：进入 ddt-writing-plans" [label="是"];
-    "doctor 输出与清单一致？" -> "阻断：清单与 repo 不一致，回头排查" [label="否"];
-}
-```
-
-deferral JSON 形状示例（`ddt-decisions-append.mjs` 读 stdin、自动补 `ts`）：
+通过**前**跑 `ddt-doctor.mjs` 看 [B] 段对账：✅ 项对 doctor 确认文件真存在、⏸ 项对 `.ddt/decisions.jsonl` 确认 deferral 真入账。**Q6/Q7 doctor 查不到**，靠你对真源、对 brief 勾。路径按内容含义命名，但必须真存在且内容非空。
 
 ```bash
 cat <<'EOF' | ddt-decisions-append.mjs
-{"type":"deferral","scope":"<api|data|design>","item":"<具体决策点>","reason":"<协同方未确认 / 信息未齐>","resolve-by":"<何时/何条件下补>"}
+{"type":"deferral","scope":"<api|data|design|consumed-contract|responsibility>","item":"<决策点>","reason":"<待确认 / 信息未齐 / 真 provider 够不着>","resolve-by":"<何时/何条件补>"}
 EOF
 ```
 
-## 常见反模式（自我警觉清单）
+## 常见反模式
 
-| 反模式 | 为什么不通过 | 正确做法 |
-|---|---|---|
-| 在 spec 末尾写"七问答表"，每条答"是/否"就推进 | 答表不是资产 | 每个"是"要么产出文件，要么写 deferral decision |
-| "本次改动较小，写答表就够了" | "小"是逃逸口；只要进 writing-plans 就过同一道闸 | 真的小到清单全为 ➖，自然零产出；不是简化版闸 |
-| "契约还要和上游确认，先进 plan 再说" | plan 会基于不存在的契约推任务 | 显式写 deferral decision，或暂不进 plan |
-| "设计写在 spec 里也算落地" | spec 是脉络，不是契约；下游 reviewer 找不到锁定点 | 资产单独落 `docs/api,data,design` 对应路径 |
-| 创建空文件 `docs/design/<topic>.md` 占位 | 空壳骗通过 | 文件必须含决策内容；doctor 只查存在性，内容空否要自检 |
-| "本次没有架构决策（ADR），所以 `docs/design/` 打 ➖ 不适用" | `docs/design/` 不是 ADR 专属——业务流程 / 时序 / 算法 / 复杂功能设计也都属设计留痕 | 对照第 3 问"非平凡"判据：动了流程 / 时序 / 算法 / 状态机 / 选型，**任一命中**就必须落地 |
-| "代码看就行了，不用写设计文档" | 设计意图（为什么这样架构 / 流程 / 时序 / 算法选型）**阅读代码读不出来**；future reader / 接手人 / reviewer 拿不到关键上下文 | 凡阅读代码读不出来的设计意图，都写进 `docs/design/<topic>.md` |
-| "前面已经定过架构了，本次微调不用补设计" | 设计是流的——本次的变体也是设计意图的一部分；不留痕，下次又得重新推导一次 | 增量设计留痕（如 `docs/design/<topic>-v2.md` 或在原文件增量追加）也是 ✅ 已落地 |
-| 自我授权"我已经做过 Checkpoint 了" | 没有客观证据 | 通过判据是文件存在 + deferral 入账，不是 LLM 主观判断 |
-| 把 ddt-brainstorming 输出的"影响面分析"段当成 Checkpoint 完成 | brainstorming 产的是设计 spec，不是落地资产 | spec 里的影响面分析是 Checkpoint 的**输入**，不是其**输出** |
-| "已在 spec 里答完七问，invoke 是复读 / 浪费 token" | spec 七问是 LLM 主观判断；checkpoint 是文件系统 + `.ddt/decisions.jsonl` 客观核验。**两件事，不重复** | 用 `ls` / `tail` / `ddt-doctor.mjs` 拿真实状态，不靠回放七问表 |
-| 看到项目侧 `SOURCE.md` / `INDEX.md` 就停下当 spec | 文件类型偏见——项目侧导览不是源权威，bundle 自带的 handoff 入口才是 | 切片进入前端实现前 Read bundle 自带 handoff 入口（原理见 `using-ddt`），按它指引读源码 |
+| 反模式 | 为什么不通过 |
+|---|---|
+| spec 末尾写"自答表"答完就推进 | 答表是主观判断不是资产；每个"是"要么产文件、要么写 deferral |
+| "改动小，写答表就够了" | "小"是逃逸口；进 writing-plans 就过同一道闸（真小到全 ➖ 自然零产出，不是简化版闸） |
+| 消费上游只读旧 doc / 脑补就写代码 | doc 漂移、脑补空中楼阁，mock 据此写则一片绿全自证 → Q6 对真源核 observed |
+| reviewer 抓到契约对不上，只补 stub 消报错 | 一项被臆想，同源其它项都可疑 → 触发**全量契约复核**，别当孤立 bug |
+| brief 派了前端/登录/权限，用"走 bundle"搪塞 | bundle 是视觉真相非实现归属，职责静默蒸发 → Q7 逐条勾 |
 
-## 与其他 skill 的关系
+## 关系
 
-- 上游：`ddt-brainstorming`（产设计 spec）
-- 下游：`ddt-writing-plans`（Checkpoint 通过后进入）
-- 落地工具：`ddt-decisions-append.mjs`、`ddt-changelog-append.mjs`
-- 路径权威：`ddt-doctor.mjs` [B] 段
+上游 `ddt-brainstorming`（产 spec；spec 的影响面分析是本闸**输入**非输出）→ 本闸 → 下游 `ddt-writing-plans`。工具：`ddt-decisions-append.mjs` / `ddt-changelog-append.mjs`；路径权威：`ddt-doctor.mjs` [B] 段。

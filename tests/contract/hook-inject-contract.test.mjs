@@ -59,7 +59,7 @@ test('契约 SessionStart · additionalContext 含 using-ddt 关键指纹', () =
   // 如果未来 using-ddt 文本重构丢失这些字符串，本测试立刻报错。
   const { out } = run({ hook_event_name: 'SessionStart' });
   const ac = out.hookSpecificOutput.additionalContext;
-  for (const fingerprint of ['<EXTREMELY_IMPORTANT>', '北极星', '三种入口', 'Design Checkpoint']) {
+  for (const fingerprint of ['<EXTREMELY_IMPORTANT>', '四项治理增强', '三种入口', 'ddt-design-checkpoint']) {
     assert.ok(ac.includes(fingerprint), `using-ddt 必须含指纹 "${fingerprint}"`);
   }
 });
