@@ -34,6 +34,7 @@ description: Use before implementing any frontend in a slice — building UI, pa
 ## 消费与 opt-out
 
 - **消费**：入口是 bundle 自带的 handoff（非项目侧导览），实现前必读再按其指引读源码。切片 spec **引用** bundle 源码路径、补数据 / 状态 / 集成，**不转译**它（转成文字就丢视觉）。
+- **翻译保真，不是重新实现**：bundle 是源代码不是参考图——复刻渲染输出、只换数据源（代码型直接导入它的 CSS、保留 class）。抽象组件（CrudScaffold）仅当输出匹配 bundle 才用，否则是信息丢失层。视觉模式（avatar/pill/card/间距/icon/toolbar，零数据依赖）永远保留，只砍数据驱动列——别把"裁数据"偷换成"裁视觉"。提取入 spec、随 plan/subagent 传递、截图验收。手册：`references/consuming-a-bundle.md`。
 - **opt-out 必入账**：前端极简到不值得整盘时，把 JSON 喂给 `ddt-decisions-append.mjs`（读 stdin、补 `ts`、append）。写在 spec/brief/PR 里**都不算**——下游机判 `.ddt/decisions.jsonl` 末尾有无该条目。
 
   ```bash

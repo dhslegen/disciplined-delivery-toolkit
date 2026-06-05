@@ -14,10 +14,11 @@ description: Use after ddt-brainstorming and before ddt-writing-plans — the de
 闸核三种真相，每种锚到真实之物，不停在 spec 的自我声明：
 
 - **我产出的** → 资产文件就位（Q1-5：契约/数据触及即强制，设计按 consumer-pull）
-- **我消费的** → 对真 provider 源/样本核过（Q6 · 消费契约纲领）
+- **我消费的（数据）** → 对真 provider 源/样本核过（Q6 · 消费契约纲领）
 - **我继承的** → 上游派的职责逐条有归属（Q7 · 职责守恒纲领）
+- **我消费的（视觉）** → 视觉规格从 bundle 提取入 spec（Q8 · 视觉真相纲领；仅消费 bundle 的前端切片）
 
-两条纲领见 `using-ddt`。
+三条纲领见 `using-ddt`。视觉真相的操作手册见 `ddt-design-source` 的 `references/consuming-a-bundle.md`。
 
 ## 完成清单
 
@@ -33,17 +34,18 @@ description: Use after ddt-brainstorming and before ddt-writing-plans — the de
 **簇二 · 我消费的 + 我继承的**
 6. **消费契约对真源核过？** 消费别切片/外部 provider 的接口/事件/数据 → 有一份从**真 provider 源或真样本**核出的 `observed` 契约（`docs/api/<x>-observed.md`，或 spec 内贴源码关键签名：路径/字段/帧 type/鉴权），且 mock 派生自它并标来源。脑补形状、漂移旧 doc、自写 stub 都不许。真 backend 跑不起 → 读 in-repo 源贴签名；连源都没有 → 记 deferral。
 7. **上游职责守恒？** 对着 brief 正文逐条勾，每条职责（含最常被静默丢的前端 UI / 登录 / 权限）都有归属：设计了 / 建 Task / 显式 deferral / 划给别切片。**静默丢 = 不通过**，别只盯后端。
-8. **开放问题已表态？** 未解冲突/待协同项写明，且**显式判"放行（带已知开放项）"或"阻断"**——含糊不算。
+8. **视觉规格已从 bundle 提取？**（仅消费 bundle 的前端切片）spec 有一节**非空视觉规格**（每页容器结构 / 复用视觉模式 / token / 间距），从 bundle 提取。门槛同 Q6：**"读过 handoff 了"不算 ➖**。手册见 `ddt-design-source/references/consuming-a-bundle.md`。
+9. **开放问题已表态？** 未解冲突/待协同项写明，且**显式判"放行（带已知开放项）"或"阻断"**——含糊不算。
 
-**可推进**：Q1-7 每条 ✅/⏸/➖ 且 Q8 为"放行"，方进 `ddt-writing-plans`。
+**可推进**：Q1-8 每条 ✅/⏸/➖ 且 Q9 为"放行"，方进 `ddt-writing-plans`。
 
 ## 三种状态（其它都不通过）
 
 - **✅ 已落地** — 证据已在：资产含真内容 / 决策已入账 / observed 契约已核且 mock 派生自它 / 职责有归属。非空壳、占位、脑补。
 - **⏸ 已推迟** — 暂无法落地（待协同确认 / 信息未齐 / 真源够不着），已用 `ddt-decisions-append.mjs` 追一条 `deferral`（原因 + 何时补）。这条 decision 即证据。
-- **➖ 不适用** — 门槛随问而异：Q1/Q2 看"触没触及"（触及就必须产，与是否被消费无关）；Q3 看"有没有下游要"；**Q6/Q7 门槛最高——"读过 doc 了""走 bundle 了"都不算 ➖**，必须对真源核、对 brief 勾。
+- **➖ 不适用** — 门槛随问而异：Q1/Q2 看"触没触及"（触及就必须产，与是否被消费无关）；Q3 看"有没有下游要"；**Q6/Q7/Q8 门槛最高——"读过 doc 了""走 bundle 了"都不算 ➖**，必须对真源核、对 brief 勾、对 bundle 提取视觉规格。Q8 仅当本切片不含前端、或前端 opt-out 无 bundle 时才 ➖。
 
-判状态靠**查文件系统 / 查 `.ddt/decisions.jsonl` / 对 brief 正文勾(Q7) / 对真 provider 源核(Q6)**，不靠回忆。
+判状态靠**查文件系统 / 查 `.ddt/decisions.jsonl` / 对 brief 正文勾(Q7) / 对真 provider 源核(Q6) / 对 bundle 核 spec 视觉章节(Q8)**，不靠回忆。
 
 ## 粒度
 
@@ -52,15 +54,15 @@ description: Use after ddt-brainstorming and before ddt-writing-plans — the de
 
 ## 前端分流
 
-含前端的切片先看 `docs/design/frontend/`：**空且无 opt-out** → 先 `ddt-design-source` 整体设计一次；**非空** → 实现前必读 bundle 自带 handoff 入口、按它消费源码；**有 opt-out decision** → 用设计系统直接实现。bundle 解决"长什么样"不解决"谁写实现"——含前端仍要过 Q7。详见 `ddt-design-source`。
+含前端的切片先看 `docs/design/frontend/`：**空且无 opt-out** → 先 `ddt-design-source` 整体设计一次；**非空** → 实现前必读 bundle 自带 handoff 入口、按它消费源码；**有 opt-out decision** → 用设计系统直接实现。bundle 解决"长什么样"不解决"谁写实现"——含前端仍要过 Q7（职责归属）**和 Q8（视觉规格提取入 spec）**：前者防职责蒸发，后者防视觉蒸发（落地"功能对但廉价"）。详见 `ddt-design-source`。
 
 ## 自检 & deferral
 
-通过**前**跑 `ddt-doctor.mjs` 看 [B] 段对账：✅ 项对 doctor 确认文件真存在、⏸ 项对 `.ddt/decisions.jsonl` 确认 deferral 真入账。**Q6/Q7 doctor 查不到**，靠你对真源、对 brief 勾。路径按内容含义命名，但必须真存在且内容非空。
+通过**前**跑 `ddt-doctor.mjs` 看 [B] 段对账：✅ 项对 doctor 确认文件真存在、⏸ 项对 `.ddt/decisions.jsonl` 确认 deferral 真入账。**Q6/Q7/Q8 doctor 查不到**，靠你对真源核、对 brief 勾、对 bundle 提取视觉规格。路径按内容含义命名，但必须真存在且内容非空。
 
 ```bash
 cat <<'EOF' | ddt-decisions-append.mjs
-{"type":"deferral","scope":"<api|data|design|consumed-contract|responsibility>","item":"<决策点>","reason":"<待确认 / 信息未齐 / 真 provider 够不着>","resolve-by":"<何时/何条件补>"}
+{"type":"deferral","scope":"<api|data|design|consumed-contract|responsibility|visual>","item":"<决策点>","reason":"<待确认 / 信息未齐 / 真 provider 够不着>","resolve-by":"<何时/何条件补>"}
 EOF
 ```
 
@@ -73,6 +75,8 @@ EOF
 | 消费上游只读旧 doc / 脑补就写代码 | doc 漂移、脑补空中楼阁，mock 据此写则一片绿全自证 → Q6 对真源核 observed |
 | reviewer 抓到契约对不上，只补 stub 消报错 | 一项被臆想，同源其它项都可疑 → 触发**全量契约复核**，别当孤立 bug |
 | brief 派了前端/登录/权限，用"走 bundle"搪塞 | bundle 是视觉真相非实现归属，职责静默蒸发 → Q7 逐条勾 |
+| 套抽象组件库（antd/CrudScaffold）当"消费 bundle"，spec 无视觉章节 | 抽象改变渲染 DOM = 信息丢失层，视觉静默劣化成"功能对但廉价" → Q8 要 spec 提取视觉规格、默认翻译保真（`consuming-a-bundle.md`） |
+| 把"砍后端不给的列"偷换成"砍 avatar/pill/card/间距" | 视觉模式零数据依赖，不该因数据缺失被砍 → 砍前问"它依赖后端数据吗"，只砍数据驱动列 |
 
 ## 关系
 

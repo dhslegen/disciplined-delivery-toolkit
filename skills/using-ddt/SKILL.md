@@ -100,7 +100,7 @@ implementation 对象可以是文档 / 契约 / 设计 / 测试，不必是代�
 
 **存在 ≠ 兑现**：设计被锁定，是它碰到的每种真相都锚在真实之物上，而非"该产的文件在盘上"。三种真相跨 skill 跨阶段生效，操作细节落 `ddt-design-checkpoint`：
 
-1. **视觉真相 = bundle handoff 源权威**。前端 bundle 自带的 handoff 入口是消费**唯一入口**，实现前必读、按它消费源码。项目侧**不造** `SOURCE.md` / `INDEX.md` 当导览（LLM 见 markdown 入口会停在转译层、不读真源）。
+1. **视觉真相 = bundle handoff 源权威**。前端 bundle 自带的 handoff 入口是消费**唯一入口**，实现前必读、按它消费源码。项目侧**不造** `SOURCE.md` / `INDEX.md` 当导览（LLM 见 markdown 入口会停在转译层、不读真源）。bundle 是源代码不是参考图——**翻译保真**（复刻渲染、只换数据源），别用抽象库重写；视觉模式零数据依赖永远保留、只砍数据驱动列。提取入 spec、传递、截图验收，对称下面 observed 链。手册见 `ddt-design-source/references/consuming-a-bundle.md`。
 2. **数据真相 = provider 真源**。消费别人接口前对**真源码 / 真样本**核对，**不是**脑补 / 旧 doc / 自写 stub；真 backend 跑不起就读 in-repo 源贴签名。mock 派生自真样本并标来源，标 `ASSUMED` = 自证警报。reviewer 抓到契约对不上 = **红旗级** → 全量契约复核，不是补 stub 消 404。
 3. **职责真相 = 上游派的活不许静默蒸发**。每过一道边界（brief→spec→plan→implement）上游职责都可能蒸发，**最常蒸发前端 / 登录 / 权限**。每层落档前核对上游每条职责都接住（设计 / Task / deferral / 划走）；"走 bundle"只答"长什么样"、没答"谁写实现"，不算接住。
 

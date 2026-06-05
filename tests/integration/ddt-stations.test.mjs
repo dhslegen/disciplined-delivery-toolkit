@@ -97,6 +97,46 @@ test('前端外部设计：整体出一次 + 切片消费 + 粒度判断 + CRUD 
   assert.match(cp, /docs\/design\/frontend/, 'design-checkpoint 前端分流须按 docs/design/frontend/ 判断触发（确定性，非眼看）');
 });
 
+test('视觉真相操作闭环：bundle 消费手册 + 翻译保真 + 视觉×数据组合规则 + Q8 提取闸（防视觉每过一道边界蒸发成"功能对但廉价"）', () => {
+  // 背景：兑现守恒三真相里，数据真相（Q6/observed/红旗）与职责真相（Q7/逐条勾）都有完整操作链，
+  // 视觉真相长期只有"必读 bundle"一句原则，无提取物/无闸/无验收 → B11 落地功能对但视觉廉价。
+  // 本 test 锁住补上的对称操作链。注意：锁语义不锁脆弱子串（易变散文留弹性）。
+
+  // ① 手册是单一真相源：reference 文件存在且非空，承载翻译保真 + 组合规则 + 抽象条件 + 截图验收
+  const bk = readFileSync(path.join(root, 'skills/ddt-design-source/references/consuming-a-bundle.md'), 'utf8');
+  assert.ok(bk.length > 800, 'consuming-a-bundle.md 应是实质手册（非占位）');
+  assert.match(bk, /源代码|逐行翻译|复刻.*渲染|渲染输出/, '手册须确立"bundle 是源代码、复刻渲染输出"（翻译非重新实现）');
+  assert.match(bk, /只换数据源|替换数据源|换掉数据/, '手册须确立翻译=只替换数据源');
+  assert.match(bk, /条件|当且仅当|匹配 bundle/, '手册须把抽象层框为条件（输出匹配 bundle 才用），非禁令');
+  // 视觉×数据组合规则：零数据依赖的视觉模式永远保留，只砍数据驱动列（防"裁数据偷换成裁视觉"）
+  assert.match(bk, /数据依赖/, '手册须用"数据依赖"作砍/留判据');
+  assert.match(bk, /永远保留|不受.*裁剪|砍不得/, '手册须明令零数据依赖的视觉模式永远保留');
+  assert.match(bk, /avatar|pill|toolbar/i, '手册须点名具体视觉模式（avatar/pill/toolbar 等）');
+  // 截图验收：tests 绿不证明视觉达标（验收标准在渲染结果，不在代码）
+  assert.match(bk, /截图/, '手册须要求截图与 bundle 对比验收');
+  assert.match(bk, /不证明|不充分|不在代码里/, '手册须说明 tsc/测试绿不证明视觉达标');
+  // 前向链路：提取入 spec → 传递 plan/subagent → 截图验收（让纪律穿过下游 vendored 阶段）
+  assert.match(bk, /提取/, '手册须有"提取视觉规格入 spec"环');
+  assert.match(bk, /plan|基建/i, '手册须把视觉基建传递到 plan 阶段');
+
+  // ② using-ddt 视觉真相纲领升级为对称操作纲领（非仅"必读 bundle"）
+  const u = readFileSync(path.join(root, 'skills/using-ddt/SKILL.md'), 'utf8');
+  assert.match(u, /源代码|翻译保真|复刻渲染/, 'using-ddt 视觉真相须升级为"bundle 是源代码、翻译保真"');
+  assert.match(u, /数据驱动列|裁视觉|视觉模式/, 'using-ddt 须含视觉×数据组合规则（别把裁数据偷换成裁视觉）');
+  assert.match(u, /consuming-a-bundle/, 'using-ddt 视觉真相须指向操作手册');
+
+  // ③ design-source 消费段指向手册（手册是被引用的单一源，非散落重述）
+  const ds = readFileSync(path.join(root, 'skills/ddt-design-source/SKILL.md'), 'utf8');
+  assert.match(ds, /consuming-a-bundle/, 'design-source 消费段须指向 consuming-a-bundle 手册');
+  assert.match(ds, /翻译保真|只换数据源|复刻.*渲染|渲染输出/, 'design-source 消费段须含翻译保真语义');
+
+  // ④ checkpoint 有 Q8 视觉提取闸（仅消费 bundle 切片）：spec 须有非空视觉章节，"读过了"不算
+  const cp = readFileSync(path.join(root, 'skills/ddt-design-checkpoint/SKILL.md'), 'utf8');
+  assert.match(cp, /视觉真相|视觉规格/, 'checkpoint 须把视觉真相列为受核的一种（对称消费契约/职责守恒）');
+  assert.match(cp, /视觉规格.*提取|提取.*视觉规格/, 'checkpoint Q8 须要求从 bundle 提取视觉规格入 spec');
+  assert.match(cp, /非空视觉章节|视觉章节/, 'checkpoint Q8 须要 spec 有非空视觉章节（"读过 handoff"不算）');
+});
+
 test('DDT 原生 skill 集合引用 vendored skill 名精确', () => {
   const allText = DDT_NATIVE_SKILLS.map(d => readFileSync(path.join(root, 'skills', d, 'SKILL.md'), 'utf8')).join('\n---FILE---\n');
   // 各 skill 引用的 vendored skill 名应精确存在
